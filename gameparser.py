@@ -17,13 +17,13 @@ def filter_words(words, skip_words):
     which all words provided in the list skip_words have been removed.
     For example:
 
-    >>> filter_words(["help", "me", "please"], ["me", "please"])
+    filter_words(["help", "me", "please"], ["me", "please"])
     ['help']
 
-    >>> filter_words(["go", "south"], skip_words)
+    filter_words(["go", "south"], skip_words)
     ['go', 'south']
 
-    >>> filter_words(['how', 'about', 'i', 'go', 'through', 'that', 'little', 'passage', 'to', 'the', 'south'], skip_words)
+    filter_words(['how', 'about', 'i', 'go', 'through', 'that', 'little', 'passage', 'to', 'the', 'south'], skip_words)
     ['go', 'passage', 'south']
 
     """
@@ -40,11 +40,11 @@ def remove_punct(text):
     not be removed. The funcion takes a string and returns a new string
     which does not contain any puctuation. For example:
 
-    >>> remove_punct("Hello, World!")
+    remove_punct("Hello, World!")
     'Hello World'
-    >>> remove_punct("-- ...Hey! -- Yes?!...")
+    remove_punct("-- ...Hey! -- Yes?!...")
     ' Hey  Yes'
-    >>> remove_punct(",go!So.?uTh")
+    remove_punct(",go!So.?uTh")
     'goSouTh'
     """
     no_punct = ""
@@ -62,21 +62,21 @@ def normalise_input(user_input):
     words from the list of words using the filter_words() function. The
     resulting list of "important" words is returned. For example:
 
-    >>> normalise_input("  Go   south! ")
+    normalise_input("  Go   south! ")
     ['go', 'south']
-    >>> normalise_input("!!!  tAkE,.    LAmp!?! ")
+    normalise_input("!!!  tAkE,.    LAmp!?! ")
     ['take', 'lamp']
-    >>> normalise_input("HELP!!!!!!!")
+    normalise_input("HELP!!!!!!!")
     ['help']
-    >>> normalise_input("Now, drop the sword please.")
+    normalise_input("Now, drop the sword please.")
     ['drop', 'sword']
-    >>> normalise_input("Kill ~ tHe :-  gObLiN,. wiTH my SWORD!!!")
+    normalise_input("Kill ~ tHe :-  gObLiN,. wiTH my SWORD!!!")
     ['kill', 'goblin', 'sword']
-    >>> normalise_input("I would like to drop my laptop here.")
+    normalise_input("I would like to drop my laptop here.")
     ['drop', 'laptop']
-    >>> normalise_input("I wish to take this large gem now!")
+    normalise_input("I wish to take this large gem now!")
     ['take', 'gem']
-    >>> normalise_input("How about I go through that little passage to the south...")
+    normalise_input("How about I go through that little passage to the south...")
     ['go', 'passage', 'south']
 
     """

@@ -9,16 +9,16 @@ def list_of_items(items):
     """This function takes a list of items (see items.py for the definition) and
     returns a comma-separated list of item names (as a string). For example:
 
-    >>> list_of_items([item_pen, item_handbook])
+    list_of_items([item_pen, item_handbook])
     'a pen, a student handbook'
 
-    >>> list_of_items([item_id])
+    list_of_items([item_id])
     'id card'
 
-    >>> list_of_items([])
+    list_of_items([])
     ''
 
-    >>> list_of_items([item_money, item_handbook, item_laptop])
+    list_of_items([item_money, item_handbook, item_laptop])
     'money, a student handbook, laptop'
 
     """
@@ -36,15 +36,15 @@ def print_room_items(room):
     items.py for the definition of an item. This function uses list_of_items()
     to produce a comma-separated list of item names. For example:
 
-    >>> print_room_items(rooms["Reception"])
+    print_room_items(rooms["Reception"])
     There is a pack of biscuits, a student handbook here.
     <BLANKLINE>
 
-    >>> print_room_items(rooms["Office"])
+    print_room_items(rooms["Office"])
     There is a pen here.
     <BLANKLINE>
 
-    >>> print_room_items(rooms["Admins"])
+    print_room_items(rooms["Admins"])
 
     (no output)
 
@@ -65,7 +65,7 @@ def print_inventory_items(items):
     manner similar to print_room_items(). The only difference is in formatting:
     print "You have ..." instead of "There is ... here.". For example:
 
-    >>> print_inventory_items(player.inventory)
+    print_inventory_items(player.inventory)
     You have id card, laptop, money.
     <BLANKLINE>
 
@@ -86,7 +86,7 @@ def print_room(room):
     in the room, the list of items is printed next followed by a blank line
     (use print_room_items() for this). For example:
 
-    >>> print_room(rooms["Office"])
+    print_room(rooms["Office"])
     <BLANKLINE>
     THE GENERAL OFFICE
     <BLANKLINE>
@@ -98,7 +98,7 @@ def print_room(room):
     There is a pen here.
     <BLANKLINE>
 
-    >>> print_room(rooms["Reception"])
+    print_room(rooms["Reception"])
     <BLANKLINE>
     RECEPTION
     <BLANKLINE>
@@ -112,7 +112,7 @@ def print_room(room):
     There is a pack of biscuits, a student handbook here.
     <BLANKLINE>
 
-    >>> print_room(rooms["Admins"])
+    print_room(rooms["Admins"])
     <BLANKLINE>
     MJ AND SIMON'S ROOM
     <BLANKLINE>
@@ -138,11 +138,11 @@ def exit_leads_to(exits, direction):
     exit taken from this dictionary). It returns the name of the room into which
     this exit leads. For example:
 
-    >>> exit_leads_to(rooms["Reception"]["exits"], "south")
+    exit_leads_to(rooms["Reception"]["exits"], "south")
     "MJ and Simon's room"
-    >>> exit_leads_to(rooms["Reception"]["exits"], "east")
+    exit_leads_to(rooms["Reception"]["exits"], "east")
     "your personal tutor's office"
-    >>> exit_leads_to(rooms["Tutor"]["exits"], "west")
+    exit_leads_to(rooms["Tutor"]["exits"], "west")
     'Reception'
     """
     return rooms[exits[direction]]["name"]
@@ -156,9 +156,9 @@ def print_exit(direction, leads_to):
     GO <EXIT NAME UPPERCASE> to <where it leads>.
 
     For example:
-    >>> print_exit("east", "you personal tutor's office")
+    print_exit("east", "you personal tutor's office")
     GO EAST to you personal tutor's office.
-    >>> print_exit("south", "MJ and Simon's room")
+    print_exit("south", "MJ and Simon's room")
     GO SOUTH to MJ and Simon's room.
     """
     print("GO " + direction.upper() + " to " + leads_to + ".")
@@ -216,13 +216,13 @@ def is_valid_exit(exits, chosen_exit):
     the name of the exit has been normalised by the function normalise_input().
     For example:
 
-    >>> is_valid_exit(rooms["Reception"]["exits"], "south")
+    is_valid_exit(rooms["Reception"]["exits"], "south")
     True
-    >>> is_valid_exit(rooms["Reception"]["exits"], "up")
+    is_valid_exit(rooms["Reception"]["exits"], "up")
     False
-    >>> is_valid_exit(rooms["Parking"]["exits"], "west")
+    is_valid_exit(rooms["Parking"]["exits"], "west")
     False
-    >>> is_valid_exit(rooms["Parking"]["exits"], "east")
+    is_valid_exit(rooms["Parking"]["exits"], "east")
     True
     """
     return chosen_exit in exits
@@ -336,11 +336,11 @@ def move(exits, direction):
     dictionary "exits" of avaiable exits, they choose to move towards the exit
     with the name given by "direction". For example:
 
-    >>> move(rooms["Reception"]["exits"], "south") == rooms["Admins"]
+    move(rooms["Reception"]["exits"], "south") == rooms["Admins"]
     True
-    >>> move(rooms["Reception"]["exits"], "east") == rooms["Tutor"]
+    move(rooms["Reception"]["exits"], "east") == rooms["Tutor"]
     True
-    >>> move(rooms["Reception"]["exits"], "west") == rooms["Office"]
+    move(rooms["Reception"]["exits"], "west") == rooms["Office"]
     False
     """
 
