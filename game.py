@@ -348,28 +348,8 @@ def move(exits, direction):
     return rooms[exits[direction]]
 
 
-def check_win():
-    """
-    This function checks whether the win condition has been met.
-
-    In this case the win condition is:
-    Drop all items at reception
-    """
-
-    for item in items:
-        if item not in rooms["Reception"]["items"]:
-            return False
-    return True
-
-
 # This is the entry point of our program
 def main():
-    print("""
-    Welcome!
-    Your aim is to collect all of the items on the map
-    and drop them off at reception.
-    Good Luck!
-    """)
 
     # Main game loop
     while True:
@@ -385,16 +365,8 @@ def main():
         # Execute the player's command
         execute_command(command)
 
-        # Executes win code if win condition is met
-        if check_win():
-            print()
-            print()
-            print("Congratulations! You completed the game!")
-            print()
-            print()
-            break
-
         # Differentiates turns
+        # Can remove once formatted
         print()
         print("=" * 40)
 
