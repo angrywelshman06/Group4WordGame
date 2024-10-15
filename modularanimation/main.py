@@ -7,7 +7,7 @@ from operator import attrgetter
 
 clear = lambda: os.system('cls')
 
-os.system("") # I need to remember why I put this here
+os.system("") # I need to remember why I put this here, I believe it was escape code related (which may be obsolete soon)
 
 class spritesheet():
     def gather_framelist(self):
