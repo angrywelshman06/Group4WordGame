@@ -1,6 +1,8 @@
 import itertools
 import time
 import os 
+import curses
+from curses import wrapper
 from operator import attrgetter
 
 clear = lambda: os.system('cls')
@@ -108,14 +110,61 @@ def print_frame(framelist, args):
                 to_print = i
         print(z_char_color[to_print][1]+z_char_color[to_print][0], end="") # color + char
         
+#### CURSES #############################################################################
+#### WIP
+def print_stillshot_curses(framenumlist,win, *args): # [1,4], dude, backpillars
+    max_frame = max(args, key=attrgetter('frames')).frames
+    list_framelists = [i.frameslist for i in args]
+    list_framelists = adjust_to_max(list_framelists, max_frame)
+    frames_to_print = []
+    for i in range(len(args)):
+        frames_to_print.append(list_framelists[i][framenumlist[0]])
+        del framenumlist[0]
+    # for d in framesnumlist:
+        # for i in range(len(args)):
+            # frames_to_print.append(list_framelists[i][d])
+    for framelist in zip(*frames_to_print): # * unpacks list_framelists into n different lists (objs)
+        print_frame_curses(framelist,win,args)
+        
+def print_frame_curses(framelist,win, args):
+    for chars in zip(*framelist): # framelist unpacked into char number of different characters
+        z_char_color = {}
+        compare = []
+        if all(" " in t for t in chars): # if all 3 chars are " " 
+            win.addstr(" ")
+            continue
+        for i in range(len(chars)): # zlevel: [char, color]
+            # z_char_color[z_dict[args[i]]] = [chars[i], color_dict[args[i]]] ### I walked in a circle. CATASTROPHICALLY BAD.
+            z_char_color[args[i].zlevel] = [chars[i], args[i].color]
+        for i in z_char_color:
+            if z_char_color[i][0] != " ":
+                compare.append(i)
+        to_print=compare[0]
+        for i in compare:
+            if i > to_print:
+                to_print = i
+        # print(z_char_color[to_print][1]+z_char_color[to_print][0], end="") # color + char
+        win.addstr(z_char_color[to_print][0])
+        win.scrollok(1) # This helps to prevent a curses-related crash
+
+def main(stdscr): ### WIP
+    stdscr.clear()
+    display_win = curses.newwin(36, 110, 5, 5)
+    display_win.clear()
+    print_stillshot_curses([22,3,10],display_win, dude, backpillars, frontpillars) ## ([frames to print for each arg], curses window, unlimited args..)
+    display_win.getch()
+
+wrapper(main)
+
 clear()
 
 ##### Prints a still frame. The list contains the frame of each argument you want to print. 22 - dude, 3 - backpillars, 10 - frontpillars
+##### There is a curses version of this a few lines up
 # print_stillshot([22,3,10], dude, backpillars, frontpillars)
 
-while True:
+# while True:
     #### Runs animation
-    run_animation(fire,fire2,fire3,skyscraper,building1,heli,citybg,pulse, climbers, dudeontop, moon)
+    # run_animation(fire,fire2,fire3,skyscraper,building1,heli,citybg,pulse, climbers, dudeontop, moon)
     
 # def obj_frameslist_dict(argstuple, max_frame):
     # sprite_dict = {}
