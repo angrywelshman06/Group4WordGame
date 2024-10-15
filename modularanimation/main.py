@@ -14,6 +14,7 @@ class spritesheet():
             path = os.path.join("{0}".format(self.path), "txt", "ascii-art ({0}).txt".format(frame)) ## os.path.join works regardless of OS
             file = open(path, "r", encoding="utf-8")
             frameslist.append(file.read())
+            file.close()
         return frameslist
         
     def __init__(self, path, color, zlevel = 0, frames = 0, dx = 0, dy = 0, delay = 0):
@@ -43,6 +44,17 @@ frontpillars = spritesheet("frontpillars","\033[31m", zlevel = 8, frames = 28)
 backpillars = spritesheet("backpillars","\033[31m", zlevel = 2, frames = 28)
 outline1 = spritesheet("outline1", "\033[94m", zlevel = 99, frames = 1)
 
+fire2 = spritesheet("fire2", "\033[31m", zlevel = 8, frames = 95)
+building1 = spritesheet("building1", "\033[37m", zlevel = 7, frames = 95)
+fire = spritesheet("fire", "\033[31m", zlevel = 6, frames = 95)
+heli = spritesheet("heli", "\033[90m", zlevel = 5, frames = 95)
+skyscraper = spritesheet("skyscraper", "\033[37m", zlevel = 4, frames = 95)
+fire3 = spritesheet("fire3", "\033[31m", zlevel = 3, frames = 95)
+citybg = spritesheet("citybg", "\033[37m", zlevel = 2, frames = 95)
+pulse = spritesheet("pulse", "\033[31m", zlevel = 1, frames = 95)
+climbers = spritesheet("climbers", "\033[32m", zlevel = 10, frames = 95)
+dudeontop = spritesheet("dudeontop", "\033[94m", zlevel = 11, frames = 95)
+moon = spritesheet("moon", "\033[31m", zlevel = 0.5, frames = 1)
 
 def adjust_to_max(list_framelists, max_frame): # adjusts to max frame
     for list in list_framelists:
@@ -103,7 +115,7 @@ clear()
 
 while True:
     #### Runs animation
-    run_animation(backpillars,frontpillars,dude,circle,square,outline)
+    run_animation(fire,fire2,fire3,skyscraper,building1,heli,citybg,pulse, climbers, dudeontop, moon)
     
 # def obj_frameslist_dict(argstuple, max_frame):
     # sprite_dict = {}
