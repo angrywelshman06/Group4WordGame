@@ -106,10 +106,6 @@ def menu(exits, room_items, inv_items):
     return normalised_user_input
 
 
-def move(exits, direction): #needs to be changed to be used with the matrix in terms of navigating with the x and y coordinates
-    pass
-
-
 # This is the entry point of our program
 def main():
 
