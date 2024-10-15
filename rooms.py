@@ -1,14 +1,3 @@
-from items import *
-
-# Class for cleanly storing and accessing rooms
-class Room:
-    def __init__(self):
-        self.name = None
-        self.description = None
-        self.items = None
-        self.enemies = None # Might be needed??
-        self.exits = None
-
 room_reception = {
     "name": "Reception",
 
@@ -79,5 +68,10 @@ Queen's Buildings.""",
     "items": [item_pen]
 }
 
-# Add special rooms here (replace exercise6 rooms)
-special_rooms = [room_admins, room_office, room_parking, room_reception, room_tutor]
+rooms = {
+    "Reception": room_reception,
+    "Admins": room_admins,
+    "Tutor": room_tutor,
+    "Parking": room_parking,
+    "Office": room_office
+}
