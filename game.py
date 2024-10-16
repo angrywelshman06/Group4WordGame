@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import player
-from map import Room
+from map import Room, get_room
 from items import *
 from gameparser import *
 
@@ -29,20 +29,33 @@ def print_inventory_items(items):
     print(f"You have {list_of_items(items)}.")
     print()
 
-def is_valid_exit(exits, chosen_exit): # used to check if the exit is valid
-    return chosen_exit in exits
+# Checks if the exit is valid in the current room
+def is_valid_exit(direction):
+    return direction in get_room(player.current_room_position[0], [1]).exits
 
 
 def execute_go(direction):
-    if is_valid_exit(player.current_room["exits"], direction):
-        player.current_room = move(player.current_room["exits"], direction)
-        print(f"You are going to {player.current_room["name"]}.")
+    if is_valid_exit(direction):
+        new_pos = player.current_room_position
+
+        #Translating direction into vector movement
+        match direction:
+            case "north" : new_pos[1] += 1
+            case "east" : new_pos[0] += 1
+            case "south" : new_pos[1] -= 1
+            case "west" : new_pos[0] -= 1
+
+        player.previous_room_position = player.current_room_position
+        player.current_room_position = new_pos
+
+        room = get_room(player.current_room_position)
+        print(f"You are going to {room.name}.")
     else:
         print("You cannot go there.")
 
 
 def execute_take(item_id):
-    for item in player.current_room["items"]:
+    for item in get_room(player.current_room_position).items:
         if item["id"] == item_id:
 
             if player.inventory_mass() + item["mass"] > player.max_mass:
@@ -112,13 +125,13 @@ def main():
     # Main game loop
     while True:
         # Display game status (room description, inventory etc.)
-        print_room(player.current_room)
+        print_room(player.get_current_room())
         print_inventory_items(player.inventory)
         print(f"Current Inventory Mass: {player.inventory_mass()}g")
         print()
 
         # Show the menu with possible actions and ask the player
-        command = menu(player.current_room["exits"], player.current_room["items"], player.inventory)
+        command = menu(player.get_current_room().exits, player.get_current_room().items, player.inventory)
 
         # Execute the player's command
         execute_command(command)
