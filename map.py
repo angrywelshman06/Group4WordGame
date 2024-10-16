@@ -28,7 +28,7 @@ starting_position = [4, 4]
 # Main function to generate the rooms in the map_matrix
 def generate_map():
     for sr in special_rooms:
-        print(f"Generating {sr["name"]}.")
+        print(f"Generating {sr['name']}.")
         room = Room()
         room.name = sr["name"]
         room.description = sr["description"]
@@ -60,6 +60,6 @@ def dist_from_start(x, y): #This function takes the coordinates of the player an
     return distance
 
 
-generate_map()
-print(map_matrix)
+#generate_map()
+#print(map_matrix)
 

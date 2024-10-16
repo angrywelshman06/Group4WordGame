@@ -1,5 +1,5 @@
 from items import *
-from map import rooms
+#from map import rooms
 
 # Starting inventory
 inventory = [item_id, item_laptop, item_money]
@@ -15,4 +15,4 @@ def inventory_mass():
     return mass
 
 # Start game at the reception
-current_room = rooms["Reception"]
+#current_room = rooms["Reception"]
