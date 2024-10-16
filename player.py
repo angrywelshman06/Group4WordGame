@@ -14,5 +14,5 @@ def inventory_mass():
         mass += item["mass"]
     return mass
 
-# Start game at the reception
-current_room = rooms["Reception"]
+#Stores current room position as an array
+current_room_position = map.starting_position
