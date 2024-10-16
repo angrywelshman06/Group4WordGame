@@ -1,5 +1,5 @@
+import map
 from items import *
-from map import rooms
 
 # Starting inventory
 inventory = [item_id, item_laptop, item_money]
@@ -16,3 +16,10 @@ def inventory_mass():
 
 #Stores current room position as an array
 current_room_position = map.starting_position
+
+# Stores the previous room position as an array
+# Used for fleeing enemy combat
+previous_room_position = None
+
+def get_current_room():
+    return map.get_room(current_room_position[0], current_room_position[1])
