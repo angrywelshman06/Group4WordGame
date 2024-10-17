@@ -5,9 +5,9 @@ class Room:
     def __init__(self):
         self.name = None
         self.description = None
-        self.items = None
-        self.enemies = None # Might be needed??
-        self.exits = None # []
+        self.items = []
+        self.enemies = [] # Might be needed??
+        self.exits = []
 
 # Special rooms
 # Add all to special rooms list at bottom of file
