@@ -80,7 +80,7 @@ Queen's Buildings.""",
 }
 
 # Add special rooms here (replace exercise6 rooms)
-special_rooms = [room_admins, room_office, room_parking, room_reception, room_tutor]
+special_rooms = [room_admins, room_office, room_parking, room_reception]
 
 # Rooms that will be used as filler, will have no special events and may have randomly generated loot/enemies
-generic_rooms = []
+generic_rooms = [room_tutor]

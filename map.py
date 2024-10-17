@@ -1,7 +1,5 @@
 import random
-from rooms import special_rooms, Room
-
-
+from rooms import special_rooms, Room, generic_rooms
 
 map_matrix = [[None for x in range(10)] for y in range(10)]
 
@@ -42,8 +40,15 @@ def generate_map():
                 map_matrix[x_coord][y_coord] = room
                 break
 
-
-
+    for y in range(len(map_matrix)):
+        for x in range(len(map_matrix[y])):
+            if map_matrix[y][x] is None:
+                random_room = generic_rooms[random.randint(0, len(generic_rooms) - 1)]
+                room = Room()
+                room.name = random_room["name"]
+                room.description = random_room["description"]
+                room.items = random_room["items"]
+                map_matrix[y][x] = room
 
 
 
