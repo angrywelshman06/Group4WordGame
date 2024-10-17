@@ -2,6 +2,7 @@
 import player
 from map import Room, generate_map
 from gameparser import *
+from player import current_room_position
 
 
 def list_of_items(items):
@@ -49,9 +50,9 @@ def execute_go(direction):
 
         #Translating direction into vector movement
         match direction:
-            case "north" : new_pos[1] += 1
+            case "north" : new_pos[1] -= 1
             case "east" : new_pos[0] += 1
-            case "south" : new_pos[1] -= 1
+            case "south" : new_pos[1] += 1
             case "west" : new_pos[0] -= 1
 
         player.previous_room_position = player.current_room_position
@@ -137,22 +138,28 @@ def main():
 
     # Main game loop
     while True:
+        # Differentiates turns
+        # Can remove once formatted
+        print("=" * 40)
+
         # Display game status (room description, inventory etc.)
         print_room(player.get_current_room())
+
+        if len(player.get_current_room().enemies) >= 1:
+            # Combat
+            pass
+
         print_inventory_items(player.inventory)
         print(f"Current Inventory Mass: {player.inventory_mass()}g")
         print()
+
+        print(current_room_position)
 
         # Show the menu with possible actions and ask the player
         command = menu(player.get_current_room().exits, player.get_current_room().items, player.inventory)
 
         # Execute the player's command
         execute_command(command)
-
-        # Differentiates turns
-        # Can remove once formatted
-        print()
-        print("=" * 40)
 
 
 # Are we being run as a script? If so, run main().
