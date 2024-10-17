@@ -7,7 +7,7 @@ class Room:
         self.description = None
         self.items = None
         self.enemies = None # Might be needed??
-        self.exits = None
+        self.exits = None # []
 
 # Special rooms
 # Add all to special rooms list at bottom of file

@@ -2,7 +2,7 @@ import map
 from items import *
 
 # Starting inventory
-inventory = [item_id, item_laptop, item_money]
+inventory = [item_id_card, item_laptop, item_money]
 
 # Current maximum capacity (in grams)
 max_mass = 10000

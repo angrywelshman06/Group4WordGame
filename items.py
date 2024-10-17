@@ -1,4 +1,4 @@
-item_id = {
+item_id_card = {
     "id": "id",
 
     "name": "id card",
@@ -63,4 +63,4 @@ item_handbook = {
     "mass": 200
 }
 
-items = [item_id, item_biscuits, item_handbook, item_laptop, item_money, item_pen]
+items = [item_id_card, item_biscuits, item_handbook, item_laptop, item_money, item_pen]
