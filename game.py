@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import player
-from map import Room, get_room
-from items import *
+from map import Room, generate_map
 from gameparser import *
 
 
@@ -13,13 +12,23 @@ def list_of_items(items):
     return new_string
 
 
-def print_room_items(room):
+def print_room_items(room : Room):
     # If there are no items, no output
-    if len(room["items"]) == 0:
+    if len(room.items) == 0:
         return
 
-    print(f"There is {list_of_items(room["items"])} here.")
+    print(f"There is {list_of_items(room.items)} here.")
     print()
+
+# Prints information about the given room
+def print_room(room : Room):
+
+    print()
+    print(room.name.upper())
+    print()
+    print(room.description)
+    print()
+    print_room_items(room) # Displays items in room
 
 
 def print_inventory_items(items):
@@ -31,7 +40,7 @@ def print_inventory_items(items):
 
 # Checks if the exit is valid in the current room
 def is_valid_exit(direction):
-    return direction in get_room(player.current_room_position[0], [1]).exits
+    return direction in player.get_current_room().exits
 
 
 def execute_go(direction):
@@ -48,7 +57,7 @@ def execute_go(direction):
         player.previous_room_position = player.current_room_position
         player.current_room_position = new_pos
 
-        room = get_room(player.current_room_position)
+        room = player.get_current_room()
         print(f"You are going to {room.name}.")
     else:
         print("You cannot go there.")
@@ -108,7 +117,7 @@ def execute_command(command):
 
 def menu(exits, room_items, inv_items):
 # Display menu
-    print_menu(exits, room_items, inv_items)
+    #print_menu(exits, room_items, inv_items)
 
     # Read player's input
     user_input = input("> ")
@@ -121,6 +130,10 @@ def menu(exits, room_items, inv_items):
 
 # This is the entry point of our program
 def main():
+
+    # Startup Logic
+    generate_map()
+
 
     # Main game loop
     while True:
