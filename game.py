@@ -55,7 +55,7 @@ def execute_go(direction):
 
 
 def execute_take(item_id):
-    for item in get_room(player.current_room_position).items:
+    for item in player.get_current_room().items:
         if item["id"] == item_id:
 
             if player.inventory_mass() + item["mass"] > player.max_mass:
@@ -63,7 +63,7 @@ def execute_take(item_id):
                 print(f"Current Inventory Mass: {player.inventory_mass()}g")
                 print(f"Mass of {item["name"]}: {item["mass"]}g")
                 return
-            player.current_room["items"].pop(player.current_room["items"].index(item))
+            player.get_current_room().items.pop(player.get_current_room().items.index(item))
             player.inventory.append(item)
             print(f"You picked up {item["name"]}.")
             return
@@ -74,7 +74,7 @@ def execute_drop(item_id):
     for item in player.inventory:
         if item["id"] == item_id:
             player.inventory.pop(player.inventory.index(item))
-            player.current_room["items"].append(item)
+            player.get_current_room().items.append(item)
             print(f"You dropped {item["name"]}.")
             return
     print("You cannot drop that.")
