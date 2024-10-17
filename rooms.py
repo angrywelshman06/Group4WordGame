@@ -1,3 +1,17 @@
+from items import *
+
+# Class for cleanly storing and accessing rooms
+class Room:
+    def __init__(self):
+        self.name = None
+        self.description = None
+        self.items = None
+        self.enemies = None # Might be needed??
+        self.exits = None # []
+
+# Special rooms
+# Add all to special rooms list at bottom of file
+
 room_reception = {
     "name": "Reception",
 
@@ -28,19 +42,6 @@ ignore you. To the north is the reception.""",
     "items": []
 }
 
-room_tutor = {
-    "name": "your personal tutor's office",
-
-    "description":
-    """You are in your personal tutor's office. He intently
-stares at his huge monitor, ignoring you completely.
-On the desk you notice a cup of coffee and an empty
-pack of biscuits. The reception is to the west.""",
-
-
-
-    "items": []
-}
 
 room_parking = {
     "name": "the parking lot",
@@ -68,10 +69,26 @@ Queen's Buildings.""",
     "items": [item_pen]
 }
 
-rooms = {
-    "Reception": room_reception,
-    "Admins": room_admins,
-    "Tutor": room_tutor,
-    "Parking": room_parking,
-    "Office": room_office
+
+# Generic rooms
+# Add all to generic rooms list at bottom of file
+
+room_tutor = {
+    "name": "your personal tutor's office",
+
+    "description":
+    """You are in your personal tutor's office. He intently
+stares at his huge monitor, ignoring you completely.
+On the desk you notice a cup of coffee and an empty
+pack of biscuits. The reception is to the west.""",
+
+
+
+    "items": []
 }
+
+# Add special rooms here (replace exercise6 rooms)
+special_rooms = [room_admins, room_office, room_parking, room_reception]
+
+# Rooms that will be used as filler, will have no special events and may have randomly generated loot/enemies
+generic_rooms = [room_tutor]

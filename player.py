@@ -1,8 +1,8 @@
+import map
 from items import *
-from map import rooms
 
 # Starting inventory
-inventory = [item_id, item_laptop, item_money]
+inventory = [item_id_card, item_laptop, item_money]
 
 # Current maximum capacity (in grams)
 max_mass = 10000
@@ -14,5 +14,12 @@ def inventory_mass():
         mass += item["mass"]
     return mass
 
-# Start game at the reception
-current_room = rooms["Reception"]
+#Stores current room position as an array
+current_room_position = map.starting_position
+
+# Stores the previous room position as an array
+# Used for fleeing enemy combat
+previous_room_position = None
+
+def get_current_room():
+    return map.get_room(current_room_position[0], current_room_position[1])

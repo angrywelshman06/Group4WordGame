@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import player
-from map import Room
-from items import *
+from map import Room, generate_map
 from gameparser import *
 
 
@@ -13,13 +12,23 @@ def list_of_items(items):
     return new_string
 
 
-def print_room_items(room):
+def print_room_items(room : Room):
     # If there are no items, no output
-    if len(room["items"]) == 0:
+    if len(room.items) == 0:
         return
 
-    print(f"There is {list_of_items(room["items"])} here.")
+    print(f"There is {list_of_items(room.items)} here.")
     print()
+
+# Prints information about the given room
+def print_room(room : Room):
+
+    print()
+    print(room.name.upper())
+    print()
+    print(room.description)
+    print()
+    print_room_items(room) # Displays items in room
 
 
 def print_inventory_items(items):
@@ -29,20 +38,33 @@ def print_inventory_items(items):
     print(f"You have {list_of_items(items)}.")
     print()
 
-def is_valid_exit(exits, chosen_exit): # used to check if the exit is valid
-    return chosen_exit in exits
+# Checks if the exit is valid in the current room
+def is_valid_exit(direction):
+    return direction in player.get_current_room().exits
 
 
 def execute_go(direction):
-    if is_valid_exit(player.current_room["exits"], direction):
-        player.current_room = move(player.current_room["exits"], direction)
-        print(f"You are going to {player.current_room["name"]}.")
+    if is_valid_exit(direction):
+        new_pos = player.current_room_position
+
+        #Translating direction into vector movement
+        match direction:
+            case "north" : new_pos[1] += 1
+            case "east" : new_pos[0] += 1
+            case "south" : new_pos[1] -= 1
+            case "west" : new_pos[0] -= 1
+
+        player.previous_room_position = player.current_room_position
+        player.current_room_position = new_pos
+
+        room = player.get_current_room()
+        print(f"You are going to {room.name}.")
     else:
         print("You cannot go there.")
 
 
 def execute_take(item_id):
-    for item in player.current_room["items"]:
+    for item in player.get_current_room().items:
         if item["id"] == item_id:
 
             if player.inventory_mass() + item["mass"] > player.max_mass:
@@ -50,7 +72,7 @@ def execute_take(item_id):
                 print(f"Current Inventory Mass: {player.inventory_mass()}g")
                 print(f"Mass of {item["name"]}: {item["mass"]}g")
                 return
-            player.current_room["items"].pop(player.current_room["items"].index(item))
+            player.get_current_room().items.pop(player.get_current_room().items.index(item))
             player.inventory.append(item)
             print(f"You picked up {item["name"]}.")
             return
@@ -61,7 +83,7 @@ def execute_drop(item_id):
     for item in player.inventory:
         if item["id"] == item_id:
             player.inventory.pop(player.inventory.index(item))
-            player.current_room["items"].append(item)
+            player.get_current_room().items.append(item)
             print(f"You dropped {item["name"]}.")
             return
     print("You cannot drop that.")
@@ -95,7 +117,7 @@ def execute_command(command):
 
 def menu(exits, room_items, inv_items):
 # Display menu
-    print_menu(exits, room_items, inv_items)
+    #print_menu(exits, room_items, inv_items)
 
     # Read player's input
     user_input = input("> ")
@@ -106,23 +128,23 @@ def menu(exits, room_items, inv_items):
     return normalised_user_input
 
 
-def move(exits, direction): #needs to be changed to be used with the matrix in terms of navigating with the x and y coordinates
-    pass
-
-
 # This is the entry point of our program
 def main():
+
+    # Startup Logic
+    generate_map()
+
 
     # Main game loop
     while True:
         # Display game status (room description, inventory etc.)
-        print_room(player.current_room)
+        print_room(player.get_current_room())
         print_inventory_items(player.inventory)
         print(f"Current Inventory Mass: {player.inventory_mass()}g")
         print()
 
         # Show the menu with possible actions and ask the player
-        command = menu(player.current_room["exits"], player.current_room["items"], player.inventory)
+        command = menu(player.get_current_room().exits, player.get_current_room().items, player.inventory)
 
         # Execute the player's command
         execute_command(command)
