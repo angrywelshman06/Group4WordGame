@@ -46,20 +46,37 @@ def is_valid_exit(direction):
 
 def execute_go(direction):
     if is_valid_exit(direction):
-        new_pos = player.current_room_position
+        new_pos = player.current_room_position[:]
 
-        #Translating direction into vector movement
+        # Translating direction into vector movement
         match direction:
-            case "north" : new_pos[1] -= 1
-            case "east" : new_pos[0] += 1
-            case "south" : new_pos[1] += 1
-            case "west" : new_pos[0] -= 1
+            case "north": new_pos[1] -= 1
+            case "east": new_pos[0] += 1
+            case "south": new_pos[1] += 1
+            case "west": new_pos[0] -= 1
+
+        # Ensure the new room has an exit back to the previous room
+        current_room = player.get_current_room()
+        new_room = get_room(new_pos[0], new_pos[1])
+
+        if new_room is None:
+            new_room = Room()
+            map_matrix[new_pos[1]][new_pos[0]] = new_room
+
+            # Generate doors for the new room
+            new_room.exits = door_assigner(len(map_matrix), len(map_matrix[0]), new_pos[0], new_pos[1])
+
+            # Ensure the new room has an exit back to the current room
+            opposite_direction = {"north": "south", "south": "north", "east": "west", "west": "east"}
+            new_room.exits[opposite_direction[direction]] = current_room
+
+        # Update the current room's exits
+        current_room.exits[direction] = new_room
 
         player.previous_room_position = player.current_room_position
         player.current_room_position = new_pos
 
-        room = player.get_current_room()
-        print(f"You are going to {room.name}.")
+        print(f"You are going to {new_room.name}.")
     else:
         print("You cannot go there.")
 

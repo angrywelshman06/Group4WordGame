@@ -52,7 +52,7 @@ def generate_map():
 
 
 def door_assigner(room_num, turns_num, x, y):
-    doors = []
+    doors = {}
     directions = ["north", "south", "east", "west"]
     distances = dist_from_edge(x, y)
 
@@ -68,18 +68,13 @@ def door_assigner(room_num, turns_num, x, y):
     total_weight = sum(weights.values())
     probabilities = {direction: weight / total_weight for direction, weight in weights.items()}
 
-    num_doors = random.randint(0, 3)
+    num_doors = random.randint(1, 3)  # Ensure at least one door
     for _ in range(num_doors):
         door_direct = random.choices(directions, weights=[probabilities[dir] for dir in directions])[0]
-        doors.append(door_direct)
+        doors[door_direct] = None  # Initialize with None, will be updated when the room is created
 
     return doors
         
-        
-        
-
-def move(x, y, direction): #This function takes the coordinates of the player and the direction that the player wants to move in and returns the new coordinates of the player after the move.
-    pass #This function will be used to move the player around the map based on the direction inputted by the user
 
 def dist_from_start(x, y): #This function takes the coordinates of the player and returns the distance from the starting position of the player
     starting = starting_position
