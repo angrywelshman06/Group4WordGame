@@ -154,6 +154,7 @@ def main():
         print()
 
         print(current_room_position)
+        print(player.get_current_room().exits)
 
         # Show the menu with possible actions and ask the player
         command = menu(player.get_current_room().exits, player.get_current_room().items, player.inventory)
