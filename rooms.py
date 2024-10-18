@@ -7,7 +7,7 @@ class Room:
         self.description = None
         self.items = []
         self.enemies = [] # Might be needed??
-        self.exits = {}
+        self.exits = {} # A SET
 
 # Special rooms
 # Add all to special rooms list at bottom of file

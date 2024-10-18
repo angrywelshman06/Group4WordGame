@@ -52,7 +52,7 @@ def generate_map():
 
 
 def door_assigner(room_num, turns_num, x, y):
-    doors = {}
+    doors = {} # A SET
     directions = ["north", "south", "east", "west"]
     distances = dist_from_edge(x, y)
 
