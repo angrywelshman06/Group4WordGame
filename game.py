@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import player
-from map import Room, generate_map
+from map import Room, generate_map, get_room, map_matrix, door_assigner
 from gameparser import *
 from player import current_room_position
 
@@ -55,7 +55,6 @@ def execute_go(direction):
             case "south": new_pos[1] += 1
             case "west": new_pos[0] -= 1
 
-        # Ensure the new room has an exit back to the previous room
         current_room = player.get_current_room()
         new_room = get_room(new_pos[0], new_pos[1])
 
