@@ -51,14 +51,28 @@ def generate_map():
                 map_matrix[y][x] = room
 
 
+def door_assigner(room_num, turns_num, x, y):
+    doors = []
+    directions = ["north", "south", "east", "west"]
+    distances = dist_from_edge(x, y)
 
-def door_assigner(room_num, turns_num): #This function assigns the random door directions to each of the numbered rooms in the matrix. The number of doors is also randomly assigned but the directions available will change based on the number of turns the player has taken and their distance from the edge of the map.
-    doors=[]
+    # Calculate weights based on distances and number of turns
+    weights = {
+        "north": distances["north"] + turns_num,
+        "south": distances["south"] + turns_num,
+        "east": distances["east"] + turns_num,
+        "west": distances["west"] + turns_num
+    }
+
+    # Normalize weights to create probabilities
+    total_weight = sum(weights.values())
+    probabilities = {direction: weight / total_weight for direction, weight in weights.items()}
+
     num_doors = random.randint(0, 3)
-    directions=["north","south","east","west"]
-    for i in range(num_doors):
-        door_direct = random.randint(0, 3)
-        doors.append(directions[door_direct])
+    for _ in range(num_doors):
+        door_direct = random.choices(directions, weights=[probabilities[dir] for dir in directions])[0]
+        doors.append(door_direct)
+
     return doors
         
         
