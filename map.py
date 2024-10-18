@@ -31,6 +31,7 @@ def generate_map():
         room.name = sr["name"]
         room.description = sr["description"]
         room.items = sr["items"]
+        room.exits = door_assigner(None, None)
         # Add exit dictionary (or however we are storing it) here
 
         while True:
@@ -48,6 +49,7 @@ def generate_map():
                 room.name = random_room["name"]
                 room.description = random_room["description"]
                 room.items = random_room["items"]
+                room.exits = door_assigner(None, None)
                 map_matrix[y][x] = room
 
 
