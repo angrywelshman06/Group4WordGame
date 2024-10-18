@@ -7,7 +7,7 @@ class Room:
         self.description = None
         self.items = []
         self.enemies = [] # Might be needed??
-        self.exits = []
+        self.exits = {}
 
 # Special rooms
 # Add all to special rooms list at bottom of file
@@ -87,7 +87,7 @@ pack of biscuits. The reception is to the west.""",
     "items": []
 }
 
-# Add special rooms here (replace exercise6 rooms)
+# Add special rooms here (replace exercise 6 rooms)
 special_rooms = [room_admins, room_office, room_parking, room_reception]
 
 # Rooms that will be used as filler, will have no special events and may have randomly generated loot/enemies
