@@ -52,7 +52,7 @@ def generate_map():
 
 
 
-def door_assigner(room_num): #This function assigns the random door directions to each of the numbered doors stored in the matrix.
+def door_assigner(room_num, turns_num): #This function assigns the random door directions to each of the numbered rooms in the matrix. The number of doors is also randomly assigned but the directions available will change based on the number of turns the player has taken and their distance from the edge of the map.
     doors=[]
     num_doors = random.randint(0, 3)
     directions=["north","south","east","west"]
