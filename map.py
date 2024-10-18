@@ -24,24 +24,20 @@ room objects, and the 1 being the starting point (and tutorial room)
 starting_position = [4, 4]
 
 # Main function to generate the rooms in the map_matrix
-# Update the generate_map function to keep track of the previous room's coordinates
 def generate_map():
-    previous_coords = None
     for sr in special_rooms:
-        print(f"Generating {sr['name']}.")
+        print(f"Generating {sr["name"]}.")
         room = Room()
         room.name = sr["name"]
         room.description = sr["description"]
         room.items = sr["items"]
+        # Add exit dictionary (or however we are storing it) here
 
         while True:
             x_coord = random.randint(0, 9)
             y_coord = random.randint(0, 9)
             if type(map_matrix[x_coord][y_coord]) != type(Room()):
                 map_matrix[x_coord][y_coord] = room
-                if previous_coords:
-                    add_exit(previous_coords, (x_coord, y_coord))
-                previous_coords = (x_coord, y_coord)
                 break
 
     for y in range(len(map_matrix)):
@@ -53,57 +49,11 @@ def generate_map():
                 room.description = random_room["description"]
                 room.items = random_room["items"]
                 map_matrix[y][x] = room
-                if previous_coords:
-                    add_exit(previous_coords, (x, y))
-                previous_coords = (x, y)
 
-# Function to add exits between rooms
-def add_exit(from_coords, to_coords):
-    from_x, from_y = from_coords
-    to_x, to_y = to_coords
-
-    if from_x < to_x:
-        map_matrix[from_y][from_x].exits.append("east")
-        map_matrix[to_y][to_x].exits.append("west")
-    elif from_x > to_x:
-        map_matrix[from_y][from_x].exits.append("west")
-        map_matrix[to_y][to_x].exits.append("east")
-    elif from_y < to_y:
-        map_matrix[from_y][from_x].exits.append("south")
-        map_matrix[to_y][to_x].exits.append("north")
-    elif from_y > to_y:
-        map_matrix[from_y][from_x].exits.append("north")
-        map_matrix[to_y][to_x].exits.append("south")
-
-# Update the door_assigner function to use the dist_from_edge function
-def door_assigner(room_num, turns_num, x, y):
-    doors = []
-    directions = ["north", "south", "east", "west"]
-    distances = dist_from_edge(x, y)
-
-    # Calculate weights based on distances and number of turns
-    weights = {
-        "north": distances["north"] + turns_num,
-        "south": distances["south"] + turns_num,
-        "east": distances["east"] + turns_num,
-        "west": distances["west"] + turns_num
-    }
-
-    # Normalize weights to create probabilities
-    total_weight = sum(weights.values())
-    probabilities = {direction: weight / total_weight for direction, weight in weights.items()}
-
-    num_doors = random.randint(0, 3)
-    for _ in range(num_doors):
-        door_direct = random.choices(directions, weights=[probabilities[dir] for dir in directions])[0]
-        doors.append(door_direct)
-
-    return doors
 
 
 def door_assigner(room_num, turns_num): #This function assigns the random door directions to each of the numbered rooms in the matrix. The number of doors is also randomly assigned but the directions available will change based on the number of turns the player has taken and their distance from the edge of the map.
     doors=[]
-    #u
     num_doors = random.randint(0, 3)
     directions=["north","south","east","west"]
     for i in range(num_doors):
