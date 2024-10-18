@@ -68,11 +68,14 @@ def dist_from_start(x, y): #This function takes the coordinates of the player an
 def dist_from_edge(x, y) -> {}:
     return {
         "north" : y,
-        "east" : len(map_matrix[y]) - x,
-        "south" : len(map_matrix) - y,
+        "east" : len(map_matrix[y]) - 1 - x,
+        "south" : len(map_matrix) - 1 - y,
         "west" : x
     }
 
 # Gets the room based off its matrix position coordinates
 def get_room(x, y) -> Room:
+    distances = dist_from_edge(x, y)
+    for direction in distances:
+        if distances[direction] < 0: return None # No room (escaped)
     return map_matrix[y][x]
