@@ -142,6 +142,10 @@ def main():
         # Can remove once formatted
         print("=" * 40)
 
+        if player.get_current_room() is None:
+            pass # Game completed
+
+
         # Display game status (room description, inventory etc.)
         print_room(player.get_current_room())
 
