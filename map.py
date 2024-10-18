@@ -52,9 +52,17 @@ def generate_map():
 
 
 
-
 def door_assigner(room_num): #This function assigns the random door directions to each of the numbered doors stored in the matrix.
-    pass
+    doors=[]
+    num_doors = random.randint(0, 3)
+    directions=["north","south","east","west"]
+    for i in range(num_doors):
+        door_direct = random.randint(0, 3)
+        doors.append(directions[door_direct])
+    return doors
+        
+        
+        
 
 def move(x, y, direction): #This function takes the coordinates of the player and the direction that the player wants to move in and returns the new coordinates of the player after the move.
     pass #This function will be used to move the player around the map based on the direction inputted by the user
