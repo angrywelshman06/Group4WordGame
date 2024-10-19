@@ -56,19 +56,21 @@ def print_frame_curses(framelist,win, args):
         for i in compare:
             if i > to_print:
                 to_print = i
-        win.addstr(z_char_color[to_print][0])
+        win.addstr(z_char_color[to_print][0], curses.color_pair(z_char_color[to_print][1]))
 
-def main(stdscr): ### WIP ### JUST FOR TESTING PURPOSES. If running from animator.py, uncomment line 8 in ani_sprites and comment out 7.
+def main(stdscr): ### WIP ### JUST FOR TESTING PURPOSES. If running from animator.py, uncomment line 8 in ani_sprites and comment out 7. Otherwise, vice-versa.
     stdscr.clear()
     display_win = curses.newwin(36, 110, 0, 0)
     display_win.clear()
     display_win.scrollok(1) # This helps to prevent a curses-related crash.
-    intro_1 = (display_win,fire,fire2,fire3,skyscraper,building1,heli,citybg,pulse, climbers, dudeontop, moon, outline)
-    intro_2 = (display_win,intro_male_body,intro_male_hair,intro_male_eyes,outline, bed, pillow)
-    run_animation_curses(*intro_1)
-    run_animation_curses(*intro_2)    
-    # print_stillshot_curses([22,3,10],stdscr, dude, backpillars, frontpillars) ## ([frames to print for each arg], curses window, unlimited args..) #b4 commit
-    print_stillshot_curses([22,3,10],display_win, dude, backpillars, frontpillars) ## ([frames to print for each arg], curses window, unlimited args..)
+    # curses.start_color()
+    curses_setcolors() # imported from ani_sprites.py
+    run_animation_curses(display_win,*intro_1)
+    run_animation_curses(display_win,*intro_2)    
+    # print_stillshot_curses([22,3,10],display_win, dude, backpillars, frontpillars) ## ([frames to print for each arg], curses window, unlimited args..) #b4 commit
+    # display_win.getch()
+    display_win.clear()
+    print_stillshot_curses([0,0,0,0,0,0,0],display_win, *room_tutorial) ## ([frames to print for each arg], curses window, unlimited args..)
     display_win.refresh()
     display_win.getch()
 
