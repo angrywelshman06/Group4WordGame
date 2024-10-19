@@ -61,3 +61,11 @@ def main(stdscr): ### WIP ### JUST FOR TESTING PURPOSES
 wrapper(main)
 
 clear()
+
+##### Prints a still frame. The list contains the frame of each argument you want to print. 22 - dude, 3 - backpillars, 10 - frontpillars
+##### There is a curses version of this a few lines up
+# print_stillshot([22,3,10], dude, backpillars, frontpillars)
+
+# while True:
+    #### Runs animation
+    # run_animation(fire,fire2,fire3,skyscraper,building1,heli,citybg,pulse, climbers, dudeontop, moon)
