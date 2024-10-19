@@ -57,12 +57,12 @@ def print_frame_curses(framelist,win, args):
             if i > to_print:
                 to_print = i
         win.addstr(z_char_color[to_print][0])
+        win.scrollok(1) # This helps to prevent a curses-related crash
 
 def main(stdscr): ### WIP ### JUST FOR TESTING PURPOSES. If running from animator.py, uncomment line 8 in ani_sprites and comment out 7.
     stdscr.clear()
     display_win = curses.newwin(36, 110, 0, 0)
     display_win.clear()
-    display_win.scrollok(1) # This helps to prevent a curses-related crash.
     intro_1 = (display_win,fire,fire2,fire3,skyscraper,building1,heli,citybg,pulse, climbers, dudeontop, moon, outline)
     intro_2 = (display_win,intro_male_body,intro_male_hair,intro_male_eyes,outline, bed, pillow)
     run_animation_curses(*intro_1)
