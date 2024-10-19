@@ -16,14 +16,7 @@ def init_screen(): # initialise the screen
     stdscreen.keypad(1)
 
     stdscreen.clear()
-
-    stdscreen.addstr("test string\n")
-    stdscreen.addstr("test string\n")
-    stdscreen.addstr("test string\n")
-
     stdscreen.refresh()
-
-    curses.napms(2000)
 
     global x
     global y
@@ -48,6 +41,8 @@ def init_screen(): # initialise the screen
 def close(): # return terminal to normal
     stdscreen.keypad(0)
     stdscreen.keypad(0)
+    stdscreen.clear()
+    stdscreen.refresh()
     echo()
     echo()
     echo()
@@ -60,9 +55,9 @@ def close(): # return terminal to normal
     print("\nwindow closed\n")
 
 def write(msg = "\n"):
-    art_pad.addstr("write called\n")
-    art_pad.refresh(0,0,0,0, y-1, int(x/2)-1)
-    curses.napms(1000)
+    #art_pad.addstr("write called\n")
+    #art_pad.refresh(0,0,0,0, y-1, int(x/2)-1)
+    #curses.napms(1000)
     text_pad.addstr(msg)
     try: 
         text_pad.refresh(text_pad_pos, 0, 0, int(x/2), y-1, x)

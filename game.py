@@ -132,42 +132,44 @@ def main():
 
         while True:
             cmd = ui.text_pad.getch() # wair for the user to press a key
-            #ui.art_pad.addstr(str(cmd)) # debug message
-            #ui.art_pad.addstr(chr(cmd))
-
-            #ui.write("message 1\n")
 
             if cmd == curses.KEY_DOWN: # scroll down
                 ui.text_pad_pos += 1
-                #ui.art_pad.addstr("\n scroll down\n")
                 
             elif cmd == curses.KEY_UP: # scroll up
                 ui.text_pad_pos -= 1
-                #ui.art_pad.addstr("\n scroll up\n")
-                #ui.write(main.dude)
                 
             elif cmd == 27: # escape key # stop program
                 close()
                 return
             
+            elif cmd == curses.KEY_BACKSPACE: # backspace # delete last char
+                y, x = ui.text_pad.getyx()
+                try:
+                    ui.text_pad.move(y, x-1)
+                    ui.text_pad.delch()
+                    user_input = user_input[:-1]
+                except: # do nothing if cursor tries to move out of bounds of the pad
+                    pass
+
             elif cmd == 10 or cmd == curses.KEY_ENTER: # enter key
-                #ui.art_pad.addstr("\nEnter pressed\n")
                 ui.text_pad.addstr("\n")
-                #ui.write(main.dude)
+                user_input = ""
+
+                ui.art_pad.clear()
                 animator.print_stillshot_curses([22,3,10],ui.art_pad, animator.dude, animator.backpillars, animator.frontpillars)
                 
-                curses.flushinp()
-
             else: # write a letter to text_pad
                 ui.text_pad.addch(cmd)
-                curses.flushinp()
+                user_input += chr(cmd)
 
             #refresh the pads
             ui.art_pad.refresh(0,0,0,0, ui.y-1, int(ui.x/2)-1)
             try: 
                 ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x)
-            except:
+            except: #do nothing when trying to scroll past the available screen size
                 pass
+
     except Exception as e: # if an error occurs return terminal to normal 
         close()
         print("exception occured\n")
