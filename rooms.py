@@ -7,7 +7,7 @@ class Room:
         self.description = None
         self.items = []
         self.enemies = [] # Might be needed??
-        self.exits = {} # A SET
+        self.exits = set()
 
 # Special rooms
 # Add all to special rooms list at bottom of file
@@ -85,6 +85,20 @@ pack of biscuits. The reception is to the west.""",
 
 
     "items": []
+}
+
+# Tutorial room
+# Do not add to either list, this has been implemented elsewhere
+room_tutorial = {
+    "name": "ROOM",
+
+    "description":
+    """TUTORIAL ROOM DESCRIPTION""",
+
+
+
+    "items": []
+
 }
 
 # Add special rooms here (replace exercise 6 rooms)
