@@ -13,7 +13,7 @@ class spritesheet():
     def gather_framelist(self):
         frameslist = []
         for frame in range(1,self.frames+1):
-            path = os.path.join("{0}".format(self.path), "txt", "ascii-art ({0}).txt".format(frame)) ## os.path.join works regardless of OS
+            path = os.path.join("modularanimation","{0}".format(self.path), "txt", "ascii-art ({0}).txt".format(frame)) ## os.path.join works regardless of OS
             file = open(path, "r", encoding="utf-8")
             frameslist.append(file.read())
             file.close()
@@ -145,13 +145,13 @@ def print_frame_curses(framelist,win, args):
                 to_print = i
         # print(z_char_color[to_print][1]+z_char_color[to_print][0], end="") # color + char
         win.addstr(z_char_color[to_print][0])
-        win.scrollok(1) # This helps to prevent a curses-related crash
+        #win.scrollok(1) # This helps to prevent a curses-related crash
 
 def main(stdscr): ### WIP
     stdscr.clear()
     display_win = curses.newwin(36, 110, 5, 5)
     display_win.clear()
-    print_stillshot_curses([22,3,10],display_win, dude, backpillars, frontpillars) ## ([frames to print for each arg], curses window, unlimited args..)
+    print_stillshot_curses([22,3,10],stdscr, dude, backpillars, frontpillars) ## ([frames to print for each arg], curses window, unlimited args..)
     display_win.getch()
 
 wrapper(main)

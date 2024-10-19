@@ -5,6 +5,7 @@ import ui
 from map import Room
 from items import *
 from gameparser import *
+from modularanimation import animator
 
 
 def list_of_items(items):
@@ -28,8 +29,8 @@ def print_inventory_items(items):
     if len(items) == 0:
         return
 
-    print(f"You have {list_of_items(items)}.")
-    print()
+    ui.write(f"You have {list_of_items(items)}.")
+    ui.write()
 
 def is_valid_exit(exits, chosen_exit): # used to check if the exit is valid
     return chosen_exit in exits
@@ -114,45 +115,63 @@ def move(exits, direction): #needs to be changed to be used with the matrix in t
 
 # This is the entry point of our program
 def main():
-
+    #initialise curses screen
     init_screen()
+    #refresh pads
+    ui.art_pad.refresh(0,0,0,0, ui.y-1, int(ui.x/2)-1)
+    ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x)
 
     global user_input
     user_input = ""
 
     try:
+        #print_room(player.current_room)
+        #print_inventory_items(player.inventory)
+        #ui.write(f"Current Inventory Mass: {player.inventory_mass()}g")
+        #ui.write()
+
         while True:
             cmd = ui.text_pad.getch() # wair for the user to press a key
-            # ui.art_pad.addstr(str(cmd)) # debug message
+            #ui.art_pad.addstr(str(cmd)) # debug message
+            #ui.art_pad.addstr(chr(cmd))
+
+            #ui.write("message 1\n")
 
             if cmd == curses.KEY_DOWN: # scroll down
                 ui.text_pad_pos += 1
-                ui.art_pad.addstr("\n scroll down\n")
+                #ui.art_pad.addstr("\n scroll down\n")
                 
             elif cmd == curses.KEY_UP: # scroll up
                 ui.text_pad_pos -= 1
-                ui.art_pad.addstr("\n scroll up\n")
+                #ui.art_pad.addstr("\n scroll up\n")
+                #ui.write(main.dude)
                 
             elif cmd == 27: # escape key # stop program
                 close()
                 return
             
-            elif cmd == 10: # enter key
-                ui.art_pad.addstr("\nEnter pressed\n")
+            elif cmd == 10 or cmd == curses.KEY_ENTER: # enter key
+                #ui.art_pad.addstr("\nEnter pressed\n")
                 ui.text_pad.addstr("\n")
+                #ui.write(main.dude)
+                animator.print_stillshot_curses([22,3,10],ui.art_pad, animator.dude, animator.backpillars, animator.frontpillars)
+                
                 curses.flushinp()
 
             else: # write a letter to text_pad
                 ui.text_pad.addch(cmd)
                 curses.flushinp()
 
+            #refresh the pads
             ui.art_pad.refresh(0,0,0,0, ui.y-1, int(ui.x/2)-1)
-            try:
+            try: 
                 ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x)
             except:
                 pass
-    except: # if an error occurs return terminal to normal 
+    except Exception as e: # if an error occurs return terminal to normal 
         close()
+        print("exception occured\n")
+        print(e)
         return
 
         

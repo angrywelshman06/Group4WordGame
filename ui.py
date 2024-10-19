@@ -7,12 +7,9 @@ from curses import panel
 x = 0
 y = 0
 
-def init_screen():
+def init_screen(): # initialise the screen
     global stdscreen
     stdscreen = curses.initscr()
-
-    #curses.cbreak()
-    #curses.noecho()
 
     noecho()
     cbreak()
@@ -35,7 +32,7 @@ def init_screen():
 
     global art_pad
 
-    art_pad = curses.newpad(y, int(x/2))
+    art_pad = curses.newpad(y, x)
     art_pad.scrollok(True)
 
     art_pad.addstr("init!")
@@ -48,7 +45,7 @@ def init_screen():
     text_pad.scrollok(True)
     text_pad_pos = 0
 
-def close():
+def close(): # return terminal to normal
     stdscreen.keypad(0)
     stdscreen.keypad(0)
     echo()
@@ -63,7 +60,15 @@ def close():
     print("\nwindow closed\n")
 
 def write(msg = "\n"):
+    art_pad.addstr("write called\n")
+    art_pad.refresh(0,0,0,0, y-1, int(x/2)-1)
+    curses.napms(1000)
     text_pad.addstr(msg)
+    try: 
+        text_pad.refresh(text_pad_pos, 0, 0, int(x/2), y-1, x)
+    except:
+        pass
+
 
 
 
