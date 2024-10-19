@@ -18,14 +18,25 @@ def adjust_to_max(list_framelists, max_frame): # adjusts to max frame
         
 #### CURSES #############################################################################
 #### WIP
+def run_animation_curses(win, *args): #First arg should be edge/bg.
+    max_frame = max(args, key=attrgetter('frames')).frames
+    list_framelists = [i.frameslist for i in args]
+    list_framelists = adjust_to_max(list_framelists, max_frame)
+    for framelist in zip(*list_framelists): # * unpacks list_framelists into n different lists (objs)
+        print_frame_curses(framelist,win,args)
+        win.move(0,0)
+        win.refresh()
+        time.sleep(0.05)
+        
 def print_stillshot_curses(framenumlist,win, *args): # [1,4], dude, backpillars
     max_frame = max(args, key=attrgetter('frames')).frames
     list_framelists = [i.frameslist for i in args]
     list_framelists = adjust_to_max(list_framelists, max_frame)
     frames_to_print = []
+    counter = 0
     for i in range(len(args)):
-        frames_to_print.append(list_framelists[i][framenumlist[0]])
-        del framenumlist[0]
+        frames_to_print.append(list_framelists[i][framenumlist[counter]])
+        counter += 1
     for framelist in zip(*frames_to_print): # * unpacks list_framelists into n different lists (objs)
         print_frame_curses(framelist,win,args)
         
@@ -45,14 +56,17 @@ def print_frame_curses(framelist,win, args):
         for i in compare:
             if i > to_print:
                 to_print = i
-        # print(z_char_color[to_print][1]+z_char_color[to_print][0], end="") # color + char
         win.addstr(z_char_color[to_print][0])
-        win.scrollok(1) # This helps to prevent a curses-related crash
 
-def main(stdscr): ### WIP ### JUST FOR TESTING PURPOSES
+def main(stdscr): ### WIP ### JUST FOR TESTING PURPOSES. If running from animator.py, uncomment line 8 in ani_sprites and comment out 7.
     stdscr.clear()
-    display_win = curses.newwin(36, 110, 5, 5)
+    display_win = curses.newwin(36, 110, 0, 0)
     display_win.clear()
+    display_win.scrollok(1) # This helps to prevent a curses-related crash.
+    intro_1 = (display_win,fire,fire2,fire3,skyscraper,building1,heli,citybg,pulse, climbers, dudeontop, moon, outline)
+    intro_2 = (display_win,intro_male_body,intro_male_hair,intro_male_eyes,outline, bed, pillow)
+    run_animation_curses(*intro_1)
+    run_animation_curses(*intro_2)    
     # print_stillshot_curses([22,3,10],stdscr, dude, backpillars, frontpillars) ## ([frames to print for each arg], curses window, unlimited args..) #b4 commit
     print_stillshot_curses([22,3,10],display_win, dude, backpillars, frontpillars) ## ([frames to print for each arg], curses window, unlimited args..)
     display_win.refresh()
