@@ -52,7 +52,7 @@ def generate_map():
 
 
 def door_assigner(room_num, turns_num, x, y):
-    doors = {} # A SET
+    doors = set()
     directions = ["north", "south", "east", "west"]
     distances = dist_from_edge(x, y)
 
@@ -71,7 +71,7 @@ def door_assigner(room_num, turns_num, x, y):
     num_doors = random.randint(1, 3)  # Ensure at least one door
     for _ in range(num_doors):
         door_direct = random.choices(directions, weights=[probabilities[dir] for dir in directions])[0]
-        doors[door_direct] = None  # Initialize with None, will be updated when the room is created
+        doors.add(door_direct)
 
     return doors
         
