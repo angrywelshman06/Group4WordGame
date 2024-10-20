@@ -1,4 +1,5 @@
 import random
+import rooms
 from rooms import special_rooms, Room, generic_rooms
 
 map_matrix = [[None for x in range(10)] for y in range(10)]
@@ -25,21 +26,32 @@ starting_position = [4, 4]
 
 # Main function to generate the rooms in the map_matrix
 def generate_map():
+
+    # Add in tutorial room
+    tutorial_room = Room()
+    tutorial_room.name = rooms.room_tutorial["name"]
+    tutorial_room.description = rooms.room_tutorial["description"]
+    tutorial_room.items = rooms.room_tutorial["items"]
+    tutorial_room.exits = {"north"}
+    map_matrix[starting_position[0]][starting_position[1]] = tutorial_room
+
+    # Add all special rooms
     for sr in special_rooms:
         print(f"Generating {sr["name"]}.")
         room = Room()
         room.name = sr["name"]
         room.description = sr["description"]
         room.items = sr["items"]
-        # Add exit dictionary (or however we are storing it) here
 
+        # Finding empty location
         while True:
             x_coord = random.randint(0, 9)
             y_coord = random.randint(0, 9)
-            if type(map_matrix[x_coord][y_coord]) != type(Room()):
+            if map_matrix[x_coord][y_coord] is None:
                 map_matrix[x_coord][y_coord] = room
                 break
 
+    # Add all generic rooms
     for y in range(len(map_matrix)):
         for x in range(len(map_matrix[y])):
             if map_matrix[y][x] is None:
