@@ -65,12 +65,12 @@ def main(stdscr): ### WIP ### JUST FOR TESTING PURPOSES. If running from animato
     display_win.scrollok(1) # This helps to prevent a curses-related crash.
     # curses.start_color()
     curses_setcolors() # imported from ani_sprites.py
-    run_animation_curses(display_win,*cutscene_1)
-    # run_animation_curses(display_win,*intro_2)    
+    run_animation_curses(display_win,*intro_1)
+    run_animation_curses(display_win,*intro_2)    
     # print_stillshot_curses([22,3,10],display_win, dude, backpillars, frontpillars) ## ([frames to print for each arg], curses window, unlimited args..) #b4 commit
     # display_win.getch()
     display_win.clear()
-    # print_stillshot_curses([0,0,0,0,0,0,0],display_win, *room_tutorial) ## ([frames to print for each arg], curses window, unlimited args..)
+    print_stillshot_curses([0,0,0,0,0,0,0],display_win, *room_tutorial) ## ([frames to print for each arg], curses window, unlimited args..)
     display_win.refresh()
     display_win.getch()
 

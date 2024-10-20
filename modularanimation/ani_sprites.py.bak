@@ -97,7 +97,7 @@ room_tutorial = (outline,bed, bg, cobweb, misc, scratches, wood)
 
 ##### Cutscene 1
 zombie_1 = spritesheet(("cutscene_1", "zombie"), 7, zlevel = 12, frames = 58)
-body_1 = spritesheet(("cutscene_1", "body_1"), 11, zlevel = 3, frames = 1)
+body_1 = spritesheet(("cutscene_1", "body_1"), 7, zlevel = 3, frames = 1)
 red_elements_1 = spritesheet(("cutscene_1", "red"), 8, zlevel = 15, frames = 58)
 red_elements_2 = spritesheet(("cutscene_1", "red2"), 8, zlevel = 4, frames = 1)
 cutscene_1 = (outline,zombie_1, red_elements_1, general_bg, body_1, red_elements_2)
