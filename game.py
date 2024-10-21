@@ -124,11 +124,9 @@ def main():
     global user_input
     user_input = ""
 
+    overflow = 0
+
     try:
-        #print_room(player.current_room)
-        #print_inventory_items(player.inventory)
-        #ui.write(f"Current Inventory Mass: {player.inventory_mass()}g")
-        #ui.write()
 
         while True:
             cmd = ui.text_pad.getch() # wair for the user to press a key
@@ -149,19 +147,34 @@ def main():
                     ui.text_pad.move(y, x-1)
                     ui.text_pad.delch()
                     user_input = user_input[:-1]
-                except: # do nothing if cursor tries to move out of bounds of the pad
-                    pass
+                except: # catch the cursor trying to move out of bounds
+                    if overflow != 0: # if line overflowed try to move up
+                        y_2, x_2 = ui.text_pad.getmaxyx()
+                        try:
+                            ui.text_pad.move(y-1, x_2-1)
+                            ui.text_pad.delch()
+                            user_input = user_input[:-1]
+                            overflow -= 1
+                        except:
+                            pass
 
             elif cmd == 10 or cmd == curses.KEY_ENTER: # enter key
                 ui.text_pad.addstr("\n")
-                user_input = ""
 
+                #do something with user input or something
+
+                user_input = ""
+                overflow = 0
                 ui.art_pad.clear()
-                animator.print_stillshot_curses([22,3,10],ui.art_pad, animator.dude, animator.backpillars, animator.frontpillars)
+                #animator.print_stillshot_curses([22,3,10],ui.art_pad, animator.dude, animator.backpillars, animator.frontpillars)
                 
             else: # write a letter to text_pad
+                y, x = ui.text_pad.getyx()
                 ui.text_pad.addch(cmd)
                 user_input += chr(cmd)
+                y_2, x_2 = ui.text_pad.getyx()
+                if y != y_2: # check if after adding char the cursor goes down a line
+                    overflow += 1
 
             #refresh the pads
             ui.art_pad.refresh(0,0,0,0, ui.y-1, int(ui.x/2)-1)
