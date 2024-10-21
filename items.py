@@ -117,7 +117,7 @@ item_handbook = {
 
 paracetamol = {
     "id": "paracetamol",
-    "name" : "paracetomol tablet",
+    "name" : "paracetamol tablet",
     "description" : "DESCRIPTION",
     "mass": 100,
 
