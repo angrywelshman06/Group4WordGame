@@ -14,6 +14,7 @@ class Consumable(Item):
     def consume(self):
         import player
         player.health += self.healing
+        print("Consumed")
 
 
 class Weapon(Item):
@@ -93,7 +94,7 @@ item_biscuits = {
 item_pen = {
     "id": "pen",
 
-    "name": "a pen",
+    "name": "pen",
 
     "description": "A basic ballpoint pen.",
 
@@ -118,6 +119,7 @@ paracetamol = {
     "id": "paracetamol",
     "name" : "paracetomol tablet",
     "description" : "DESCRIPTION",
+    "mass": 100,
 
     "type": Consumable,
 
