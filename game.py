@@ -1,11 +1,10 @@
 #!/usr/bin/python3
 import player
-from map import Room, generate_map, map_matrix, door_assigner
+from items import Consumable
 from gameparser import *
 from player import current_room_position
-from map import get_room, map_matrix, door_assigner
-import random
-from colorama import Fore, Back, Style
+from map import get_room, map_matrix, door_assigner, Room, generate_map
+from colorama import Fore
 import subprocess
 import sys
 
@@ -92,6 +91,10 @@ def execute_go(direction):
 def execute_consume(item_id):
     for item in player.inventory:
         if item.id == item_id:
+
+            if type(item) != Consumable:
+                break
+
             item.consume()
             print(f"You consumed a {item.name}.")
             player.inventory[item] -= 1
@@ -149,7 +152,7 @@ def execute_command(command):
         else:
             print("Drop what?")
 
-    elif command[0] in ["use", "consume"]:
+    elif command[0] in ["consume"]:
         if len(command) > 1:
             execute_consume(command[1])
 
