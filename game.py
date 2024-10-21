@@ -68,6 +68,10 @@ def execute_go(direction):
         new_room = get_room(new_pos[0], new_pos[1])
 
         if new_room is None:
+            print("Congratulations! You have escaped the matrix. You win!")
+            sys.exit()
+
+        if new_room is None:
             new_room = Room()
             map_matrix[new_pos[1]][new_pos[0]] = new_room
 
@@ -216,7 +220,7 @@ def main():
         print("=" * 40)
 
         if player.get_current_room() is None:
-            pass # Game completed
+            print("Congratulations you have escaped the matrix, you are free from Cardiff and for you the game is over.")
 
 
         # Display game status (room description, inventory etc.)
