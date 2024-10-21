@@ -46,7 +46,7 @@ def print_room(room: Room):
     if room.exits:
         print("Exits: " + ", ".join(room.exits))
     else:
-        print("No exits available.")
+        print("No exits available such a shame.")
 
 # Checks if the exit is valid in the current room
 def is_valid_exit(direction):
