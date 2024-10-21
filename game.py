@@ -2,7 +2,6 @@
 import player
 from items import Consumable
 from gameparser import *
-from player import current_room_position
 from map import get_room, map_matrix, door_assigner, Room, generate_map
 from colorama import Fore
 import subprocess
@@ -234,7 +233,7 @@ def main():
         print(f"Current Inventory Mass: {player.inventory_mass()}g")
         print()
 
-        print(current_room_position)
+        print(player.current_room_position)
         print(player.get_current_room().exits)
 
         # Show the menu with possible actions and ask the player
