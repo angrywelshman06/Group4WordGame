@@ -3,11 +3,12 @@ from items import *
 
 # Class for cleanly storing and accessing rooms
 class Room:
-    def __init__(self, room_dict : {}):
+    def __init__(self, room_dict: {}, position: tuple):
         self.name = room_dict["name"]
         self.description = room_dict["description"]
         self.enemies = []
         self.exits = set()
+        self.position = position
 
         self.items = []
         for item_dict in room_dict["items"]:
@@ -22,7 +23,6 @@ class Room:
                 case _:
                     item = Item(item_dict)
             self.items.append(item)
-
 
 
 
