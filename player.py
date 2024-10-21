@@ -25,7 +25,7 @@ def print_inventory_items():
     count = 0
     for item in inventory:
 
-        if count == len(inventory) - 1:
+        if count == len(inventory) - 1 and len(inventory) > 1:
             item_list += " and "
         elif count != 0:
             item_list += ", "
