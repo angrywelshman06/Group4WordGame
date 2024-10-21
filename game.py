@@ -3,7 +3,19 @@ import player
 from map import Room, generate_map, get_room, map_matrix, door_assigner
 from gameparser import *
 from player import current_room_position
+from map import get_room, map_matrix, door_assigner
+import random
+from colorama import Fore, Back, Style
+import subprocess
+import sys
 
+def install_requirements():
+    try:
+        import colorama
+    except ImportError:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+
+install_requirements()
 
 def list_of_items(items):
     new_string = ""
@@ -22,14 +34,19 @@ def print_room_items(room : Room):
     print()
 
 # Prints information about the given room
-def print_room(room : Room):
-
+def print_room(room: Room):
     print()
     print(room.name.upper())
     print()
     print(room.description)
     print()
-    print_room_items(room) # Displays items in room
+    print_room_items(room)  # Displays items in room
+
+    # Print exits
+    if room.exits:
+        print("Exits: " + ", ".join(room.exits))
+    else:
+        print("No exits available.")
 
 
 def print_inventory_items(items):
@@ -46,7 +63,7 @@ def is_valid_exit(direction):
 
 def execute_go(direction):
     if is_valid_exit(direction):
-        new_pos = player.current_room_position
+        new_pos = player.current_room_position[:]
 
         # Translating direction into vector movement
         match direction:
@@ -55,19 +72,28 @@ def execute_go(direction):
             case "south": new_pos[1] += 1
             case "west": new_pos[0] -= 1
 
-        # Update previous and current room positions
+        # Ensure the new room has an exit back to the previous room
+        current_room = player.get_current_room()
+        new_room = get_room(new_pos[0], new_pos[1])
+
+        if new_room is None:
+            new_room = Room()
+            map_matrix[new_pos[1]][new_pos[0]] = new_room
+
+            # Generate doors for the new room
+            new_room.exits = door_assigner(len(map_matrix), len(map_matrix[0]), new_pos[0], new_pos[1])
+
+            # Ensure the new room has an exit back to the current room
+            opposite_direction = {"north": "south", "south": "north", "east": "west", "west": "east"}
+            new_room.exits.add(opposite_direction[direction])
+
+        # Update the current room's exits
+        current_room.exits.add(direction)
+
         player.previous_room_position = player.current_room_position
         player.current_room_position = new_pos
 
-        # Generate doors for new room
-        if not len(player.get_current_room().exits): # If exits have not been generated
-            player.get_current_room().exits = door_assigner(len(map_matrix), len(map_matrix[0]), new_pos[0], new_pos[1])
-
-        # Ensure the new room has an exit back to the current room
-        opposite_direction = {"north": "south", "south": "north", "east": "west", "west": "east"}
-        player.get_current_room().exits.add(opposite_direction[direction])
-
-        print(f"You are going to {player.get_current_room().name}.")
+        print(f"You are going to {new_room.name}.")
     else:
         print("You cannot go there.")
 
@@ -193,5 +219,29 @@ def main():
 # '__main__' is the name of the scope in which top-level code executes.
 # See https://docs.python.org/3.4/library/__main__.html for explanation
 if __name__ == "__main__":
+    print(Fore.YELLOW + """\
+╔╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╗
+╠╬╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╬╣
+╠╣  _______     _______.  ______     ___      .______    _______        ╠╣
+╠╣ |   ____|   /       | /      |   /   \     |   _  \  |   ____|       ╠╣
+╠╣ |  |__     |   (----`|  ,----'  /  ^  \    |  |_)  | |  |__          ╠╣
+╠╣ |   __|     \   \    |  |      /  /_\  \   |   ___/  |   __|         ╠╣
+╠╣ |  |____.----)   |   |  `----./  _____  \  |  |      |  |____        ╠╣
+╠╣ |_______|_______/     \______/__/     \__\ | _|      |_______|       ╠╣
+╠╣  _______ .______        ______   .___  ___.                          ╠╣
+╠╣ |   ____||   _  \      /  __  \  |   \/   |                          ╠╣
+╠╣ |  |__   |  |_)  |    |  |  |  | |  \  /  |                          ╠╣
+╠╣ |   __|  |      /     |  |  |  | |  |\/|  |                          ╠╣
+╠╣ |  |     |  |\  \----.|  `--'  | |  |  |  |                          ╠╣
+╠╣ |__|     | _| `._____| \______/  |__|  |__|                          ╠╣
+╠╣   ______     ___      .______       _______   __   _______  _______  ╠╣
+╠╣  /      |   /   \     |   _  \     |       \ |  | |   ____||   ____| ╠╣
+╠╣ |  ,----'  /  ^  \    |  |_)  |    |  .--.  ||  | |  |__   |  |__    ╠╣
+╠╣ |  |      /  /_\  \   |      /     |  |  |  ||  | |   __|  |   __|   ╠╣
+╠╣ |  `----./  _____  \  |  |\  \----.|  '--'  ||  | |  |     |  |      ╠╣
+╠╣  \______/__/     \__\ | _| `._____||_______/ |__| |__|     |__|      ╠╣
+╠╬╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╬╣
+╚╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╝
+""")
     main()
 
