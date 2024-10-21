@@ -33,31 +33,43 @@ def generate_map():
     tutorial_room = Room(rooms.room_tutorial, tuple(starting_position))
     tutorial_room.exits = {"north"}
     map_matrix[starting_position[0]][starting_position[1]] = tutorial_room
-    used_rooms.add(rooms.room_tutorial)
+    used_rooms.add(rooms.room_tutorial['name'])
 
     # Add all special rooms
     for sr in special_rooms:
         print(f"Generating {sr['name']}.")
-        while True:
+        max_attempts = 100  # Maximum number of attempts to find a unique room
+        attempts = 0
+
+        while attempts < max_attempts:
             x_coord = random.randint(0, 9)
             y_coord = random.randint(0, 9)
-            if map_matrix[x_coord][y_coord] is None and sr not in used_rooms:
-                room = Room(sr, (x_coord, y_coord))
+            if map_matrix[x_coord][y_coord] is None and sr['name'] not in used_rooms:
+                if 'unique' in sr and sr['unique']:
+                    room = Room(sr, (x_coord, y_coord))
+                else:
+                    room_type = sr.get('type', 'generic')
+                    description = f"This is a {room_type} room with {random.choice(['a beautiful view', 'an eerie silence', 'a strange smell'])}."
+                    sr['description'] = description
+                    room = Room(sr, (x_coord, y_coord))
                 map_matrix[x_coord][y_coord] = room
-                used_rooms.add(sr)
+                used_rooms.add(sr['name'])
                 break
+            attempts += 1
+
+        if attempts == max_attempts:
+            print(f"Failed to place room {sr['name']} after {max_attempts} attempts.")
+            continue
 
     # Add all generic rooms
     for y in range(len(map_matrix)):
         for x in range(len(map_matrix[y])):
             if map_matrix[y][x] is None:
-                while True:
-                    random_room = generic_rooms[random.randint(0, len(generic_rooms) - 1)]
-                    if random_room not in used_rooms:
-                        room = Room(random_room, (x, y))
-                        map_matrix[y][x] = room
-                        used_rooms.add(random_room)
-                        break
+                room_name = f"Generic Room {x},{y}"
+                description = "This is a generic room."
+                generic_room = {'name': room_name, 'description': description, 'items': []}
+                room = Room(generic_room, (x, y))
+                map_matrix[y][x] = room
 
     # Generate doors for all rooms
     for y in range(len(map_matrix)):
@@ -67,6 +79,8 @@ def generate_map():
 
     # Ensure the map is a connected graph
     ensure_connected_graph()
+
+
 
 def ensure_connected_graph():
     start_room = get_room(starting_position[0], starting_position[1])
