@@ -1,13 +1,32 @@
+import items
 from items import *
 
 # Class for cleanly storing and accessing rooms
 class Room:
-    def __init__(self):
-        self.name = None
-        self.description = None
-        self.items = []
-        self.enemies = [] # Might be needed??
+    def __init__(self, room_dict : {}):
+        self.name = room_dict["name"]
+        self.description = room_dict["description"]
+        self.enemies = []
         self.exits = set()
+
+        self.items = []
+        for item_dict in room_dict["items"]:
+            item = None
+
+            if "type" not in item_dict:
+                self.items.append(Item(item_dict))
+
+            match item_dict["type"]:
+                case items.Consumable:
+                    item = Consumable(item_dict)
+                case _:
+                    item = Item(item_dict)
+            self.items.append(item)
+
+
+
+
+
 
 # Special rooms
 # Add all to special rooms list at bottom of file

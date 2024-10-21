@@ -71,29 +71,40 @@ def execute_go(direction):
     else:
         print("You cannot go there.")
 
+def execute_consume(item_id):
+    for item in player.inventory:
+        if item.id == item_id:
+            item.consume()
+
+            player.inventory[item] -= 1
+            if player.inventory[item] <= 0:
+                player.inventory.pop(item)
+            return
+    print("You cannot consume that.")
+
 
 def execute_take(item_id):
     for item in player.get_current_room().items:
         if item["id"] == item_id:
 
-            if player.inventory_mass() + item["mass"] > player.max_mass:
+            if player.inventory_mass() + item.mass > player.max_mass:
                 print("You cannot take that, your inventory is too small")
                 print(f"Current Inventory Mass: {player.inventory_mass()}g")
                 print(f"Mass of {item["name"]}: {item["mass"]}g")
                 return
             player.get_current_room().items.pop(player.get_current_room().items.index(item))
             player.inventory.append(item)
-            print(f"You picked up {item["name"]}.")
+            print(f"You picked up {item.name}.")
             return
     print("You cannot take that.")
 
 
 def execute_drop(item_id):
     for item in player.inventory:
-        if item["id"] == item_id:
+        if item.id == item_id:
             player.inventory.pop(player.inventory.index(item))
             player.get_current_room().items.append(item)
-            print(f"You dropped {item["name"]}.")
+            print(f"You dropped {item.name}.")
             return
     print("You cannot drop that.")
 
@@ -119,6 +130,10 @@ def execute_command(command):
             execute_drop(command[1])
         else:
             print("Drop what?")
+
+    elif command[0] in ["use", "consume"]:
+        if len(command) > 1:
+            execute_consume()
 
     else:
         print("This makes no sense.")
