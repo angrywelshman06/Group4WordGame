@@ -80,13 +80,17 @@ def door_assigner(room_num, turns_num, x, y):
     total_weight = sum(weights.values())
     probabilities = {direction: weight / total_weight for direction, weight in weights.items()}
 
-    num_doors = random.randint(1, 3)  # Ensure at least one door
+    # Ensure at least one door
+    door_direct = random.choices(directions, weights=[probabilities[dir] for dir in directions])[0]
+    doors.add(door_direct)
+
+    # Optionally add more doors
+    num_doors = random.randint(1, 3)
     for _ in range(num_doors):
         door_direct = random.choices(directions, weights=[probabilities[dir] for dir in directions])[0]
         doors.add(door_direct)
 
     return doors
-        
 
 def dist_from_start(x, y): #This function takes the coordinates of the player and returns the distance from the starting position of the player
     starting = starting_position
