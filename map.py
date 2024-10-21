@@ -2,6 +2,9 @@ import random
 import rooms
 from rooms import special_rooms, Room, generic_rooms
 from collections import deque
+import sys
+
+
 map_matrix = [[None for x in range(10)] for y in range(10)]
 
 '''
@@ -24,10 +27,13 @@ room objects, and the 1 being the starting point (and tutorial room)
 #This is the starting position of the player, as shown above
 starting_position = [4, 4]
 def generate_map():
+    used_rooms = set()
+
     # Add in tutorial room
     tutorial_room = Room(rooms.room_tutorial, tuple(starting_position))
     tutorial_room.exits = {"north"}
     map_matrix[starting_position[0]][starting_position[1]] = tutorial_room
+    used_rooms.add(rooms.room_tutorial)
 
     # Add all special rooms
     for sr in special_rooms:
@@ -35,18 +41,23 @@ def generate_map():
         while True:
             x_coord = random.randint(0, 9)
             y_coord = random.randint(0, 9)
-            if map_matrix[x_coord][y_coord] is None:
+            if map_matrix[x_coord][y_coord] is None and sr not in used_rooms:
                 room = Room(sr, (x_coord, y_coord))
                 map_matrix[x_coord][y_coord] = room
+                used_rooms.add(sr)
                 break
 
     # Add all generic rooms
     for y in range(len(map_matrix)):
         for x in range(len(map_matrix[y])):
             if map_matrix[y][x] is None:
-                random_room = generic_rooms[random.randint(0, len(generic_rooms) - 1)]
-                room = Room(random_room, (x, y))
-                map_matrix[y][x] = room
+                while True:
+                    random_room = generic_rooms[random.randint(0, len(generic_rooms) - 1)]
+                    if random_room not in used_rooms:
+                        room = Room(random_room, (x, y))
+                        map_matrix[y][x] = room
+                        used_rooms.add(random_room)
+                        break
 
     # Generate doors for all rooms
     for y in range(len(map_matrix)):
@@ -146,13 +157,21 @@ def dist_from_start(x, y): #This function takes the coordinates of the player an
     return distance
 
 # Returns a dictionary of the distances for each edge from the player
-def dist_from_edge(x, y) -> {}:
-    return {
-        "north" : y,
-        "east" : len(map_matrix[y]) - 1 - x,
-        "south" : len(map_matrix) - 1 - y,
-        "west" : x
-    }
+
+def dist_from_edge(x, y):
+    try:
+        if y < 0 or y >= len(map_matrix) or x < 0 or x >= len(map_matrix[y]):
+            raise IndexError("Coordinates are out of bounds")
+
+        return {
+            "north": y,
+            "south": len(map_matrix) - 1 - y,
+            "west": x,
+            "east": len(map_matrix[y]) - 1 - x,
+        }
+    except IndexError:
+        print("Congratulations! You have escaped the matrix. You win!")
+        sys.exit()
 
 # Gets the room based off its matrix position coordinates
 def get_room(x, y) -> Room:
