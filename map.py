@@ -28,20 +28,14 @@ starting_position = [4, 4]
 def generate_map():
 
     # Add in tutorial room
-    tutorial_room = Room()
-    tutorial_room.name = rooms.room_tutorial["name"]
-    tutorial_room.description = rooms.room_tutorial["description"]
-    tutorial_room.items = rooms.room_tutorial["items"]
+    tutorial_room = Room(rooms.room_tutorial)
     tutorial_room.exits = {"north"}
     map_matrix[starting_position[0]][starting_position[1]] = tutorial_room
 
     # Add all special rooms
     for sr in special_rooms:
         print(f"Generating {sr["name"]}.")
-        room = Room()
-        room.name = sr["name"]
-        room.description = sr["description"]
-        room.items = sr["items"]
+        room = Room(sr)
 
         # Finding empty location
         while True:
@@ -56,10 +50,7 @@ def generate_map():
         for x in range(len(map_matrix[y])):
             if map_matrix[y][x] is None:
                 random_room = generic_rooms[random.randint(0, len(generic_rooms) - 1)]
-                room = Room()
-                room.name = random_room["name"]
-                room.description = random_room["description"]
-                room.items = random_room["items"]
+                room = Room(random_room)
                 map_matrix[y][x] = room
 
 

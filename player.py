@@ -2,9 +2,9 @@ import map
 from items import *
 
 # Starting inventory
-inventory = [item_id_card, item_laptop, item_money]
+inventory = []
 
-# Current maximum capacity (in grams)
+# Current maximum capacity of inventory (in grams)
 max_mass = 10000
 
 # Calculates total mass of the inventory
@@ -13,6 +13,9 @@ def inventory_mass():
     for item in inventory:
         mass += item["mass"]
     return mass
+
+# Stores players health
+health = 100
 
 #Stores current room position as an array
 current_room_position = map.starting_position
