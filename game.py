@@ -3,7 +3,19 @@ import player
 from map import Room, generate_map
 from gameparser import *
 from player import current_room_position
+from map import get_room, map_matrix, door_assigner
+import random
+from colorama import Fore, Back, Style
+import subprocess
+import sys
 
+def install_requirements():
+    try:
+        import colorama
+    except ImportError:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
+
+install_requirements()
 
 def list_of_items(items):
     new_string = ""
@@ -188,5 +200,29 @@ def main():
 # '__main__' is the name of the scope in which top-level code executes.
 # See https://docs.python.org/3.4/library/__main__.html for explanation
 if __name__ == "__main__":
+    print(Fore.YELLOW + """\
+╔╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╗
+╠╬╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╬╣
+╠╣  _______     _______.  ______     ___      .______    _______        ╠╣
+╠╣ |   ____|   /       | /      |   /   \     |   _  \  |   ____|       ╠╣
+╠╣ |  |__     |   (----`|  ,----'  /  ^  \    |  |_)  | |  |__          ╠╣
+╠╣ |   __|     \   \    |  |      /  /_\  \   |   ___/  |   __|         ╠╣
+╠╣ |  |____.----)   |   |  `----./  _____  \  |  |      |  |____        ╠╣
+╠╣ |_______|_______/     \______/__/     \__\ | _|      |_______|       ╠╣
+╠╣  _______ .______        ______   .___  ___.                          ╠╣
+╠╣ |   ____||   _  \      /  __  \  |   \/   |                          ╠╣
+╠╣ |  |__   |  |_)  |    |  |  |  | |  \  /  |                          ╠╣
+╠╣ |   __|  |      /     |  |  |  | |  |\/|  |                          ╠╣
+╠╣ |  |     |  |\  \----.|  `--'  | |  |  |  |                          ╠╣
+╠╣ |__|     | _| `._____| \______/  |__|  |__|                          ╠╣
+╠╣   ______     ___      .______       _______   __   _______  _______  ╠╣
+╠╣  /      |   /   \     |   _  \     |       \ |  | |   ____||   ____| ╠╣
+╠╣ |  ,----'  /  ^  \    |  |_)  |    |  .--.  ||  | |  |__   |  |__    ╠╣
+╠╣ |  |      /  /_\  \   |      /     |  |  |  ||  | |   __|  |   __|   ╠╣
+╠╣ |  `----./  _____  \  |  |\  \----.|  '--'  ||  | |  |     |  |      ╠╣
+╠╣  \______/__/     \__\ | _| `._____||_______/ |__| |__|     |__|      ╠╣
+╠╬╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╬╣
+╚╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╝
+""")
     main()
 
