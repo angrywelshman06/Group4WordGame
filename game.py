@@ -45,7 +45,7 @@ def print_room(room: Room):
     if room.exits:
         print("Exits: " + ", ".join(room.exits))
     else:
-        print("No exits available such a shame.")
+        print("No exits available seems you might be stuck. What a shame ;)")
 
 # Checks if the exit is valid in the current room
 def is_valid_exit(direction):
@@ -155,6 +155,36 @@ def execute_command(command):
     elif command[0] in ["consume"]:
         if len(command) > 1:
             execute_consume(command[1])
+
+    elif command[0] == "quit":
+        print("Goodbye!")
+        sys.exit()
+
+    elif command[0] == "help":
+        print("Commands: go [direction], take [item], drop [item], use [item], quit")
+
+    elif command[0] == "raptor":
+        print(Fore.RED + """\
+                ____      ________    
+               ,^.__.>--"~~'_.--~_)~^.  
+              _L^~   ~    (~ _.-~ \. |\     
+           ,-~    __    __,^"/\_A_/ /' \ 
+         _/    ,-"  "~~" __) \  ~_,^   /\  
+        //    /  ,-~\ x~"  \._"-~     ~ _Y  
+        Y'   Y. (__.//     /  " , "\_r ' ]   
+        J-.__l_>---r{      ~    \__/ \_ _/  
+       (_ (   (~  (  ~"---   _.-~ `\ / \ !   
+        (_"~--^----^--------"  _.-c Y  /Y'  
+         l~---v----.,______.--"  /  !_/ |   
+          \.__!.____./~-.      _/  /  \ !  
+           `x._\_____\__,>---"~___Y\__/Y'  
+               ~     ~(_~~(_)"~___)/ /\|   
+                      (_~~   ~~___)  \_t  
+                      (_~~   ~~___)\_/ |  
+                      (_~~   ~~___)\_/ |   
+                      { ~~   ~~   }/ \ l 
+                         """)
+
 
     else:
         print("This makes no sense.")
