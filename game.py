@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 import player
+from items import Consumable
 from map import Room, generate_map, map_matrix, door_assigner
 from gameparser import *
 from player import current_room_position
@@ -92,6 +93,10 @@ def execute_go(direction):
 def execute_consume(item_id):
     for item in player.inventory:
         if item.id == item_id:
+
+            if type(item) != Consumable:
+                break
+
             item.consume()
             print(f"You consumed a {item.name}.")
             player.inventory[item] -= 1
