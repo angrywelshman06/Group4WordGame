@@ -116,7 +116,7 @@ room_tutorial = {
 
 
 
-    "items": []
+    "items": [paracetamol]
 
 }
 
