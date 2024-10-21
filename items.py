@@ -31,7 +31,7 @@ name - the display name of the item
 description - brief description of the item to be displayed
 mass - the weight of the item in grams
 type - The specific type of the item that links to the classes above (Item being default)
-       Attributes of each class can be found in their initialisation functions above 
+       Attributes of each child class can be found in their initialisation functions above 
        (Item attributes are carried to all of them)
 
 IGNORE : NOTE: Add all items to the item list at the bottom of the file to initialise them
