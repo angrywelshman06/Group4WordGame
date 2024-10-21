@@ -1,3 +1,5 @@
+
+
 class Item:
     def __init__(self, item : {}):
         self.id = item["id"]
@@ -126,6 +128,15 @@ paracetamol = {
     # Consumable specifics
 
     "healing" : 20
+}
+
+morphine = {
+    "id": "morphine",
+    "name" : "morphine",
+    "description" : "DESCRIPTION",
+    "type": Consumable,
+    "healing" : 50,
+    "mass": 100
 }
 
 #items = [item_id_card, item_biscuits, item_handbook, item_laptop, item_money, item_pen]
