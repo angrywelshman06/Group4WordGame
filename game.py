@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import player
-from map import Room, generate_map, get_room, map_matrix, door_assigner
+from map import Room, generate_map, map_matrix, door_assigner
 from gameparser import *
 from player import current_room_position
 from map import get_room, map_matrix, door_assigner
@@ -21,7 +21,7 @@ def list_of_items(items):
     new_string = ""
     for i in range(len(items)):
         if i != 0: new_string += ", "
-        new_string += items[i]["name"]
+        new_string += items[i].name
     return new_string
 
 
@@ -47,14 +47,6 @@ def print_room(room: Room):
         print("Exits: " + ", ".join(room.exits))
     else:
         print("No exits available.")
-
-
-def print_inventory_items(items):
-    if len(items) == 0:
-        return
-
-    print(f"You have {list_of_items(items)}.")
-    print()
 
 # Checks if the exit is valid in the current room
 def is_valid_exit(direction):
@@ -101,7 +93,7 @@ def execute_consume(item_id):
     for item in player.inventory:
         if item.id == item_id:
             item.consume()
-
+            print(f"You consumed a {item.name}.")
             player.inventory[item] -= 1
             if player.inventory[item] <= 0:
                 player.inventory.pop(item)
@@ -116,7 +108,7 @@ def execute_take(item_id):
             if player.inventory_mass() + item.mass > player.max_mass:
                 print("You cannot take that, your inventory is too small")
                 print(f"Current Inventory Mass: {player.inventory_mass()}g")
-                print(f"Mass of {item["name"]}: {item["mass"]}g")
+                print(f"Mass of {item.name}: {item.mass}g")
                 return
             player.get_current_room().items.pop(player.get_current_room().items.index(item))
             player.inventory.append(item)
@@ -159,7 +151,7 @@ def execute_command(command):
 
     elif command[0] in ["use", "consume"]:
         if len(command) > 1:
-            execute_consume()
+            execute_consume(command[1])
 
     else:
         print("This makes no sense.")
@@ -201,7 +193,7 @@ def main():
             # Combat
             pass
 
-        print_inventory_items(player.inventory)
+        player.print_inventory_items()
         print(f"Current Inventory Mass: {player.inventory_mass()}g")
         print()
 

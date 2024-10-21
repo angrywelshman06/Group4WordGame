@@ -1,8 +1,10 @@
+from types import new_class
+
 import map
 from items import *
 
 # Starting inventory
-inventory = []
+inventory = {Consumable(paracetamol) : 2, Item(item_pen) : 1}
 
 # Current maximum capacity of inventory (in grams)
 max_mass = 10000
@@ -11,8 +13,31 @@ max_mass = 10000
 def inventory_mass():
     mass = 0
     for item in inventory:
-        mass += item["mass"]
+        mass += item.mass
     return mass
+
+
+def print_inventory_items():
+    if len(inventory) == 0:
+        return
+
+    item_list = ""
+    count = 0
+    for item in inventory:
+
+        if count == len(inventory) - 1:
+            item_list += " and "
+        elif count != 0:
+            item_list += ", "
+        item_list += f"{inventory[item]} {item.name}"
+        if inventory[item] > 1: item_list += "s"
+        count += 1
+
+    print(f"You have {item_list}.")
+    print()
+
+
+
 
 # Stores players health
 health = 100
