@@ -38,6 +38,7 @@ def init_screen(): # initialise the screen
     text_pad.scrollok(True)
     text_pad_pos = 0
 
+
 def close(): # return terminal to normal
     stdscreen.keypad(0)
     stdscreen.clear()

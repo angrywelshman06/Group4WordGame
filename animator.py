@@ -5,6 +5,8 @@ import os
 from ani_sprites import *
 from curses import wrapper
 from operator import attrgetter
+import threading
+from threading import Thread
 
 clear = lambda: os.system('cls')
 
@@ -26,6 +28,18 @@ def run_animation_curses(win, *args): #First arg should be edge/bg.
         print_frame_curses(framelist,win,args)
         win.move(0,0)
         win.refresh()
+        time.sleep(0.05)
+
+def run_animation_curses_pad(win, pad_args, ui_lock, *args): #First arg should be edge/bg.
+    max_frame = max(args, key=attrgetter('frames')).frames
+    list_framelists = [i.frameslist for i in args]
+    list_framelists = adjust_to_max(list_framelists, max_frame)
+    for framelist in zip(*list_framelists): # * unpacks list_framelists into n different lists (objs)
+        ui_lock.acquire()
+        print_frame_curses(framelist,win,args)
+        win.move(0,0)
+        win.refresh(pad_args[0], pad_args[1], pad_args[2], pad_args[3], pad_args[4], pad_args[5])
+        ui_lock.release()
         time.sleep(0.05)
         
 def print_stillshot_curses(framenumlist,win, *args): # [1,4], dude, backpillars
@@ -60,12 +74,13 @@ def print_frame_curses(framelist,win, args):
 
 def main(stdscr): ### WIP ### JUST FOR TESTING PURPOSES. If running from animator.py, uncomment line 8 in ani_sprites and comment out 7. Otherwise, vice-versa.
     stdscr.clear()
+    print(" ANIMATOR MAIN FUNCTION CALLED ANIMATOR MAIN FUNCTION CALLED ANIMATOR MAIN FUNCTION CALLED\n")
     display_win = curses.newwin(36, 110, 0, 0)
     display_win.clear()
     display_win.scrollok(1) # This helps to prevent a curses-related crash.
     # curses.start_color()
     curses_setcolors() # imported from ani_sprites.py
-    run_animation_curses(display_win,*cutscene_1)
+    #run_animation_curses(display_win,*cutscene_1)
     # run_animation_curses(display_win,*intro_2)    
     # print_stillshot_curses([22,3,10],display_win, dude, backpillars, frontpillars) ## ([frames to print for each arg], curses window, unlimited args..) #b4 commit
     # display_win.getch()

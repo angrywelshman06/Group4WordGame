@@ -5,7 +5,10 @@ import ui
 from map import Room
 from items import *
 from gameparser import *
-from modularanimation import animator
+from animator import *
+from ani_sprites import *
+import threading
+from threading import Thread
 
 
 def list_of_items(items):
@@ -112,6 +115,19 @@ def menu(exits, room_items, inv_items):
 def move(exits, direction): #needs to be changed to be used with the matrix in terms of navigating with the x and y coordinates
     pass
 
+def play_animation(animation): # this function creates a thread to play the given animation
+    # animation has to be a valid animation from ani_sprites.py
+    art_pad_args = [0,0,0,0, ui.y-1, int(ui.x/2)-1]
+    try:
+        anim_thread = Thread(target=run_animation_curses_pad, args=[ui.art_pad, art_pad_args, ui_lock, *animation])
+        anim_thread.start()
+    except Exception as e:
+        ui.write(f"Exception occured in play_animation:\n{e}\n")
+    
+# global variables
+user_input = ""
+overflow = 0
+ui_lock = threading.Lock()
 
 # This is the entry point of our program
 def main():
@@ -120,11 +136,10 @@ def main():
     #refresh pads
     ui.art_pad.refresh(0,0,0,0, ui.y-1, int(ui.x/2)-1)
     ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x)
-
-    global user_input
-    user_input = ""
-
-    overflow = 0
+    # play cutscene # temporary # in the future could be replaced with intro animation or something
+    play_animation(cutscene_1)
+    
+    ui.write("game start!\n")
 
     try:
 
@@ -138,50 +153,62 @@ def main():
                 ui.text_pad_pos -= 1
                 
             elif cmd == 27: # escape key # stop program
+                ui_lock.acquire()
                 close()
                 return
             
             elif cmd == curses.KEY_BACKSPACE: # backspace # delete last char
-                y, x = ui.text_pad.getyx()
-                try:
+                ui_lock.acquire()
+
+                y, x = ui.text_pad.getyx() # get cursor position
+
+                # x is 0 when at the left edge of the screen
+                if x != 0: # delete char normally
                     ui.text_pad.move(y, x-1)
                     ui.text_pad.delch()
                     user_input = user_input[:-1]
-                except: # catch the cursor trying to move out of bounds
-                    if overflow != 0: # if line overflowed try to move up
-                        y_2, x_2 = ui.text_pad.getmaxyx()
-                        try:
-                            ui.text_pad.move(y-1, x_2-1)
-                            ui.text_pad.delch()
-                            user_input = user_input[:-1]
-                            overflow -= 1
-                        except:
-                            pass
+                elif overflow > 0: # if line overflowed move up a line and delete
+                    y_2, x_2 = ui.text_pad.getmaxyx()
+                    ui.text_pad.move(y-1, x_2-1)
+                    ui.text_pad.delch()
+                    user_input = user_input[:-1]
+                    overflow -= 1
+
+                ui_lock.release()
 
             elif cmd == 10 or cmd == curses.KEY_ENTER: # enter key
-                ui.text_pad.addstr("\n")
+                ui_lock.acquire()
+                ui.write()
+                ui_lock.release()
 
                 #do something with user input or something
 
                 user_input = ""
                 overflow = 0
-                ui.art_pad.clear()
-                #animator.print_stillshot_curses([22,3,10],ui.art_pad, animator.dude, animator.backpillars, animator.frontpillars)
-                
+
             else: # write a letter to text_pad
+                ui_lock.acquire()
+
                 y, x = ui.text_pad.getyx()
+
                 ui.text_pad.addch(cmd)
                 user_input += chr(cmd)
+                
                 y_2, x_2 = ui.text_pad.getyx()
-                if y != y_2: # check if after adding char the cursor goes down a line
-                    overflow += 1
 
-            #refresh the pads
+                if y != y_2: # check if after adding char the cursor goes down a line
+                    overflow += 1 # if so increment the overflow
+
+                ui_lock.release()
+
+            #refresh the pads 
+            ui_lock.acquire()
             ui.art_pad.refresh(0,0,0,0, ui.y-1, int(ui.x/2)-1)
             try: 
                 ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x)
             except: #do nothing when trying to scroll past the available screen size
                 pass
+            ui_lock.release()
 
     except Exception as e: # if an error occurs return terminal to normal 
         close()
