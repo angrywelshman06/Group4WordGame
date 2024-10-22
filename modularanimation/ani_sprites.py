@@ -3,6 +3,7 @@ import curses
 
 # Here so I can set colors
 curses.initscr()
+
 # Run this in the mainloop of the main file
 def curses_setcolors():
     curses.init_pair(1, 0, 243), # GREY
@@ -19,6 +20,18 @@ def curses_setcolors():
     curses.init_pair(12, 15, 0), # PILLOW WHITE
     
 class spritesheet():
+    def __init__(self, path, color, zlevel = 0, frames = 0, dx = 0, dy = 0, delay = 0):
+        self.path = path
+        self.color = color # curses pair
+        self.zlevel = zlevel
+        self.frames = frames
+        self.dx = dx 
+        self.dy = dy
+        self.delay = delay # not implemented
+        self.frameslist = self.gather_framelist() # list containing every frame
+        if (self.dx != 0) or (self.dy != 0):
+            self.frameslist = self.extend_frames()
+            
     def gather_framelist(self):
         frameslist = []
         for frame in range(1,self.frames+1):
@@ -28,22 +41,34 @@ class spritesheet():
             frameslist.append(file.read())
             file.close()
         return frameslist
-        
-    def __init__(self, path, color, zlevel = 0, frames = 0, dx = 0, dy = 0, delay = 0):
-        self.path = path
-        self.color = color ##escape code
-        self.zlevel = zlevel
-        self.frames = frames
-        self.dx = dx # not implemented
-        self.dy = dy # not implemented
-        self.delay = delay # not implemented
-        self.frameslist = self.gather_framelist() # testing {self: [frame1, frame2,..],...}
-        
-    def get_whatever(self, attr): # pull attribute as object:attribute dict
-        return {self: getattr(self, attr)}
-    
-    def get_flatvalue(self, attr):
-        return getattr(self, attr)
+
+    def extend_frames(self):
+        ### Standard: col 100, rows 34
+        # don't go out of the standard bounds when working with dx and dy
+        newframeslist = []
+        for index, value in enumerate(self.frameslist):
+            newframe = self.frameslist[index].splitlines()
+            
+            for index, value in enumerate(newframe):
+                if len(newframe[index]) < 100:
+                    newframe[index] += " "*(100-len(newframe[index])) 
+                    
+            if len(newframe) < 34: # add empty space 
+                for i in range(len(newframe), 34):
+                    newframe.append(" "*100)
+                    
+            for i in range(self.dy): # DY adjustment
+                newframe.insert(0,(" "*100))
+                del newframe[-1]
+                
+            if self.dx != 0:
+                for index, value in enumerate(newframe): # DX adjustment
+                    newframe[index] = (" "*(self.dx) + newframe[index])[:-(self.dx)]
+                    
+            newframe = "\n".join(newframe) # joins back the frames
+            newframeslist.append(newframe)
+            
+        return newframeslist
         
 # All txt frames should have the same amount of lines and same col at the end of a line. For now.
 ##################### path, escape code color, z-level, frames
@@ -60,6 +85,7 @@ class spritesheet():
 ###### Multi-purpose
 general_bg = spritesheet(("background",), 3, zlevel = 0.05, frames = 1)
 outline = spritesheet(("outline1",), 9, zlevel = 77, frames = 1)
+randomobj = spritesheet(("randomobj",), 8, zlevel = 134, frames = 1, dx = 66, dy = 22)
 
 ###### Intro part 1
 building1 = spritesheet(("intro_1","building1"), 10, zlevel = 7, frames = 95)
@@ -101,3 +127,5 @@ body_1 = spritesheet(("cutscene_1", "body_1"), 11, zlevel = 3, frames = 1)
 red_elements_1 = spritesheet(("cutscene_1", "red"), 8, zlevel = 15, frames = 58)
 red_elements_2 = spritesheet(("cutscene_1", "red2"), 8, zlevel = 4, frames = 1)
 cutscene_1 = (outline,zombie_1, red_elements_1, general_bg, body_1, red_elements_2)
+
+cutscene_1_1 = (outline,zombie_1, red_elements_1, general_bg, body_1, red_elements_2, randomobj)
