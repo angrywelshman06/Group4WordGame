@@ -31,7 +31,7 @@ class spritesheet():
         self.frameslist = self.gather_framelist() # list containing every frame
         if (self.dx != 0) or (self.dy != 0):
             self.frameslist = self.extend_frames()
-            
+
     def gather_framelist(self):
         frameslist = []
         for frame in range(1,self.frames+1):
@@ -85,7 +85,7 @@ class spritesheet():
 ###### Multi-purpose
 general_bg = spritesheet(("background",), 3, zlevel = 0.05, frames = 1)
 outline = spritesheet(("outline1",), 9, zlevel = 77, frames = 1)
-randomobj = spritesheet(("randomobj",), 8, zlevel = 134, frames = 1, dx = 66, dy = 22)
+randomobj = spritesheet(("randomobj",), 8, zlevel = 134, frames = 1, dx = 55, dy = 10)
 
 ###### Intro part 1
 building1 = spritesheet(("intro_1","building1"), 10, zlevel = 7, frames = 95)
@@ -127,5 +127,10 @@ body_1 = spritesheet(("cutscene_1", "body_1"), 11, zlevel = 3, frames = 1)
 red_elements_1 = spritesheet(("cutscene_1", "red"), 8, zlevel = 15, frames = 58)
 red_elements_2 = spritesheet(("cutscene_1", "red2"), 8, zlevel = 4, frames = 1)
 cutscene_1 = (outline,zombie_1, red_elements_1, general_bg, body_1, red_elements_2)
+
+#####
+holder1 = spritesheet(("placeholder",), 7, zlevel = 4, frames = 6, dx = 22, dy = 2)
+# holder2 = spritesheet(("placeholder",), 7, zlevel = 5, frames = 6, dx = 24, dy = 5)
+# holder3 = spritesheet(("placeholder",), 7, zlevel = 4, frames = 6, dx = 27, dy = 8)
 
 cutscene_1_1 = (outline,zombie_1, red_elements_1, general_bg, body_1, red_elements_2, randomobj)

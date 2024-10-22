@@ -1,5 +1,7 @@
 import curses
 from ani_sprites import *
+
+from pprint import pprint # debugging purposes
 # from animator import *
 
 # What do I want to achieve here?
@@ -16,7 +18,7 @@ from ani_sprites import *
 #   ...
 #   battle():
 #       fight = initiate_combat(("zombie_1", 2), ("zombie_2", 1), ("zombie_3", 1))
-#       while (playerhp != 0) or (enemies_alive != 0):
+#       while (playerhp != 0) or (fight.enemies_alive != 0):
 #           ### stillshot of the combat situation
 #           ### player takes turn
 #           ### call animation of player attacking, zombie getting hit
@@ -42,6 +44,8 @@ class creature():
         self.hp = 100
         self.basedmg = 3
         self.spritesheet = spritesheet(self.path, 11, zlevel = creature_zlevel, frames = 6, dx = dx_change, dy = dy_change )
+        self.frameslist = self.spritesheet.frameslist
+        # self.frames = 6
         self.frames_attack = self.spritesheet.frameslist
         self.frames_standstill = self.spritesheet.frameslist[0]
 
@@ -60,30 +64,39 @@ class initiate_combat():
     def __init__(self, curses_window, *enemies):
         self.creatures_dict = {}
         self.enemies = enemies
-        self.curses_window = curses_window
+        self.curses_window = curses_window # hold for now
+        self.enemies_alive = len(self.enemies)
         self.place_creatures()
         # self.draw_on_window()
     
     def place_creatures(self):
-        dx_change = 55
+        dx_change = 33
         dy_change = 3
+        name_counter = 1
         counter = 1
         z = 6
         
         ### Could use a rudimentary leveling up system for the protagonist
         ### such as basic attack and hp going up by a given percentage upon level up
-        protag = creature(("placeholder",),"protag", "You", 1, z, dx_change, dy_change) #level can be replaced with protagonist level variable
-        
+        ### creature(path, creature_type, creature_name, creature_level, creature_zlevel, dx_change, dy_change)
+        protag = creature(("placeholder",),"protag", "You", 1, 1, 2, 15) #level can be replaced with protagonist level variable
+        self.creatures_dict["protag"] = protag
         for i in self.enemies:
             # enemy = spritesheet(("placeholder",), 3, zlevel = z, frames = 2)
             enemy_type = i[0]
             enemy_level = i[1]
-            enemy_name = "Zombie_{0}".format(counter)
+            enemy_name = "Zombie_{0}".format(name_counter)
             enemy = creature(("placeholder",),enemy_type, enemy_name, enemy_level, z, dx_change, dy_change)
-            self.creatures_dict["Enemy_{0}".format(counter)] = enemy
-            dx_change += 6
-            dy_change += 3
+            self.creatures_dict["Enemy_{0}".format(name_counter)] = enemy
+            dx_change += 10
+            dy_change += 8
             counter += 1
+            name_counter += 1
+            if counter == 4:
+                counter = 1
+                dx_change -= 10
+                dy_change = 3
+            z += 1
     
     def draw_on_window(self):
         # need everything as a tuple

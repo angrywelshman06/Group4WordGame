@@ -37,7 +37,7 @@ def run_animation_curses(win, *args):
         win.refresh()
         time.sleep(0.05)
         
-def print_stillshot_curses(framenumlist,win, *args): # [1,4], dude, backpillars
+def print_stillshot_curses(framenumlist,win,*args): # [1,4], dude, backpillars
     max_frame = max(args, key=attrgetter('frames')).frames
     list_framelists = [i.frameslist for i in args]
     list_framelists = adjust_to_max(list_framelists, max_frame)
@@ -76,9 +76,11 @@ def main(stdscr): ### TESTING PURPOSES ## Uncomment whichever path you need in t
     curses_setcolors() # imported from ani_sprites.py
     # print(cutscene_1_1, "WORKING")
     # run_animation_curses(display_win,*cutscene_1_1)
-    fight = initiate_combat(display_win,("zombie", 2), ("zombie", 1), ("zombie", 1))
+    # zombies = (("zombie", 2),("zombie", 1), ("zombie", 1),("zombie", 1),("zombie", 1),("zombie", 1),("zombie", 1),("zombie", 1)) #this tuple will be what's returned from the random battle generator
+    fight = initiate_combat(display_win,*zombies)
     # print(fight.draw_on_window(), "NOT WORKING")
-    # print_stillshot_curses([0,0,0], display_win, *fight.draw_on_window())
+    print_stillshot_curses([0,0,0,0,0,0,0,0,0], display_win, *fight.draw_on_window())
+    # print_stillshot_curses([0,0], display_win, holder1, holder2)
     # print_stillshot_curses([0,0], display_win, fight.creatures_dict["Enemy_1"].spritesheet, fight.creatures_dict["Enemy_2"].spritesheet)
     # fight = initiate_combat()
     # run_animation_curses(display_win,*intro_2)    
@@ -89,7 +91,7 @@ def main(stdscr): ### TESTING PURPOSES ## Uncomment whichever path you need in t
     display_win.clear()
     # print_stillshot_curses([0,0,0,0,0,0,0],display_win, *room_tutorial) ## ([frames to print for each arg], curses window, unlimited args..)
     display_win.refresh()
-    # display_win.getch()
+    display_win.getch()
 
 wrapper(main)
 
