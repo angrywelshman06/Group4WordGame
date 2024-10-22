@@ -1,5 +1,7 @@
 import random
+import enemies
 import rooms
+from enemies import Enemy
 from rooms import special_rooms, Room, generic_rooms
 from collections import deque
 import sys
@@ -69,6 +71,8 @@ def generate_map():
                 description = "This is a generic room."
                 generic_room = {'name': room_name, 'description': description, 'items': []}
                 room = Room(generic_room, (x, y))
+                if random.random() > 0.5:
+                    room.enemies.append(Enemy(enemies.zombie))
                 map_matrix[y][x] = room
 
     # Generate doors for all rooms
@@ -102,7 +106,7 @@ def ensure_connected_graph():
         if room not in visited:
             connect_to_nearest_visited_room(room, visited)
 
-def get_adjacent_room(room, direction):
+def get_adjacent_room(room, direction) -> Room:
     x, y = room.position
     if direction == "north":
         y -= 1
