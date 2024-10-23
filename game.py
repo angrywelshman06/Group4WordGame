@@ -75,19 +75,10 @@ def execute_go(direction):
             print("Congratulations! You have escaped the matrix. You win!")
             sys.exit()
 
-        if new_room is None:
-            new_room = Room()
-            map_matrix[new_pos[1]][new_pos[0]] = new_room
 
-            # Generate doors for the new room
-            new_room.exits = door_assigner(len(map_matrix), len(map_matrix[0]), new_pos[0], new_pos[1])
-
-            # Ensure the new room has an exit back to the current room
-            opposite_direction = {"north": "south", "south": "north", "east": "west", "west": "east"}
-            new_room.exits.add(opposite_direction[direction])
-
-        # Update the current room's exits
-        current_room.exits.add(direction)
+        # Ensure the new room has an exit back to the current room
+        opposite_direction = {"north": "south", "south": "north", "east": "west", "west": "east"}
+        new_room.exits.add(opposite_direction[direction])
 
         player.previous_room_position = player.current_room_position
         player.current_room_position = new_pos
