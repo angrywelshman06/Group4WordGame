@@ -214,14 +214,19 @@ def execute_command(command):
 
 def execute_attack(enemy : enemies.Enemy, weapon : items.Weapon):
 
-    print(f"You attacked the {enemy.name} with your {weapon.name}.")
-    enemy.health -= weapon.damage
-    print(f"You dealt {weapon.damage} damage")
+    if random.random() < weapon.crit_chance:
+        print(f"You hit the {enemy.name} for critical damage and dealt {weapon.get_damage(True)} damage.")
+        enemy.health -= weapon.get_damage(True)
+    else:
+        print(f"You hit the {enemy.name} and dealt {weapon.get_damage(False)} damage.")
+        enemy.health -= weapon.get_damage(False)
+
     if enemy.health > 0:
         print(f"The {enemy.name} now has {enemy.health} health.")
     else:
         player.get_current_room().enemies.pop(player.get_current_room().enemies.index(enemy))
         print(f"The {enemy.name} has been killed!")
+
 def combat():
 
     # Main Combat Loop

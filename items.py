@@ -20,7 +20,14 @@ class Consumable(Item):
 class Weapon(Item):
     def __init__(self, item: {}):
         super().__init__(item)
-        self.damage = item["damage"]  # Amount of damage the weapon inflicts
+        self.damage = item["damage"]
+        self.crit_chance = item["crit_chance"] # Amount of damage the weapon inflicts
+        self.crit_multiplier = item["crit_multiplier"]
+
+    def get_damage(self, crit_bool : bool):
+        if crit_bool:
+            return self.damage * self.crit_multiplier
+        return self.damage
 
 
 """ 
@@ -142,7 +149,9 @@ gun = {
     "description" : "DESCRIPTION",
     "mass" : 100,
     type: Weapon,
-    "damage" : 10
+    "damage" : 10,
+    "crit_chance" : 0.4,
+    "crit_multiplier" : 1.5
 }
 
 #items = [item_id_card, item_biscuits, item_handbook, item_laptop, item_money, item_pen]
