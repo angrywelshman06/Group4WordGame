@@ -11,7 +11,7 @@ class Room:
         self.position = position
 
         self.items = []
-        for item_dict in room_dict["items"]:
+        for item_dict in room_dict.get("items", []):
             item = None
 
             if "type" not in item_dict:
@@ -53,7 +53,7 @@ bathroom_tutorial = {
 
 
 
-    "items": [item_toothbrush, item_toothpaste]
+    #"items": [item_toothbrush, item_toothpaste]
 
 }
 
@@ -63,7 +63,7 @@ kitchen = {
     "description":
     """The kitchen is a wreck, abandoned and coated in dust. Rusty pots and pans hang crookedly from hooks, while broken cabinets sag, their doors ajar. Dishes sit in a sink filled with stagnant, murky water, covered in mould. The once-shiny countertops are smeared with grime and old food stains, and a cracked fridge stands open, its contents long rotted away. The floor is littered with broken glass, utensils, and scattered cans, as if someone left in a hurry. Faint scratching sounds come from behind the walls, hinting at the infestation that's taken over this forgotten place.""",
 
-    "items": [item_knife]
+    #"items": [item_knife]
 }
 
 park = {
@@ -172,8 +172,8 @@ road = {
     "description":
     """Roads are dirty and are turned upside down with waste particles, damaged cars and  scattered everywhere with major potholes planted around.""",
 }
-# Add special rooms here (replace exercise 6 rooms)
-special_rooms = [room_admins, room_office, room_parking, room_reception]
 
-# Rooms that will be used as filler, will have no special events and may have randomly generated loot/enemies
-generic_rooms = [room_tutor]
+special_rooms = [bedroom_tutorial, bathroom_tutorial, kitchen, park, the_hood, cinema, shopping_centre, graveyard, supermarket, hospital, pharmacy, gym, firestation, fastfoodplace, conveniencestore, trainstation, library, hairdresser, airport, skyscraper, road]
+
+
+generic_rooms = []
