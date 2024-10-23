@@ -108,8 +108,9 @@ def execute_consume(item_id):
             player.inventory[item] -= 1
             if player.inventory[item] <= 0:
                 player.inventory.pop(item)
-            return
+            return True
     print("You cannot consume that.")
+    return False
 
 
 def execute_take(item_id):
@@ -230,6 +231,11 @@ def combat():
         # Player turn, loop till valid command entered
         while True:
 
+            print("\nMake your move.\n")
+            print("ATTACK <enemy> <weapon>")
+            print("CONSUME <item>")
+            print("FLEE")
+
             command = menu()
 
             # Flee command
@@ -268,7 +274,9 @@ def combat():
                     print("You do not have that item!")
                     continue
 
-
+            elif command[0] in ["use", "consume"]:
+                if execute_consume(command[1]):
+                    break
 
         if len(player.get_current_room().enemies) == 0:
             print("You defeated all of the enemies. You can now advance into the room!")
@@ -277,8 +285,12 @@ def combat():
         # Enemy turn
         enemy = random.choice(player.get_current_room().enemies)
         print(f"The {enemy.name} attacked you!")
-        player.health -= enemy.damage
-        print(f"It dealt {enemy.damage} damage.")
+        if random.random() < enemy.crit_chance:
+            print(f"It hit you for critical damage and dealt {enemy.get_damage(True)} damage.")
+            player.health -= enemy.get_damage(True)
+        else:
+            print(f"It dealt {enemy.get_damage(False)} damage.")
+            player.health -= enemy.get_damage(False)
 
         if player.health > 0:
             print(f"You are now on {player.health} health.")
