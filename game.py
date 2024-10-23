@@ -8,6 +8,14 @@ from colorama import Fore
 import subprocess
 import sys
 
+
+#TODO add enemies to rooms
+#TODO add combat
+#TODO add items
+#TODO add npc's
+#TODO add morphine and allow overdose based on chance
+
+
 def install_requirements():
     try:
         import colorama
@@ -191,7 +199,7 @@ def execute_command(command):
 
 
     else:
-        print("This makes no sense.")
+        print("This makes no sense, it appears as though the first word is not one of the designated command words..")
 
 
 def menu(exits, room_items, inv_items):
