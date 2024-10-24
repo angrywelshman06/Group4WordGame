@@ -132,46 +132,56 @@ def execute_consume(item_id):
     return False
 
 
-def execute_take(item_id):
+def execute_take(item_id, amount=1):
 
     for item_dict_id in player.get_current_room().items.keys():
         if item_dict_id == item_id:
 
-            if player.get_current_room().items[item_id] > 1:
-                player.get_current_room().items[item_id] -= 1
+            item = items.dict_to_item(get_item_dict_from_list(item_dict_id))
+
+            if player.get_current_room().items[item_id] < amount:
+                print(f"There are not {amount} many {item.name}s in the room.")
+                return
+
+
+            if player.get_current_room().items[item_id] > amount:
+                player.get_current_room().items[item_id] -= amount
             else:
                 player.get_current_room().items.pop(item_id)
 
-            item = items.dict_to_item(get_item_dict_from_list(item_dict_id))
 
             found = False
             for item in player.inventory.keys():
                 if item.id == item_id:
-                    player.inventory[item] += 1
+                    player.inventory[item] += amount
                     found = True
                     break
 
             if not found:
-                player.inventory[item] = 1
+                player.inventory[item] = amount
 
             print(f"You picked up {item.name}.")
             return
     print("You cannot take that.")
 
 
-def execute_drop(item_id):
+def execute_drop(item_id, amount=1):
     for item in player.inventory.keys():
         if item.id == item_id:
 
-            if player.inventory[item] > 1:
-                player.inventory[item] -= 1
+            if player.inventory[item] < amount:
+                print(f"You do not have {amount} {item.name}s.")
+                return
+
+            if player.inventory[item] > amount:
+                player.inventory[item] -= amount
             else:
                 player.inventory.pop(item)
 
             if item.id in player.get_current_room().items:
-                player.get_current_room().items[item.id] += 1
+                player.get_current_room().items[item.id] += amount
             else:
-                player.get_current_room().items[item.id] = 1
+                player.get_current_room().items[item.id] = amount
 
             print(f"You dropped {item.name}.")
             return
@@ -204,12 +214,17 @@ def execute_command(command):
 
     elif command[0] == "take":
         if len(command) > 1:
+            if len(command) >= 3 and str(command[2]).isdigit():
+                execute_take(command[1], amount=int(command[2]));
+                return
             execute_take(command[1])
         else:
             print("Take what?")
 
     elif command[0] == "drop":
         if len(command) > 1:
+            if len(command) >= 3 and str(command[2]).isdigit():
+                execute_drop(command[1], amount=int(command[2])); return
             execute_drop(command[1])
         else:
             print("Drop what?")
