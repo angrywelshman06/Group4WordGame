@@ -1,7 +1,5 @@
-
-
 class Item:
-    def __init__(self, item : {}):
+    def __init__(self, item: {}):
         self.id = item["id"]
         self.name = item["name"]
         self.description = item["description"]
@@ -11,7 +9,7 @@ class Item:
 class Consumable(Item):
     def __init__(self, item: {}):
         super().__init__(item)
-        self.healing = item["healing"] # How much healing (or damage) the consumable does
+        self.healing = item["healing"]  # How much healing (or damage) the consumable does
 
     def consume(self):
         import player
@@ -22,7 +20,14 @@ class Consumable(Item):
 class Weapon(Item):
     def __init__(self, item: {}):
         super().__init__(item)
-        self.damage = item["damage"] # Amount of damage the weapon inflicts
+        self.damage = item["damage"]
+        self.crit_chance = item["crit_chance"] # Amount of damage the weapon inflicts
+        self.crit_multiplier = item["crit_multiplier"]
+
+    def get_damage(self, crit_bool : bool):
+        if crit_bool:
+            return self.damage * self.crit_multiplier
+        return self.damage
 
 
 """ 
@@ -38,7 +43,6 @@ type - The specific type of the item that links to the classes above (Item being
 
 IGNORE : NOTE: Add all items to the item list at the bottom of the file to initialise them
 """
-
 
 item_id_card = {
     "id": "id",
@@ -119,24 +123,35 @@ item_handbook = {
 
 paracetamol = {
     "id": "paracetamol",
-    "name" : "paracetamol tablet",
-    "description" : "DESCRIPTION",
+    "name": "paracetamol tablet",
+    "description": "DESCRIPTION",
     "mass": 100,
 
     "type": Consumable,
 
     # Consumable specifics
 
-    "healing" : 20
+    "healing": 20
 }
 
 morphine = {
     "id": "morphine",
-    "name" : "morphine",
-    "description" : "DESCRIPTION",
+    "name": "morphine",
+    "description": "DESCRIPTION",
     "type": Consumable,
-    "healing" : 50,
+    "healing": 50,
     "mass": 100
+}
+
+gun = {
+    "id" : "gun",
+    "name" : "gun",
+    "description" : "DESCRIPTION",
+    "mass" : 100,
+    type: Weapon,
+    "damage" : 10,
+    "crit_chance" : 0.4,
+    "crit_multiplier" : 1.5
 }
 
 #items = [item_id_card, item_biscuits, item_handbook, item_laptop, item_money, item_pen]

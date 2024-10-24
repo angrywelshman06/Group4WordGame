@@ -1,8 +1,10 @@
 #!/usr/bin/python3
+import enemies
+import items
 import player
+import random
 from items import Consumable
 from gameparser import *
-from player import current_room_position
 from map import get_room, map_matrix, door_assigner, Room, generate_map
 from colorama import Fore
 import subprocess
@@ -49,11 +51,13 @@ def print_room(room: Room):
     print()
     print_room_items(room)  # Displays items in room
 
-    # Print exits
-    if room.exits:
-        print("Exits: " + ", ".join(room.exits))
-    else:
-        print("No exits available seems you might be stuck. What a shame ;)")
+    if len(room.enemies) == 0:
+
+        # Print exits
+        if room.exits:
+            print("Exits: " + ", ".join(room.exits))
+        else:
+            print("No exits available seems you might be stuck. What a shame ;)")
 
 # Checks if the exit is valid in the current room
 def is_valid_exit(direction):
@@ -79,19 +83,10 @@ def execute_go(direction):
             print("Congratulations! You have escaped the matrix. You win!")
             sys.exit()
 
-        if new_room is None:
-            new_room = Room()
-            map_matrix[new_pos[1]][new_pos[0]] = new_room
 
-            # Generate doors for the new room
-            new_room.exits = door_assigner(len(map_matrix), len(map_matrix[0]), new_pos[0], new_pos[1])
-
-            # Ensure the new room has an exit back to the current room
-            opposite_direction = {"north": "south", "south": "north", "east": "west", "west": "east"}
-            new_room.exits.add(opposite_direction[direction])
-
-        # Update the current room's exits
-        current_room.exits.add(direction)
+        # Ensure the new room has an exit back to the current room
+        opposite_direction = {"north": "south", "south": "north", "east": "west", "west": "east"}
+        new_room.exits.add(opposite_direction[direction])
 
         player.previous_room_position = player.current_room_position
         player.current_room_position = new_pos
@@ -112,8 +107,9 @@ def execute_consume(item_id):
             player.inventory[item] -= 1
             if player.inventory[item] <= 0:
                 player.inventory.pop(item)
-            return
+            return True
     print("You cannot consume that.")
+    return False
 
 
 def execute_take(item_id):
@@ -144,6 +140,20 @@ def execute_drop(item_id):
 
 def execute_command(command):
     if 0 == len(command):
+        return
+
+    if len(player.get_current_room().enemies) >= 1:
+
+        if command[0] == "fight":
+            combat()
+            return
+
+        if command[0] in ["flee", "leave", "run"]:
+            player.current_room_position = player.previous_room_position
+            print(f"You fled back to the previous room!")
+            return
+
+        print("Not a valid command! Please choose either fight or flee.")
         return
 
     if command[0] == "go":
@@ -201,10 +211,105 @@ def execute_command(command):
     else:
         print("This makes no sense, it appears as though the first word is not one of the designated command words..")
 
+def execute_attack(enemy_id, enemy : enemies.Enemy, weapon : items.Weapon):
 
-def menu(exits, room_items, inv_items):
-# Display menu
-    #print_menu(exits, room_items, inv_items)
+
+
+    if random.random() < weapon.crit_chance:
+        print(f"You hit the {enemy.name} for critical damage and dealt {weapon.get_damage(True)} damage.")
+        enemy.health -= weapon.get_damage(True)
+    else:
+        print(f"You hit the {enemy.name} and dealt {weapon.get_damage(False)} damage.")
+        enemy.health -= weapon.get_damage(False)
+
+    if enemy.health > 0:
+        print(f"The {enemy.name} now has {enemy.health} health.")
+    else:
+        player.get_current_room().enemies.pop(enemy_id)
+        print(f"The {enemy.name} has been killed!")
+
+def combat():
+
+    # Main Combat Loop
+    while True:
+        print("=" * 40) # To separate turns
+
+        # Player turn, loop till valid command entered
+        while True:
+
+            print("\nMake your move.\n")
+            print("ATTACK <enemy> <weapon>")
+            print("CONSUME <item>")
+            print("FLEE")
+
+            for i in player.get_current_room().enemies:
+                print(i)
+
+            command = menu()
+
+            # Flee command
+            if command[0] == "flee":
+                player.current_room_position = player.previous_room_position
+                print(f"You fled back to the previous room!")
+                return
+
+            elif command[0] == "attack":
+
+                # Checking correct number of prompts
+                if len(command) < 3:
+                    print("Invalid command. Type HELP for command prompts")
+                    continue
+
+                # Checking enemy is valid
+                if command[1] not in player.get_current_room().enemies:
+                    print(command[1])
+                    print("Invalid enemy!")
+                    continue
+
+                item_valid = False
+                for item in player.inventory:
+                    if item.id == command[2]:
+
+                        if type(item) == items.Weapon:
+                            execute_attack(command[1], player.get_current_room().enemies[command[1]], item)
+                            item_valid = True
+                            break
+                        else:
+                            print("This item is not a weapon!")
+                            continue
+
+                if item_valid:
+                    break
+                else:
+                    print("You do not have that item!")
+                    continue
+
+            elif command[0] in ["use", "consume"]:
+                if execute_consume(command[1]):
+                    break
+
+        if len(player.get_current_room().enemies) == 0:
+            print("You defeated all of the enemies. You can now advance into the room!")
+            return
+
+        # Enemy turn
+        enemy = random.choice(list(player.get_current_room().enemies.values()))
+        print(f"The {enemy.name} attacked you!")
+        if random.random() < enemy.crit_chance:
+            print(f"It hit you for critical damage and dealt {enemy.get_damage(True)} damage.")
+            player.health -= enemy.get_damage(True)
+        else:
+            print(f"It dealt {enemy.get_damage(False)} damage.")
+            player.health -= enemy.get_damage(False)
+
+        if player.health > 0:
+            print(f"You are now on {player.health} health.")
+        else:
+            # Player dead
+            pass
+
+
+def menu():
 
     # Read player's input
     user_input = input("> ")
@@ -230,23 +335,20 @@ def main():
         if player.get_current_room() is None:
             print("Congratulations you have escaped the matrix, you are free from Cardiff and for you the game is over.")
 
-
-        # Display game status (room description, inventory etc.)
         print_room(player.get_current_room())
 
         if len(player.get_current_room().enemies) >= 1:
-            # Combat
-            pass
+            print(f"There are {len(player.get_current_room().enemies)} enemies in this room. Choose whether to FIGHT to continue or FLEE to the previous room.")
+        else:
+            # Display game status (room description, inventory etc.)
+            player.print_inventory_items()
+            print(f"Current Inventory Mass: {player.inventory_mass()}g")
+            print()
+            print(player.current_room_position)
 
-        player.print_inventory_items()
-        print(f"Current Inventory Mass: {player.inventory_mass()}g")
-        print()
-
-        print(current_room_position)
-        print(player.get_current_room().exits)
 
         # Show the menu with possible actions and ask the player
-        command = menu(player.get_current_room().exits, player.get_current_room().items, player.inventory)
+        command = menu()
 
         # Execute the player's command
         execute_command(command)
