@@ -171,6 +171,23 @@ road = {
     "description":
     """Roads are dirty and are turned upside down with waste particles, damaged cars and  scattered everywhere with major potholes planted around.""",
 }
+armoured_van = {
+    "name": "Armoured Van",
+
+    "description":
+    """The armoured van, once a fortress on wheels, now sits abandoned with its thick, reinforced doors left slightly ajar. Bullet holes riddle its sides, and the cracked windshield is smeared with dust and grime. Inside, empty crates and torn money bags are strewn across the floor, a silent testament to the chaos and desperation that once unfolded here.""",
+}
+bank = {
+    "name": "Bank",
+    "description":
+    """The bank’s lobby is eerily silent, with shattered glass doors and overturned counters. Security cameras hang lifeless from the ceiling, and vault doors are left wide open, their contents looted, while scattered bills and coins lay strewn across the marble floors, forgotten in the chaos.""",
+}
+
+
+
+
+
+
 
 special_rooms = [bedroom_tutorial, bathroom_tutorial, kitchen, park, the_hood, cinema, shopping_centre, graveyard, supermarket, hospital, pharmacy, gym, firestation, fastfoodplace, conveniencestore, trainstation, library, hairdresser, airport, skyscraper, road]
 
