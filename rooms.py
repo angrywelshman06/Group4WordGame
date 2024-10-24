@@ -171,8 +171,48 @@ road = {
     "description":
     """Roads are dirty and are turned upside down with waste particles, damaged cars and  scattered everywhere with major potholes planted around.""",
 }
+armoured_van = {
+    "name": "Armoured Van",
 
-special_rooms = [bedroom_tutorial, bathroom_tutorial, kitchen, park, the_hood, cinema, shopping_centre, graveyard, supermarket, hospital, pharmacy, gym, firestation, fastfoodplace, conveniencestore, trainstation, library, hairdresser, airport, skyscraper, road]
+    "description":
+    """The armoured van, once a fortress on wheels, now sits abandoned with its thick, reinforced doors left slightly ajar. Bullet holes riddle its sides, and the cracked windshield is smeared with dust and grime. Inside, empty crates and torn money bags are strewn across the floor, a silent testament to the chaos and desperation that once unfolded here.""",
+}
+bank = {
+    "name": "Bank",
+    "description":
+    """The bank’s lobby is eerily silent, with shattered glass doors and overturned counters. Security cameras hang lifeless from the ceiling, and vault doors are left wide open, their contents looted, while scattered bills and coins lay strewn across the marble floors, forgotten in the chaos.""",
+}
+arcade = {
+    "name": "Arcade",
+    "description":
+    """The arcade, once filled with flashing lights and excited laughter, is now a graveyard of broken machines and shattered screens. Prize claw machines stand empty, their glass cracked, and old tokens litter the floor beneath games that will never be played again, their cheerful music silenced forever.""",
+}
+nursery = {
+    "name": "Nursery",
+    "description":
+    """
+The nursery is a heartbreaking scene, with tiny chairs tipped over and children's toys scattered across the floor. The walls, once brightly painted with cheerful murals, are peeling, and cribs sit empty, their blankets left askew as if their occupants were snatched away in a hurry.""",
+}
+pub = {
+    "name": "Pub",
+    "description":
+    """The pub, once filled with laughter and clinking glasses, now stands in eerie silence, its stools overturned and tables coated in dust. Broken bottles and scattered chairs litter the floor, while the faint smell of stale alcohol mixes with the scent of decay, and shadows move unnervingly in the corners.""",
+}
+river = {
+    "name": "River",
+    "description":
+    """The river, once a flowing lifeline, is now sluggish and murky, its waters dark and polluted with debris. Plastic bottles, driftwood, and other trash float along the surface, and the smell of decay hangs heavy in the air, while the distant sound of something splashing suggests the water isn’t as lifeless as it seems.""",
+}
+petrol_station = {
+    "name": "Petrol Station",
+    "description":
+    """The petrol station is a wasteland of rusting pumps and broken glass, with abandoned cars still parked at the empty fuel bays. The flickering neon sign buzzes faintly, casting a pale glow on the shattered windows of the convenience store, while dried bloodstains on the tarmac hint at a chaotic, violent end.""",
+}
 
 
-generic_rooms = []
+
+
+special_rooms = [bedroom_tutorial, bathroom_tutorial, kitchen, park, the_hood, cinema, shopping_centre, graveyard, supermarket, hospital, pharmacy, gym, firestation, fastfoodplace, conveniencestore, trainstation, library, hairdresser, airport, skyscraper, road, armoured_van, bank, arcade, nursery, pub, river, petrol_station]
+
+
+generic_rooms = [Vet,Telephone_box,Church, Bus_stop, Open-Air_Markets, Bike_street_stand, Post_office, Pedestrian_tunnels, Drive_thru_restaurant, Sports_bar, Construction_area, Street_supermarket, Abandoned_concert_arena, Firearms_Dealers, Abandoned_yacht, Abandoned_beach, Radio_station, Status_area, Cafe, Abandoned_car_mechanics, Abandoned_nightclub, Street_smoking_area, Abandoned_aquarium, Dock, Abandoned_clothing_workshop, Abandoned_factory, Dance_arena, Abandoned_zoo, Abandoned_museum, Ice_cream_store, Abandoned_gaming_store, Time_Capsule_Room, Abandoned_elderly_home, Kids_playground, Astroturf, Golf_course, Tennis_court, Basketball_court, Karting_course, Farm, Animal_shed, Abandoned_cinema, Forest, Canyon, Pond, Beach, Meadow, Canyon, Lake, Athletic_Track, Ice_Skating_Rink]
