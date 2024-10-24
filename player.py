@@ -17,9 +17,9 @@ def inventory_mass():
     return mass
 
 
-def print_inventory_items():
+def get_inventory_items():
     if len(inventory) == 0:
-        return
+        return -1
 
     item_list = ""
     count = 0
@@ -33,8 +33,7 @@ def print_inventory_items():
         if inventory[item] > 1: item_list += "s"
         count += 1
 
-    print(f"You have {item_list}.")
-    print()
+    return f"You have {item_list}."
 
 
 

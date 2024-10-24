@@ -16,7 +16,6 @@ class Consumable(Item):
     def consume(self):
         import player
         player.health += self.healing
-        print("Consumed")
 
 
 class Weapon(Item):
