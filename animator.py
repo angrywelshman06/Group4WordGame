@@ -3,7 +3,7 @@ import time
 import curses
 import os
 from ani_sprites import *
-from combat import *
+#from combat import *
 from curses import wrapper
 from operator import attrgetter
 import threading
@@ -92,9 +92,9 @@ def main(stdscr): ### TESTING PURPOSES ## Uncomment whichever path you need in t
     # print(cutscene_1_1, "WORKING")
     # run_animation_curses(display_win,*cutscene_1_1)
     # zombies = (("zombie", 2),("zombie", 1), ("zombie", 1),("zombie", 1),("zombie", 1),("zombie", 1),("zombie", 1),("zombie", 1)) #this tuple will be what's returned from the random battle generator
-    fight = initiate_combat(display_win,*zombies)
+    #fight = initiate_combat(display_win,*zombies)
     # print(fight.draw_on_window(), "NOT WORKING")
-    print_stillshot_curses([0,0,0,0,0,0,0,0,0], display_win, *fight.draw_on_window())
+    #print_stillshot_curses([0,0,0,0,0,0,0,0,0], display_win, *fight.draw_on_window())
     # print_stillshot_curses([0,0], display_win, holder1, holder2)
     # print_stillshot_curses([0,0], display_win, fight.creatures_dict["Enemy_1"].spritesheet, fight.creatures_dict["Enemy_2"].spritesheet)
     # fight = initiate_combat()
