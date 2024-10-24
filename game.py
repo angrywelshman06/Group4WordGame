@@ -20,6 +20,7 @@ import traceback
 
 #TODO add enemies to rooms
 #TODO add combat
+from combat import *
 #TODO add items
 #TODO add npc's
 #TODO add morphine and allow overdose based on chance
@@ -306,11 +307,28 @@ def main():
 ╠╬╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╬╣
 ╚╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╝
 """)
+
+    #refresh pads
+    ui.art_pad.refresh(0,0,0,0, ui.y-1, int(ui.x/2)-1)
+    ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x-1)
     # play cutscene # temporary # in the future could be replaced with intro animation or something
-    #play_animation(cutscene_1)
-
+    play_animation(cutscene_1)
+    zombies = [("zombie", 2),("zombie", 5), ("zombie", 1),("zombie", 1)] #this list will be what's returned from the random battle generator
+    fight = initiate_combat(ui.art_pad,zombies)
+    run_animation_curses(*fight.animation)
+    ui.art_pad.getch()
     try:
-
+        ###### LOOP CAN BE WHATEVER, JUST FOR TESTING PURPOSES THIS ONE
+        for i in range(2):
+            print_stillshot_curses(*fight.stillstate) ## unpacking tuple with the necessary arguments
+            display_win.getch()
+            user_input = "attack 1" # REPLACE THIS WITH WHATEVER PARSED USER INPUT. In user_update, the only valid inputs so far are "escape" and "attack_1", "attack_2"... etc. This should check fight.creatures_dict to see if enemy exists before executing the function.
+            fight.user_update(user_input)
+            run_animation_curses(*fight.animation) # runs the stored animation
+            print_stillshot_curses(*fight.stillstate)
+            display_win.getch()
+            fight.zombie_update() # handles which zombie attacks the player
+            run_animation_curses(*fight.animation)
         set_scene()
 
         while True:
@@ -376,7 +394,7 @@ def main():
             ui_lock.acquire()
             ui.art_pad.refresh(0,0,0,0, ui.y-1, int(ui.x/2)-1)
             try: 
-                ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x-1)
+                ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x)
             except: #do nothing when trying to scroll past the available screen size
                 pass
             ui_lock.release()
