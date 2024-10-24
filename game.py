@@ -129,9 +129,14 @@ def execute_take(item_id):
 
 
 def execute_drop(item_id):
-    for item in player.inventory:
+    for item in player.inventory.keys():
         if item.id == item_id:
-            player.inventory.pop(player.inventory.index(item))
+
+            if player.inventory[item] > 1:
+                player.inventory[item] -= 1
+            else:
+                player.inventory.pop(item)
+
             player.get_current_room().items.append(item)
             print(f"You dropped {item.name}.")
             return
