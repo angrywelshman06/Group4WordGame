@@ -131,7 +131,7 @@ paracetamol = {
 
     # Consumable specifics
 
-    "healing": 20
+    "healing": 45
 }
 
 morphine = {
@@ -139,7 +139,7 @@ morphine = {
     "name": "morphine",
     "description": "DESCRIPTION",
     "type": Consumable,
-    "healing": 50,
+    "healing": 70,
     "mass": 100
 }
 

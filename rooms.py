@@ -12,7 +12,7 @@ class Room:
         self.position = position
 
         self.items = []
-        for item_dict in room_dict["items"]:
+        for item_dict in room_dict.get("items", []):
             if "type" not in item_dict:
                 self.items.append(Item(item_dict))
 
