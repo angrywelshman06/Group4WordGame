@@ -154,4 +154,23 @@ gun = {
     "crit_multiplier" : 1.5
 }
 
-#items = [item_id_card, item_biscuits, item_handbook, item_laptop, item_money, item_pen]
+item_list = [item_id_card, item_biscuits, item_handbook, item_laptop, item_money, item_pen, gun, paracetamol, morphine]
+
+def get_item_dict_from_list(item_id : str) -> {}:
+    for item_dict in item_list:
+        if item_dict["id"] == item_id:
+            return item_dict
+    return None
+
+def dict_to_item(item_dict : {}):
+    if "type" not in item_dict:
+        item = Item(item_dict)
+        return item
+
+    match item_dict["type"].__name__:
+        case Consumable.__name__:
+            item = Consumable(item_dict)
+        case _:
+            item = Item(item_dict)
+    return item
+

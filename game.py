@@ -3,7 +3,7 @@ import enemies
 import items
 import player
 import random
-from items import Consumable
+from items import Consumable, get_item_dict_from_list
 from gameparser import *
 from map import get_room, map_matrix, door_assigner, Room, generate_map
 from colorama import Fore
@@ -24,23 +24,38 @@ def install_requirements():
     except ImportError:
         subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
 
+
 install_requirements()
 
-def list_of_items(items):
-    new_string = ""
-    for i in range(len(items)):
-        if i != 0: new_string += ", "
-        new_string += items[i].name
-    return new_string
 
-
-def print_room_items(room : Room):
+def print_room_items(room: Room):
     # If there are no items, no output
     if len(room.items) == 0:
         return
 
-    print(f"There is {list_of_items(room.items)} here.")
+    item_list = ""
+    count = 0
+    for item_id in room.items.keys():
+
+        item_dict = get_item_dict_from_list(item_id)
+        if item_dict is None:
+            print(f"ERROR: {item_id} HAS NOT BEEN INITIALISED")
+            continue
+
+        item = items.Item(item_dict)
+
+        if count == len(room.items) - 1 and len(room.items) > 1:
+            item_list += " and "
+        elif count != 0:
+            item_list += ", "
+        item_list += f"{room.items[item.id]} {item.name}"
+        if room.items[item.id] > 1: item_list += "s"
+        count += 1
+
+    print(f"There is {item_list} here.")
+
     print()
+
 
 # Prints information about the given room
 def print_room(room: Room):
@@ -59,6 +74,7 @@ def print_room(room: Room):
         else:
             print("No exits available seems you might be stuck. What a shame ;)")
 
+
 # Checks if the exit is valid in the current room
 def is_valid_exit(direction):
     return direction in player.get_current_room().exits
@@ -70,10 +86,14 @@ def execute_go(direction):
 
         # Translating direction into vector movement
         match direction:
-            case "north": new_pos[1] -= 1
-            case "east": new_pos[0] += 1
-            case "south": new_pos[1] += 1
-            case "west": new_pos[0] -= 1
+            case "north":
+                new_pos[1] -= 1
+            case "east":
+                new_pos[0] += 1
+            case "south":
+                new_pos[1] += 1
+            case "west":
+                new_pos[0] -= 1
 
         # Ensure the new room has an exit back to the previous room
         current_room = player.get_current_room()
@@ -82,7 +102,6 @@ def execute_go(direction):
         if new_room is None:
             print("Congratulations! You have escaped the matrix. You win!")
             sys.exit()
-
 
         # Ensure the new room has an exit back to the current room
         opposite_direction = {"north": "south", "south": "north", "east": "west", "west": "east"}
@@ -94,6 +113,7 @@ def execute_go(direction):
         print(f"You are going to {new_room.name}.")
     else:
         print("You cannot go there.")
+
 
 def execute_consume(item_id):
     for item in player.inventory:
@@ -113,16 +133,27 @@ def execute_consume(item_id):
 
 
 def execute_take(item_id):
-    for item in player.get_current_room().items:
-        if item["id"] == item_id:
 
-            if player.inventory_mass() + item.mass > player.max_mass:
-                print("You cannot take that, your inventory is too small")
-                print(f"Current Inventory Mass: {player.inventory_mass()}g")
-                print(f"Mass of {item.name}: {item.mass}g")
-                return
-            player.get_current_room().items.pop(player.get_current_room().items.index(item))
-            player.inventory.append(item)
+    for item_dict_id in player.get_current_room().items.keys():
+        if item_dict_id == item_id:
+
+            if player.get_current_room().items[item_id] > 1:
+                player.get_current_room().items[item_id] -= 1
+            else:
+                player.get_current_room().items.pop(item_id)
+
+            item = items.dict_to_item(get_item_dict_from_list(item_dict_id))
+
+            found = False
+            for item in player.inventory.keys():
+                if item.id == item_id:
+                    player.inventory[item] += 1
+                    found = True
+                    break
+
+            if not found:
+                player.inventory[item] = 1
+
             print(f"You picked up {item.name}.")
             return
     print("You cannot take that.")
@@ -137,7 +168,11 @@ def execute_drop(item_id):
             else:
                 player.inventory.pop(item)
 
-            player.get_current_room().items.append(item)
+            if item.id in player.get_current_room().items:
+                player.get_current_room().items[item.id] += 1
+            else:
+                player.get_current_room().items[item.id] = 1
+
             print(f"You dropped {item.name}.")
             return
     print("You cannot drop that.")
@@ -216,10 +251,8 @@ def execute_command(command):
     else:
         print("This makes no sense, it appears as though the first word is not one of the designated command words..")
 
-def execute_attack(enemy_id, enemy : enemies.Enemy, weapon : items.Weapon):
 
-
-
+def execute_attack(enemy_id, enemy: enemies.Enemy, weapon: items.Weapon):
     if random.random() < weapon.crit_chance:
         print(f"You hit the {enemy.name} for critical damage and dealt {weapon.get_damage(True)} damage.")
         enemy.health -= weapon.get_damage(True)
@@ -233,11 +266,11 @@ def execute_attack(enemy_id, enemy : enemies.Enemy, weapon : items.Weapon):
         player.get_current_room().enemies.pop(enemy_id)
         print(f"The {enemy.name} has been killed!")
 
-def combat():
 
+def combat():
     # Main Combat Loop
     while True:
-        print("=" * 40) # To separate turns
+        print("=" * 40)  # To separate turns
 
         # Player turn, loop till valid command entered
         while True:
@@ -315,7 +348,6 @@ def combat():
 
 
 def menu():
-
     # Read player's input
     user_input = input("> ")
 
@@ -327,7 +359,6 @@ def menu():
 
 # This is the entry point of our program
 def main():
-
     # Startup Logic
     generate_map()
 
@@ -338,19 +369,20 @@ def main():
         print("=" * 40)
 
         if player.get_current_room() is None:
-            print("Congratulations you have escaped the matrix, you are free from Cardiff and for you the game is over.")
+            print(
+                "Congratulations you have escaped the matrix, you are free from Cardiff and for you the game is over.")
 
         print_room(player.get_current_room())
 
         if len(player.get_current_room().enemies) >= 1:
-            print(f"There are {len(player.get_current_room().enemies)} enemies in this room. Choose whether to FIGHT to continue or FLEE to the previous room.")
+            print(
+                f"There are {len(player.get_current_room().enemies)} enemies in this room. Choose whether to FIGHT to continue or FLEE to the previous room.")
         else:
             # Display game status (room description, inventory etc.)
             player.print_inventory_items()
             print(f"Current Inventory Mass: {player.inventory_mass()}g")
             print()
             print(player.current_room_position)
-
 
         # Show the menu with possible actions and ask the player
         command = menu()
@@ -388,4 +420,3 @@ if __name__ == "__main__":
 ╚╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╝
 """)
     main()
-
