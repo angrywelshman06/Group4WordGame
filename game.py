@@ -203,7 +203,9 @@ def execute_command(command):
     else:
         print("This makes no sense.")
 
-def execute_attack(enemy : enemies.Enemy, weapon : items.Weapon):
+def execute_attack(enemy_id, enemy : enemies.Enemy, weapon : items.Weapon):
+
+
 
     if random.random() < weapon.crit_chance:
         print(f"You hit the {enemy.name} for critical damage and dealt {weapon.get_damage(True)} damage.")
@@ -215,7 +217,7 @@ def execute_attack(enemy : enemies.Enemy, weapon : items.Weapon):
     if enemy.health > 0:
         print(f"The {enemy.name} now has {enemy.health} health.")
     else:
-        player.get_current_room().enemies.pop(player.get_current_room().enemies.index(enemy))
+        player.get_current_room().enemies.pop(enemy_id)
         print(f"The {enemy.name} has been killed!")
 
 def combat():
@@ -231,6 +233,9 @@ def combat():
             print("ATTACK <enemy> <weapon>")
             print("CONSUME <item>")
             print("FLEE")
+
+            for i in player.get_current_room().enemies:
+                print(i)
 
             command = menu()
 
@@ -248,7 +253,8 @@ def combat():
                     continue
 
                 # Checking enemy is valid
-                if not( 1 <= int(command[1]) <= len(player.get_current_room().enemies)):
+                if command[1] not in player.get_current_room().enemies:
+                    print(command[1])
                     print("Invalid enemy!")
                     continue
 
@@ -257,7 +263,7 @@ def combat():
                     if item.id == command[2]:
 
                         if type(item) == items.Weapon:
-                            execute_attack(player.get_current_room().enemies[int(command[1]) - 1], item)
+                            execute_attack(command[1], player.get_current_room().enemies[command[1]], item)
                             item_valid = True
                             break
                         else:
@@ -279,7 +285,7 @@ def combat():
             return
 
         # Enemy turn
-        enemy = random.choice(player.get_current_room().enemies)
+        enemy = random.choice(list(player.get_current_room().enemies.values()))
         print(f"The {enemy.name} attacked you!")
         if random.random() < enemy.crit_chance:
             print(f"It hit you for critical damage and dealt {enemy.get_damage(True)} damage.")

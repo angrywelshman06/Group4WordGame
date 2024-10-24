@@ -1,3 +1,4 @@
+import enemies
 import items
 from items import *
 
@@ -6,13 +7,12 @@ class Room:
     def __init__(self, room_dict: {}, position: tuple):
         self.name = room_dict["name"]
         self.description = room_dict["description"]
-        self.enemies = []
+        self.enemies = {}
         self.exits = set()
         self.position = position
 
         self.items = []
         for item_dict in room_dict["items"]:
-            item = None
 
             if "type" not in item_dict:
                 self.items.append(Item(item_dict))

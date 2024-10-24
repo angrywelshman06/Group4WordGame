@@ -72,14 +72,14 @@ def generate_map():
                 generic_room = {'name': room_name, 'description': description, 'items': []}
                 room = Room(generic_room, (x, y))
 
-                if random.random() <= 0.18:
-                    for i in range(random.randint(1,3)):
+                if random.random() <= 0.50:
+                    for num in range(random.randint(1,3)):
                         chance = random.random()
                         level = 1
                         if chance < 0.2: level = 3
                         elif chance < 0.5: level = 2
 
-                        room.enemies.append(Enemy(enemies.zombie, level=level))
+                        room.enemies[f"enemy{num}"] = Enemy(enemies.zombie, level=level)
 
                 map_matrix[y][x] = room
 
