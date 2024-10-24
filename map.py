@@ -6,7 +6,6 @@ from rooms import special_rooms, Room, generic_rooms
 from collections import deque
 import sys
 
-
 map_matrix = [[None for x in range(10)] for y in range(10)]
 
 '''
@@ -28,14 +27,17 @@ room objects, and the 1 being the starting point (and tutorial room)
 
 #This is the starting position of the player, as shown above
 starting_position = [4, 4]
+
 def generate_map():
     used_rooms = set()
 
     # Add in tutorial room
-    tutorial_room = Room(rooms.room_tutorial, tuple(starting_position))
+    tutorial_room = Room(rooms.bedroom_tutorial, tuple(starting_position))
     tutorial_room.exits = {"north"}
     map_matrix[starting_position[0]][starting_position[1]] = tutorial_room
-    used_rooms.add(rooms.room_tutorial['name'])
+    used_rooms.add(rooms.bedroom_tutorial['name'])
+
+    # Debug: Print the special_rooms list
 
     # Add all special rooms
     for sr in special_rooms:
@@ -47,16 +49,12 @@ def generate_map():
             x_coord = random.randint(0, 9)
             y_coord = random.randint(0, 9)
             if map_matrix[x_coord][y_coord] is None and sr['name'] not in used_rooms:
-                if 'unique' in sr and sr['unique']:
-                    room = Room(sr, (x_coord, y_coord))
-                else:
-                    room_type = sr.get('type', 'generic')
-                    description = f"This is a {room_type} room with {random.choice(['a beautiful view', 'an eerie silence', 'a strange smell'])}."
-                    sr['description'] = description
-                    room = Room(sr, (x_coord, y_coord))
+                room = Room(sr, (x_coord, y_coord))
                 map_matrix[x_coord][y_coord] = room
                 used_rooms.add(sr['name'])
                 break
+            else:
+                print(f"Attempt {attempts + 1}: Position ({x_coord}, {y_coord}) is already occupied or room name '{sr['name']}' is already used.")
             attempts += 1
 
         if attempts == max_attempts:
@@ -67,7 +65,7 @@ def generate_map():
     for y in range(len(map_matrix)):
         for x in range(len(map_matrix[y])):
             if map_matrix[y][x] is None:
-                room_name = f"Generic Room {x},{y}"
+                room_name = f"Generic Room {x}{y}"
                 description = "This is a generic room."
                 generic_room = {'name': room_name, 'description': description, 'items': []}
                 room = Room(generic_room, (x, y))
@@ -91,8 +89,6 @@ def generate_map():
 
     # Ensure the map is a connected graph
     ensure_connected_graph()
-
-
 
 def ensure_connected_graph():
     start_room = get_room(starting_position[0], starting_position[1])
