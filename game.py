@@ -306,10 +306,6 @@ def main():
 ╠╬╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╬╣
 ╚╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╝
 """)
-
-    #refresh pads
-    ui.art_pad.refresh(0,0,0,0, ui.y-1, int(ui.x/2)-1)
-    ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x)
     # play cutscene # temporary # in the future could be replaced with intro animation or something
     #play_animation(cutscene_1)
 
@@ -380,7 +376,7 @@ def main():
             ui_lock.acquire()
             ui.art_pad.refresh(0,0,0,0, ui.y-1, int(ui.x/2)-1)
             try: 
-                ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x)
+                ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x-1)
             except: #do nothing when trying to scroll past the available screen size
                 pass
             ui_lock.release()

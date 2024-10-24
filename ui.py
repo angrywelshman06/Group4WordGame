@@ -54,9 +54,9 @@ def write_text(msg = "\n"):
 
     text_pad.addstr(msg)
     try: 
-        text_pad.refresh(text_pad_pos, 0, 0, int(x/2), y-1, x) # could cause error when trying to refresh beyound apd extent
+        text_pad.refresh(text_pad_pos, 0, 0, int(x/2), y-1, x-1) # could cause error when trying to refresh beyound apd extent
     except:
-        text_pad.refresh(text_pad_pos-1, 0, 0, int(x/2), y-1, x)
+        text_pad.refresh(text_pad_pos-1, 0, 0, int(x/2), y-1, x-1)
 
 
 
