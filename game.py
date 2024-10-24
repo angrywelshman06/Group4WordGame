@@ -330,7 +330,7 @@ def main():
         print_room(player.get_current_room())
 
         if len(player.get_current_room().enemies) >= 1:
-            print(f"There are {len(player.get_current_room().enemies)} enemies in this room. Choose whether to fight to continue or flee to the previous room.")
+            print(f"There are {len(player.get_current_room().enemies)} enemies in this room. Choose whether to FIGHT to continue or FLEE to the previous room.")
         else:
             # Display game status (room description, inventory etc.)
             player.print_inventory_items()
