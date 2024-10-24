@@ -37,8 +37,6 @@ def generate_map():
     map_matrix[starting_position[0]][starting_position[1]] = tutorial_room
     used_rooms.add(rooms.bedroom_tutorial['name'])
 
-    # Debug: Print the special_rooms list
-
     # Add all special rooms
     for sr in special_rooms:
         print(f"Generating {sr['name']}.")
