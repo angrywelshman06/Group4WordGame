@@ -116,6 +116,11 @@ def execute_go(direction):
 
         write(f"You are going to {new_room.name}.\n")
 
+        try:
+            draw_stillshot(new_room.visual)
+        except:
+            pass # room has no visuals to print
+
         global in_danger
         if len(new_room.enemies) >= 1:
             in_danger = True
@@ -339,9 +344,9 @@ def execute_combat(command):
         write(f"You are now on {player.health} health.")
     else:
         write("You died!\n")
+        play_animation(cutscene_death_1, True)
         close()
         pass
-
 
 
 def set_scene_combat():
@@ -370,14 +375,26 @@ def write(msg = "\n"):
     ui.write_text(msg) # write msg to text pad
     ui_lock.release() # allow ui to be modified
 
-def play_animation(animation): # this function creates a thread to play the given animation
+def play_animation(animation, hold=False): # this function creates a thread to play the given animation
     # animation has to be a valid animation from ani_sprites.py
     art_pad_args = [0,0,0,0, ui.y-1, int(ui.x/2)-1]
     try:
         anim_thread = Thread(target=run_animation_curses_pad, args=[ui.art_pad, art_pad_args, ui_lock, *animation])
         anim_thread.start()
+        if hold:
+            anim_thread.join()
     except Exception as e:
         write(f"Exception occured in play_animation:\n{e}\n")
+        write(traceback.format_exc())
+
+def draw_stillshot(stillshot):
+
+    art_pad_args = [0,0,0,0, ui.y-1, int(ui.x/2)-1]
+    try:
+        ui.art_pad.clear()
+        print_stillshot_curses_pad(ui.art_pad, art_pad_args, ui_lock, *stillshot)
+    except Exception as e:
+        write(f"Exception occured in draw_stillshot\n{e}\n")
         write(traceback.format_exc())
     
 # global variables
@@ -399,6 +416,10 @@ def main():
 
     #initialise curses screen
     init_screen()
+
+    # play intro animations
+    play_animation(intro_1, True) # hold main thread unntil this animation stops playing
+    play_animation(intro_2)
 
     # write title screen
     write(r"""\
@@ -427,10 +448,8 @@ def main():
 """)
 
     #refresh pads
-    ui.art_pad.refresh(0,0,0,0, ui.y-1, int(ui.x/2)-1)
-    ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x-1)
-    # play cutscene # temporary # in the future could be replaced with intro animation or something
-    play_animation(cutscene_1)
+    #ui.art_pad.refresh(0,0,0,0, ui.y-1, int(ui.x/2)-1)
+    #ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x-1)
 
     #zombies = [("zombie", 2),("zombie", 5), ("zombie", 1),("zombie", 1)] #this list will be what's returned from the random battle generator
     #fight = initiate_combat(ui.art_pad,zombies)

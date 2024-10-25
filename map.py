@@ -47,7 +47,7 @@ def generate_map():
             x_coord = random.randint(0, 9)
             y_coord = random.randint(0, 9)
             if map_matrix[x_coord][y_coord] is None and sr['name'] not in used_rooms:
-                room = Room(sr, (x_coord, y_coord))
+                room = Room(sr, (x_coord, y_coord), visual_in=sr["visual"])
                 map_matrix[x_coord][y_coord] = room
                 used_rooms.add(sr['name'])
                 break

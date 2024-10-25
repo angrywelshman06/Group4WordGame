@@ -7,7 +7,7 @@ from ani_sprites import *
 from curses import wrapper
 from operator import attrgetter
 import threading
-from threading import Thread
+from threading import Thread, Lock
 
 clear = lambda: os.system('cls')
 
@@ -62,6 +62,21 @@ def print_stillshot_curses(framenumlist,win,*args): # [1,4], dude, backpillars
         counter += 1
     for framelist in zip(*frames_to_print): # * unpacks list_framelists into n different lists
         print_frame_curses(framelist,win,args)
+
+def print_stillshot_curses_pad(win, pad_args,ui_lock,*args): # [1,4], dude, backpillars
+    max_frame = max(args, key=attrgetter('frames')).frames
+    list_framelists = [i.frameslist for i in args]
+    list_framelists = adjust_to_max(list_framelists, max_frame)
+    frames_to_print = []
+    counter = 0
+    for i in range(len(args)):
+        frames_to_print.append(list_framelists[i][0])
+        counter += 1
+    for framelist in zip(*frames_to_print): # * unpacks list_framelists into n different lists
+        ui_lock.acquire()
+        print_frame_curses(framelist,win,args)
+        win.refresh(pad_args[0], pad_args[1], pad_args[2], pad_args[3], pad_args[4], pad_args[5])
+        ui_lock.release()
         
 def print_frame_curses(framelist,win,args):
     for chars in zip(*framelist): # framelist unpacked into char number of different characters
