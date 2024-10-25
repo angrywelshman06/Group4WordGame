@@ -27,6 +27,7 @@ room objects, and the 1 being the starting point (and tutorial room)
 
 #This is the starting position of the player, as shown above
 starting_position = [4, 4]
+bathroom_position = [4, 3]
 
 def generate_map():
     used_rooms = set()
@@ -37,7 +38,11 @@ def generate_map():
     map_matrix[starting_position[0]][starting_position[1]] = tutorial_room
     used_rooms.add(rooms.bedroom_tutorial['name'])
 
-    # Debug: Print the special_rooms list
+    # Add bathroom room directly north of the starting position
+    bathroom_room = Room(rooms.bathroom_tutorial, tuple(bathroom_position))
+    bathroom_room.exits = {"south"}
+    map_matrix[bathroom_position[0]][bathroom_position[1]] = bathroom_room
+    used_rooms.add(rooms.bathroom_tutorial['name'])
 
     # Add all special rooms
     for sr in special_rooms:
@@ -71,7 +76,7 @@ def generate_map():
                 room = Room(generic_room, (x, y))
 
                 if random.random() <= 0.50:
-                    for num in range(random.randint(1,3)):
+                    for num in range(random.randint(1, 3)):
                         chance = random.random()
                         level = 1
                         if chance < 0.2: level = 3
