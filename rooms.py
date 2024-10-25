@@ -11,14 +11,12 @@ class Room:
         self.enemies = {}
         self.exits = set()
         self.position = position
-
         self.items = {}
 
         if "items" not in room_dict:
             return
 
         for key in room_dict["items"]:
-
             # Searching for item dictionary
             item_dict = None
             for item_dictionary in item_list:
@@ -31,7 +29,8 @@ class Room:
 
             if "type" not in item_dict:
                 item = Item(item_dict)
-                self.items[item] = room_dict["items"][item]
+                if item in room_dict["items"]:
+                    self.items[item] = room_dict["items"][item]
                 continue
 
             match item_dict["type"]:
@@ -39,8 +38,8 @@ class Room:
                     item = Consumable(item_dict)
                 case _:
                     item = Item(item_dict)
-            self.items[item.id] = room_dict["items"][item.id]
-
+            if item.id in room_dict["items"]:
+                self.items[item.id] = room_dict["items"][item.id]
 
 # Special rooms
 # Add all to special rooms list at bottom of file
@@ -56,7 +55,7 @@ bedroom_tutorial = {
 
 
 
-    "items": [paracetamol]
+    "items": {'paracetamol': 2}
 
 }
 bathroom_tutorial = {
@@ -67,7 +66,7 @@ bathroom_tutorial = {
 
 
 
-    "items": [item_toothpaste]
+    "items": {'paracetamol': 2}
 
 }
 
@@ -77,7 +76,7 @@ kitchen = {
     "description":
     """The kitchen is a wreck, abandoned and coated in dust. Rusty pots and pans hang crookedly from hooks, while broken cabinets sag, their doors ajar. Dishes sit in a sink filled with stagnant, murky water, covered in mould. The once-shiny countertops are smeared with grime and old food stains, and a cracked fridge stands open, its contents long rotted away. The floor is littered with broken glass, utensils, and scattered cans, as if someone left in a hurry. Faint scratching sounds come from behind the walls, hinting at the infestation that's taken over this forgotten place.""",
 
-    "items": [item_knife]
+    "items": {'knife': 1}
 }
 
 park = {
