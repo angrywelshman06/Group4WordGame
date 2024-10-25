@@ -218,10 +218,9 @@ skyscraper = {
     """The skyscrapers are looking half demolished with its parts and debris splattered everywhere and hanging against its walls with bland and dull appearances.""",
 
     "win_requirements" : [
-        [
         {"parachute" : 1}
     ]
-    ]
+
 }
 road = {
     "name": "Road",
@@ -260,11 +259,17 @@ river = {
     "name": "River",
     "description":
     """The river, once a flowing lifeline, is now sluggish and murky, its waters dark and polluted with debris. Plastic bottles, driftwood, and other trash float along the surface, and the smell of decay hangs heavy in the air, while the distant sound of something splashing suggests the water isn’t as lifeless as it seems.""",
+    "win_requirements" : [
+        {"flex tape" : 20},
+    ]
 }
 petrol_station = {
     "name": "Petrol Station",
     "description":
     """The petrol station is a wasteland of rusting pumps and broken glass, with abandoned cars still parked at the empty fuel bays. The flickering neon sign buzzes faintly, casting a pale glow on the shattered windows of the convenience store, while dried bloodstains on the tarmac hint at a chaotic, violent end.""",
+    "win_requirements" : [
+        {"crowbar" : 1, "screwdriver" : 100},
+    ]
 }
 
 
