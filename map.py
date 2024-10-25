@@ -30,7 +30,7 @@ def generate_map():
     used_rooms = set()
 
     # Add in tutorial room
-    tutorial_room = Room(rooms.bedroom_tutorial, tuple(starting_position))
+    tutorial_room = Room(rooms.bedroom_tutorial, tuple(starting_position), True)
     tutorial_room.exits = {"north"}
     map_matrix[starting_position[0]][starting_position[1]] = tutorial_room
     used_rooms.add(rooms.bedroom_tutorial['name'])
@@ -66,6 +66,7 @@ def generate_map():
                 room_name = f"Generic Room {x}{y}"
                 description = "This is a generic room."
                 generic_room = {'name': room_name, 'description': description, 'items': []}
+
                 room = Room(generic_room, (x, y))
                 map_matrix[y][x] = room
 

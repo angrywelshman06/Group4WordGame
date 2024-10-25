@@ -23,3 +23,32 @@ zombie = {
     "crit_chance" : 0.3,
     "crit_multiplier" : 2
 }
+
+zombie_child = {
+    "name" : "zombie child",
+    "description" : "DESCRIPTION",
+    "health" : 15,
+    "base_damage" : 5,
+    "crit_chance" : 0.1,
+    "crit_multiplier" : 4
+}
+
+zombie_dog = {
+    "name" : "zombie dog",
+    "description" : "DESCRIPTION",
+    "health" : 25,
+    "base_damage" : 8,
+    "crit_chance" : 0.6,
+    "crit_multiplier" : 2
+}
+
+zombie_strong = {
+    "name" : "strong zombie",
+    "description" : "DESCRIPTION",
+    "health" : 50,
+    "base_damage" : 15,
+    "crit_chance" : 0.2,
+    "crit_multiplier" : 2
+}
+
+all_enemies = [zombie, zombie_child, zombie_dog, zombie_strong]

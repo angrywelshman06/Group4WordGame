@@ -95,7 +95,7 @@ def execute_go(direction):
         if new_room is None:
             write("Congratulations! You have escaped the matrix. You win!")
             close()
-            sys.exit()
+            #sys.exit()
 
         if new_room is None:
             new_room = Room()
@@ -345,7 +345,14 @@ def execute_combat(command):
 
 
 def set_scene_combat():
-    write("kill")
+    enemies = player.get_current_room().enemies
+
+    write(f"There are {len(enemies)} enemies left.\n")
+    write(f"You have {player.health} health left.\n")
+    write("ATTACK <enemy> <weapon>\n")
+    write("CONSUME <item>\n")
+    write("FLEE\n")
+
     
 def set_scene():
     print_room(player.get_current_room())
@@ -487,10 +494,12 @@ def main():
                     resolve_danger(normalised_user_input)
                 elif in_combat:
                     execute_combat(normalised_user_input)
+                    set_scene_combat()
                 else:
                     execute_command(normalised_user_input)
+                    set_scene()
 
-                set_scene() # maybe dont run this everytime?
+                #set_scene() # maybe dont run this everytime?
 
                 user_input = ""
                 overflow = 0
