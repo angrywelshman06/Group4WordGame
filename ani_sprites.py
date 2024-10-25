@@ -28,8 +28,9 @@ def curses_setcolors():
     curses.init_pair(20, 0, 7), # SILVER
     curses.init_pair(21, 0, 184), # ORANGE
     curses.init_pair(22, 33, 33), # PROTAG_BLUE 2
-    curses.init_pair(23, 196, 0), # red text
-    curses.init_pair(24, 178, 0), # yellow text
+    curses.init_pair(23, 240, 240), # GREY 3
+    curses.init_pair(24, 196, 0), # red text
+    curses.init_pair(25, 178, 0), # yellow text
     
 class spritesheet():
     def __init__(self, path, color, zlevel = 0, frames = 0, dx = 0, dy = 0, delay = 0, infolist = 0):
@@ -136,6 +137,7 @@ class spritesheet():
 
 ###### Multi-purpose
 general_bg = spritesheet(("background",), 3, zlevel = 0.05, frames = 1)
+general_bg2 = spritesheet(("background2",),23, zlevel = 0.1, frames = 1)
 outline = spritesheet(("outline1",), 9, zlevel = 500, frames = 1)
 randomobj = spritesheet(("randomobj",), 8, zlevel = 134, frames = 1, dx = 55, dy = 10)
 red_skyline = spritesheet(("skylines", "red"), 8, zlevel = 0.01, frames = 1)
@@ -353,8 +355,9 @@ glass_ptr = spritesheet(("room_petrol", "glass_ptr"),16, zlevel = 4, frames = 1)
 pillar_ptr = spritesheet(("room_petrol", "pillar_ptr"),2, zlevel = 5, frames = 1)
 pump_ptr = spritesheet(("room_petrol", "pump_ptr"),20, zlevel = 6, frames = 1)
 sign_ptr = spritesheet(("room_petrol", "sign_ptr"),7, zlevel = 3, frames = 1)
+car_ptr = spritesheet(("room_petrol", "car_ptr"),16, zlevel = 50, frames = 1)
 #####
-room_petrol = (outline,building_ptr,floor_ptr,glass_ptr,pillar_ptr,pump_ptr,sign_ptr,red_skyline)
+room_petrol = (outline,building_ptr,floor_ptr,glass_ptr,pillar_ptr,pump_ptr,sign_ptr,red_skyline,car_ptr)
 
 #### River
 bottle_rvr = spritesheet(("room_river", "bottle_rvr"),16, zlevel = 5, frames = 1)
@@ -457,6 +460,38 @@ mirror_hrd = spritesheet(("room_hairdressers", "mirror_hrd"),16, zlevel = 2, fra
 wood_hrd = spritesheet(("room_hairdressers", "wood_hrd"),2, zlevel = 3, frames = 1)
 #####
 room_hairdressers = (outline,blood_hrd, floor_hrd, items_hrd, mirror_hrd, wood_hrd)
+
+#### Low-risk exit
+barricade_lre = spritesheet(("room_lowriskescape", "barricade_lre"),16, zlevel = 1, frames = 1)
+buildings_lre = spritesheet(("room_lowriskescape", "buildings_lre"),3, zlevel = 3, frames = 1)
+floor_lre = spritesheet(("room_lowriskescape", "floor_lre"),3, zlevel = 2, frames = 1)
+weeds_lre = spritesheet(("room_lowriskescape", "weeds_lre"),7, zlevel = 6, frames = 1)
+white_lre = spritesheet(("room_lowriskescape", "white_lre"),16, zlevel = 5, frames = 1)
+wood_lre = spritesheet(("room_lowriskescape", "wood_lre"),2, zlevel = 4, frames = 1)
+#####
+room_lowriskexit = (outline, barricade_lre, buildings_lre, floor_lre, weeds_lre, white_lre, wood_lre)
+
+#### Restaurant
+floor_rstr = spritesheet(("room_restaurant", "floor_rstr"),3, zlevel = 1, frames = 1)
+glass_rstr = spritesheet(("room_restaurant", "glass_rstr"),16, zlevel = 2, frames = 1)
+grime_rstr = spritesheet(("room_restaurant", "grime_rstr"),7, zlevel = 4, frames = 1)
+wood_rstr = spritesheet(("room_restaurant", "wood_rstr"),2, zlevel = 3, frames = 1)
+#####
+room_restaurant = (outline, floor_rstr, glass_rstr, grime_rstr, wood_rstr)
+
+#### Camp
+blood_camp = spritesheet(("room_camp", "blood_camp"),8, zlevel = 5, frames = 1)
+floor_camp = spritesheet(("room_camp", "floor_camp"),3, zlevel = 1, frames = 1)
+items_camp = spritesheet(("room_camp", "items_camp"),16, zlevel = 3, frames =1)
+sleepingbags_camp = spritesheet(("room_camp", "sleepingbags_camp"),21, zlevel = 4, frames = 1)
+tent_camp = spritesheet(("room_camp", "tent_camp"),11, zlevel = 2, frames = 1)
+####
+room_camp = (outline, blood_camp, floor_camp, items_camp, sleepingbags_camp, tent_camp)
+
+#### Placeholder for minor rooms
+mainlogo_placeholder = spritesheet(("room_placeholder",),3, zlevel = 1, frames = 1, dx = 12, dy = 5)
+####
+room_placeholder = (outline, mainlogo_placeholder, general_bg2)
 
 #### Cutscene death 1
 blood_csd1 = spritesheet(("cutscene_death_1", "blood_csd1"),8, zlevel = 0.1, frames = 33)
