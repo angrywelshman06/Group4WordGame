@@ -154,6 +154,11 @@ gun = {
     "crit_multiplier" : 1.5
 }
 
+
+parachute = {
+    "id" : "parachute"
+}
+
 item_knife = {
     "id" : "knife",
     "name" : "knife",

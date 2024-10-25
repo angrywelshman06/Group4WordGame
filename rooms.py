@@ -1,6 +1,9 @@
+import copy
+
 import enemies
 import items
 from items import *
+import player
 
 
 # Class for cleanly storing and accessing rooms
@@ -11,6 +14,10 @@ class Room:
         self.enemies = {}
         self.exits = set()
         self.position = position
+        self.win_requirements = None
+        if "win_requirements" in room_dict:
+            self.win_requirements = room_dict["win_requirements"] # [{}]
+
         self.items = {}
 
         if "items" not in room_dict:
@@ -38,8 +45,42 @@ class Room:
                     item = Consumable(item_dict)
                 case _:
                     item = Item(item_dict)
+                    
+            self.items[item.id] = room_dict["items"][item.id]
+
+    def can_escape(self) -> bool:
+
+        # If there are no win requirements in this room
+        if self.win_requirements is None:
+            return False
+
+        # For each requirement (if there are multiple ways of escaping through this room)
+        for list_of_requirements in self.win_requirements:
+            modified_list_of_requirements = copy.deepcopy(list_of_requirements)
+            print(list_of_requirements)
+            for requirement_type in list_of_requirements: # the item
+                for item in player.inventory.keys():
+                    match requirement_type:
+                        case "mass" :
+                            if item.mass > list_of_requirements[requirement_type]:
+                                print("Success")
+                                modified_list_of_requirements.pop(requirement_type)
+                                print(modified_list_of_requirements)
+                                break
+
+                        case _:
+                            if item.id == requirement_type and player.inventory[item] >= modified_list_of_requirements[requirement_type]:
+                                print("Item Success " + item.name)
+                                modified_list_of_requirements.pop(requirement_type)
+                                print(modified_list_of_requirements)
+                                break
+            print(len(modified_list_of_requirements))
+            if len(modified_list_of_requirements) == 0:
+                return True
+
+        return False
+
             if item.id in room_dict["items"]:
-                self.items[item.id] = room_dict["items"][item.id]
 
 # Special rooms
 # Add all to special rooms list at bottom of file
@@ -55,7 +96,12 @@ bedroom_tutorial = {
 
 
 
-    "items": {'paracetamol': 2}
+    "items": {"paracetamol" : 2},
+
+    "win_requirements" : [
+        {"paracetamol" : 2, "mass" : 10000}
+    ]
+
 
 }
 bathroom_tutorial = {
@@ -178,6 +224,12 @@ skyscraper = {
 
     "description":
     """The skyscrapers are looking half demolished with its parts and debris splattered everywhere and hanging against its walls with bland and dull appearances.""",
+
+    "win_requirements" : [
+        [
+        {"parachute" : 1}
+    ]
+    ]
 }
 road = {
     "name": "Road",
