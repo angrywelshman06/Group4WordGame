@@ -57,24 +57,18 @@ class Room:
         # For each requirement (if there are multiple ways of escaping through this room)
         for list_of_requirements in self.win_requirements:
             modified_list_of_requirements = copy.deepcopy(list_of_requirements)
-            print(list_of_requirements)
             for requirement_type in list_of_requirements: # the item
                 for item in player.inventory.keys():
                     match requirement_type:
                         case "mass" :
                             if item.mass > list_of_requirements[requirement_type]:
-                                print("Success")
                                 modified_list_of_requirements.pop(requirement_type)
-                                print(modified_list_of_requirements)
                                 break
 
                         case _:
                             if item.id == requirement_type and player.inventory[item] >= modified_list_of_requirements[requirement_type]:
-                                print("Item Success " + item.name)
                                 modified_list_of_requirements.pop(requirement_type)
-                                print(modified_list_of_requirements)
                                 break
-            print(len(modified_list_of_requirements))
             if len(modified_list_of_requirements) == 0:
                 return True
 
@@ -97,7 +91,7 @@ bedroom_tutorial = {
     "items": {"paracetamol" : 2},
 
     "win_requirements" : [
-        {"paracetamol" : 2, "mass" : 100}
+        {"paracetamol" : 20, "mass" : 100}
     ]
 
 

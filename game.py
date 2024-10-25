@@ -363,6 +363,8 @@ def combat():
 
 
 def menu():
+    if player.get_current_room().can_escape():
+        print("You can ESCAPE!")
     # Read player's input
     user_input = input("> ")
 
@@ -382,11 +384,6 @@ def main():
         # Differentiates turns
         # Can remove once formatted
         print("=" * 40)
-        print(player.get_current_room().can_escape())
-
-        if player.get_current_room() is None:
-            print(
-                "Congratulations you have escaped the matrix, you are free from Cardiff and for you the game is over.")
 
         print_room(player.get_current_room())
 
@@ -402,6 +399,11 @@ def main():
 
         # Show the menu with possible actions and ask the player
         command = menu()
+
+        if command[0] == "escape" and player.get_current_room().can_escape():
+            print(
+                "Congratulations you have escaped the matrix, you are free from Cardiff and for you the game is over.")
+            break
 
         # Execute the player's command
         execute_command(command)
