@@ -382,6 +382,7 @@ def main():
         # Differentiates turns
         # Can remove once formatted
         print("=" * 40)
+        print(player.get_current_room().can_escape())
 
         if player.get_current_room() is None:
             print(

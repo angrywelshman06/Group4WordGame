@@ -154,6 +154,10 @@ gun = {
     "crit_multiplier" : 1.5
 }
 
+parachute = {
+    "id" : "parachute"
+}
+
 item_list = [item_id_card, item_biscuits, item_handbook, item_laptop, item_money, item_pen, gun, paracetamol, morphine]
 
 def get_item_dict_from_list(item_id : str) -> {}:
