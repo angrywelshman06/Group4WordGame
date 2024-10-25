@@ -27,6 +27,7 @@ room objects, and the 1 being the starting point (and tutorial room)
 
 #This is the starting position of the player, as shown above
 starting_position = [4, 4]
+bathroom_position = [4, 3]
 
 def generate_map():
     used_rooms = set()
@@ -37,7 +38,11 @@ def generate_map():
     map_matrix[starting_position[0]][starting_position[1]] = tutorial_room
     used_rooms.add(rooms.bedroom_tutorial['name'])
 
-    # Debug: Print the special_rooms list
+    # Add bathroom room directly north of the starting position
+    bathroom_room = Room(rooms.bathroom_tutorial, tuple(bathroom_position))
+    bathroom_room.exits = {"south"}
+    map_matrix[bathroom_position[0]][bathroom_position[1]] = bathroom_room
+    used_rooms.add(rooms.bathroom_tutorial['name'])
 
     # Add all special rooms
     for sr in special_rooms:
@@ -62,32 +67,34 @@ def generate_map():
             continue
 
     # Add all generic rooms
+    # Add all generic rooms
     for y in range(len(map_matrix)):
         for x in range(len(map_matrix[y])):
             if map_matrix[y][x] is None:
-                room_name = f"Generic Room {x}{y}"
-                description = "This is a generic room."
-                generic_room = {'name': room_name, 'description': description, 'items': []}
+                if generic_rooms:
+                    room_name = generic_rooms.pop(0)
+                    description = "This is a generic room."
+                    items = []
+                else:
+                    room_name = f"Generic Room {x}{y}"
+                    description = "This is a generic room."
+                    items = []
+
+                generic_room = {'name': room_name, 'description': description, 'items': items}
                 room = Room(generic_room, (x, y))
 
                 if random.random() <= 0.50:
-                    for num in range(random.randint(1,3)):
+                    for num in range(random.randint(1, 3)):
                         chance = random.random()
                         level = 1
-                        if chance < 0.2: level = 3
-                        elif chance < 0.5: level = 2
+                        if chance < 0.2:
+                            level = 3
+                        elif chance < 0.5:
+                            level = 2
 
                         room.enemies[f"enemy{num}"] = Enemy(enemies.zombie, level=level)
 
                 map_matrix[y][x] = room
-
-    # Generate doors for all rooms
-    for y in range(len(map_matrix)):
-        for x in range(len(map_matrix[y])):
-            room = map_matrix[y][x]
-            room.exits = door_assigner(len(map_matrix), len(map_matrix[0]), x, y)
-
-    # Ensure the map is a connected graph
     ensure_connected_graph()
 
 def ensure_connected_graph():
@@ -125,7 +132,7 @@ def get_adjacent_room(room, direction) -> Room:
         return map_matrix[y][x]
     return None
 
-def connect_to_nearest_visited_room(room, visited):
+def connect_to_nearest_visited_room(room, visited):#This function connects the room to the nearest visited room
     x, y = room.position
     for direction in ["north", "south", "east", "west"]:
         adjacent_room = get_adjacent_room(room, direction)

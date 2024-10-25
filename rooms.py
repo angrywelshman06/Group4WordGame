@@ -24,7 +24,6 @@ class Room:
             return
 
         for key in room_dict["items"]:
-
             # Searching for item dictionary
             item_dict = None
             for item_dictionary in item_list:
@@ -37,7 +36,8 @@ class Room:
 
             if "type" not in item_dict:
                 item = Item(item_dict)
-                self.items[item] = room_dict["items"][item]
+                if item in room_dict["items"]:
+                    self.items[item] = room_dict["items"][item]
                 continue
 
             match item_dict["type"]:
@@ -45,6 +45,7 @@ class Room:
                     item = Consumable(item_dict)
                 case _:
                     item = Item(item_dict)
+                    
             self.items[item.id] = room_dict["items"][item.id]
 
     def can_escape(self) -> bool:
@@ -79,7 +80,7 @@ class Room:
 
         return False
 
-
+            if item.id in room_dict["items"]:
 
 # Special rooms
 # Add all to special rooms list at bottom of file
@@ -88,7 +89,7 @@ class Room:
 # Tutorial room
 # Do not add to either list, this has been implemented elsewhere
 bedroom_tutorial = {
-    "name": "ROOM",
+    "name": "bedroom_tutorial",
 
     "description":
     """TUTORIAL ROOM DESCRIPTION""",
@@ -101,6 +102,7 @@ bedroom_tutorial = {
         {"paracetamol" : 2, "mass" : 10000}
     ]
 
+
 }
 bathroom_tutorial = {
     "name": "Bathroom",
@@ -110,7 +112,7 @@ bathroom_tutorial = {
 
 
 
-    #"items": [item_toothbrush, item_toothpaste]
+    "items": {'paracetamol': 2}
 
 }
 
@@ -120,7 +122,7 @@ kitchen = {
     "description":
     """The kitchen is a wreck, abandoned and coated in dust. Rusty pots and pans hang crookedly from hooks, while broken cabinets sag, their doors ajar. Dishes sit in a sink filled with stagnant, murky water, covered in mould. The once-shiny countertops are smeared with grime and old food stains, and a cracked fridge stands open, its contents long rotted away. The floor is littered with broken glass, utensils, and scattered cans, as if someone left in a hurry. Faint scratching sounds come from behind the walls, hinting at the infestation that's taken over this forgotten place.""",
 
-    #"items": [item_knife]
+    "items": {'knife': 1}
 }
 
 park = {
@@ -276,7 +278,7 @@ petrol_station = {
 
 
 
-special_rooms = [bedroom_tutorial, bathroom_tutorial, kitchen, park, the_hood, cinema, shopping_centre, graveyard, supermarket, hospital, pharmacy, gym, firestation, fastfoodplace, conveniencestore, trainstation, library, hairdresser, airport, skyscraper, road, armoured_van, bank, arcade, nursery, pub, river, petrol_station]
+special_rooms = [kitchen, park, the_hood, cinema, shopping_centre, graveyard, supermarket, hospital, pharmacy, gym, firestation, fastfoodplace, conveniencestore, trainstation, library, hairdresser, airport, skyscraper, road, armoured_van, bank, arcade, nursery, pub, river, petrol_station]
 
 
 generic_rooms = ['Vet', 'Telephone_box', 'Church', 'Bus_stop', 'Open-Air_Markets', 'Bike_street_stand', 'Post_office', 'Pedestrian_tunnels', 'Drive_thru_restaurant', 'Sports_bar', 'Construction_area', 'Street_supermarket', 'Abandoned_concert_aren', 'Firearms_Dealers', 'Abandoned_yacht', 'Abandoned_beach', 'Radio_station', 'Status_area', 'Cafe', 'Abandoned_car_mechanics', 'Abandoned_nightclub', 'Street_smoking_area', 'Abandoned_aquarium', 'Dock', 'Abandoned_clothing_workshop', 'Abandoned_factory', 'Dance_arena', 'Abandoned_zoo', 'Abandoned_museum', 'Ice_cream_store', 'Abandoned_gaming_store', 'Time_Capsule_Room', 'Abandoned_elderly_home', 'Kids_playground', 'Astroturf', 'Golf_course', 'Tennis_court', 'Basketball_court', 'Karting_course', 'Farm', 'Animal_shed', 'Abandoned_cinema', 'Forest', 'Canyon', 'Pond', 'Beach', 'Meadow', 'Canyon', 'Lake', 'Athletic_Track', 'Ice_Skating_Rink']
