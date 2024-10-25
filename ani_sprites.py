@@ -28,6 +28,8 @@ def curses_setcolors():
     curses.init_pair(20, 0, 7), # SILVER
     curses.init_pair(21, 0, 184), # ORANGE
     curses.init_pair(22, 33, 33), # PROTAG_BLUE 2
+    curses.init_pair(23, 196, 0), # red text
+    curses.init_pair(24, 178, 0), # yellow text
     
 class spritesheet():
     def __init__(self, path, color, zlevel = 0, frames = 0, dx = 0, dy = 0, delay = 0, infolist = 0):

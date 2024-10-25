@@ -69,7 +69,7 @@ def print_frame_curses(framelist,win,args):
         win.addstr(z_char_color[to_print][0], curses.color_pair(z_char_color[to_print][1]))
 
     
-def main(stdscr): ### TESTING PURPOSES ## Uncomment whichever path you need in the gather_framelist method in ani_sprites.py.
+""" def main(stdscr): ### TESTING PURPOSES ## Uncomment whichever path you need in the gather_framelist method in ani_sprites.py.
     stdscr.clear()
     display_win = curses.newwin(36, 110, 0, 0)
     display_win.clear()
@@ -109,8 +109,8 @@ def main(stdscr): ### TESTING PURPOSES ## Uncomment whichever path you need in t
     # print_stillshot_curses([0,0,0,0,0,0,0],display_win, *room_tutorial) ## ([frames to print for each arg], curses window, unlimited args..)
     display_win.refresh()
     display_win.getch()
+ """
+#wrapper(main)
 
-wrapper(main)
-
-input()
+#input()
 # clear()

@@ -45,7 +45,7 @@ zombie_dog = {
 zombie_strong = {
     "name" : "strong zombie",
     "description" : "DESCRIPTION",
-    "health" : 50,
+    "health" : 65,
     "base_damage" : 15,
     "crit_chance" : 0.2,
     "crit_multiplier" : 2

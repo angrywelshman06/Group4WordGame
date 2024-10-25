@@ -22,6 +22,16 @@ class Weapon(Item):
     def __init__(self, item: {}):
         super().__init__(item)
         self.damage = item["damage"] # Amount of damage the weapon inflicts
+        self.crit_chance = item["crit_chance"] # critical hit chance
+        self.crit_mult = item["crit_mult"] # critical hit multiplier
+
+class Gun(Weapon):
+    def __init__(self, weapon: {}):
+        super().__init__(weapon)
+        self.ammo = weapon["ammo"]
+
+
+        
 
 
 """ 
@@ -99,7 +109,7 @@ item_pen = {
 
     "description": "A basic ballpoint pen.",
 
-    "mass": 2000,
+    "mass": 2000, # ? y tho
 
     "type": Item
 }
@@ -136,6 +146,51 @@ morphine = {
     "type": Consumable,
     "healing" : 50,
     "mass": 100
+}
+
+bat = {
+    "id": "bat",
+    "name" : "baseball bat",
+    "description" : "DESCRIPTION",
+    "type": Weapon,
+    "damage" : 20,
+    "crit_chance": 0.1,
+    "crit_mult": 2,
+    "mass": 1500
+}
+
+knife = {
+    "id": "knife",
+    "name" : "kitchen knife",
+    "description" : "DESCRIPTION",
+    "type": Weapon,
+    "damage" : 15,
+    "crit_chance": 0.5,
+    "crit_mult": 4,
+    "mass": 800
+}
+
+axe = {
+    "id": "axe",
+    "name" : "axe",
+    "description" : "DESCRIPTION",
+    "type": Weapon,
+    "damage" : 30,
+    "crit_chance": 0.25,
+    "crit_mult": 2,
+    "mass": 2000
+}
+
+gun = {
+    "id": "axe",
+    "name" : "axe",
+    "description" : "DESCRIPTION",
+    "type": Gun,
+    "damage" : 50,
+    "crit_chance": 0.25,
+    "crit_mult": 2,
+    "ammo": 4,
+    "mass": 2000
 }
 
 #items = [item_id_card, item_biscuits, item_handbook, item_laptop, item_money, item_pen]

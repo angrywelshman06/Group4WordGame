@@ -124,7 +124,7 @@ def execute_go(direction):
         global in_danger
         if len(new_room.enemies) >= 1:
             in_danger = True
-            write(f"You see near by {len(new_room.enemies)} zombies! You can either FIGHT or FLEE.\n")
+            write(f"\nYou see near by {len(new_room.enemies)} zombies! You can either FIGHT or FLEE.\n", curses.color_pair(23))
             
     else:
         write("You cannot go there.\n")
@@ -208,7 +208,7 @@ def execute_command(command):
         write("up arrow : scroll up, down arrow : scroll down, escape key : quit\n")
 
     elif command[0] == "raptor": # this fucks shit up bad
-        print(Fore.RED + r"""\
+        write("""\
                 ____      ________    
                ,^.__.>--"~~'_.--~_)~^.  
               _L^~   ~    (~ _.-~ \. |\     
@@ -227,7 +227,7 @@ def execute_command(command):
                       (_~~   ~~___)\_/ |  
                       (_~~   ~~___)\_/ |   
                       { ~~   ~~   }/ \ l 
-                         """)
+                         """, curses.A_BOLD)
 
 
     else:
@@ -247,7 +247,7 @@ def resolve_danger(command):
 
     elif command[0] == "flee" or command[0] == "escape":
         in_danger = False
-        # TODO go back to previous room
+        player.current_room_position = player.previous_room_position
         write("It's not worth the risk, you head back before you are seen\n")
 
     elif command[0] == "help" or command[0] == "what":
@@ -255,108 +255,144 @@ def resolve_danger(command):
 
     else:
         write("This makes no sense, it appears as though the first word is not one of the designated command words..\n")
+        write("You have to choose to FIGHT or to FLEE\n")
 
 def execute_attack(enemy_id, enemy, weapon):
     if random.random() < weapon.crit_chance:
-        write(f"You hit the {enemy.name} for critical damage and dealt {weapon.get_damage(True)} damage.\n")
-        enemy.health -= weapon.get_damage(True)
+        damage = weapon.damage * weapon.crit_mult
+        write(f"You hit the {enemy.name} for critical damage and dealt {damage} damage.\n")
+        enemy.health -= damage
     else:
-        write(f"You hit the {enemy.name} and dealt {weapon.get_damage(False)} damage.\n")
-        enemy.health -= weapon.get_damage(False)
+        damage = weapon.damage
+        write(f"You hit the {enemy.name} and dealt {damage} damage.\n")
+        enemy.health -= damage
 
     if enemy.health > 0:
         write(f"The {enemy.name} now has {enemy.health} health.\n")
     else:
-        player.get_current_room().enemies.pop(enemy_id)
+        #player.get_current_room().enemies.pop(enemy_id)
+        player.get_current_room().enemies.remove(enemy_id)
         write(f"The {enemy.name} has been killed!\n")
 
 def execute_consume(item_id):
     for item in player.inventory:
         if item.id == item_id:
             if type(item) != Consumable:
-                break
+                write("This item isn't consumable\n")
+                return
 
             item.consume()
-            write(f"You consumed a {item.name}.\n")
+            write(f"You consumed a {item.name} and regain {item.healing} health!\n", curses.color_pair(7))
             player.inventory[item] -= 1
             if player.inventory[item] <= 0:
                 player.inventory.pop(item)
-            return True
+            return
         
-    write("You cannot consume that.\n")
-    return False
+    write("No such item in inventory\n")
+    return
 
-def execute_combat(command):
+def execute_combat(command): # returns if player is still in combat # executes combat
     if len(command) == 0:
         return
-    
+
     # player turn
     
-    if command[0] == "flee":
+    if command[0] in ["flee", "escape", "run"]:
+        write("Attempting to flee\n")
         if random.random() < 0.7:
             # TODO escape to last room
+            player.current_room_position = player.previous_room_position
             write("You manage to escape the battle.\n")
-            global in_combat
-            in_combat = False
+            return False
         else:
             write("You failed to escape.\n")
-            return
 
     elif command[0] == "attack":
                 
         # Checking correct number of prompts
         if len(command) < 3:
-            write("Invalid command. Type HELP for command prompts\n")
-            return
+            write("\nInvalid command.\n To attack write attack <target> <weapon>\n")
+            write("Example: fight first bat, which will attack the first enemy with the bat\n")
+            write("Or write HELP for the help menu\n")
+            return True
 
-        # Checking enemy is valid
-        if command[1] not in player.get_current_room().enemies:
-            write(command[1] + " is an invalid enemy!\n")
-            return
-        
+        target_index = -1
+        enemy_count = len(player.get_current_room().enemies)
+
+        if command[1] in ["1", "first"]:
+            target_index = 0
+        elif command[1] in ["2", "second"]:
+            target_index = 1
+            if enemy_count < 2:
+                write("\nThere is only one enemy\n")
+                return True
+        elif command[1] in ["3", "third"]:
+            target_index = 2
+            if enemy_count < 3:
+                write("\nThere are only 2 enemies\n")
+                return True
+        else:
+            write("\nInvalid target, to choose an enemy write 'fisrt' or '1' to select the first enemy, same for every other enemy\n")
+            return True
+            
         for item in player.inventory:
-            if item.id == command[2]:
+            if item.id == command[2] or item.name == command[2]:
                 if type(item) == items.Weapon:
-                    execute_attack(command[1], player.get_current_room().enemies[command[1]], item)
-                    return
+                    execute_attack(command[1], player.get_current_room().enemies[target_index], item)
+                elif type(item) == items.Gun:
+                    execute_attack(command[1], player.get_current_room().enemies[target_index], item)
+                    item.ammo -= 1
                 else:
                     write("This item is not a weapon!\n")
-                    return
+                    return True
     
     elif command[0] in ["use", "consume"]:
-        if execute_consume(command[1]):
-            return
-        else:
-            # bad??
-            return
+        execute_consume(command[1])
+
+    else:
+        write("Thats not a valid action\n You can FIGHT, FLEE or USE\n")
+        return True
         
     # enemy turn
-    enemy = random.choice(list(player.get_current_room().enemies.values()))
-    write(f"The {enemy.name} attacked you!")
+
+    if len(player.get_current_room().enemies) == 0:
+        write("You won the battle!\n", curses.color_pair(7))
+        return False
+
+    enemy = random.choice(list(player.get_current_room().enemies)) # choose random enemy to attack
+    write(f"The {enemy.name} attacked you!\n", curses.color_pair(24))
     if random.random() < enemy.crit_chance:
-        write(f"It hit you for critical damage and dealt {enemy.get_damage(True)} damage.")
-        player.health -= enemy.get_damage(True)
+        damage = enemy.damage * enemy.crit_multiplier
+        write(f"It hit you for critical damage and dealt {damage} damage.\n", curses.color_pair(23))
+        player.health -= damage
     else:
-        write(f"It dealt {enemy.get_damage(False)} damage.")
-        player.health -= enemy.get_damage(False)
+        damage = enemy.damage
+        write(f"It dealt {damage} damage.\n")
+        player.health -= damage
 
     if player.health > 0:
-        write(f"You are now on {player.health} health.")
+        write(f"You are now on {player.health} health.\n")
     else:
-        write("You died!\n")
+        write("You died!\n",curses.color_pair(23))
         play_animation(cutscene_death_1, True)
         close()
         pass
+
+    write()
+    return True
 
 
 def set_scene_combat():
     enemies = player.get_current_room().enemies
 
-    write(f"There are {len(enemies)} enemies left.\n")
-    write(f"You have {player.health} health left.\n")
-    write("ATTACK <enemy> <weapon>\n")
-    write("CONSUME <item>\n")
-    write("FLEE\n")
+    write(f"There are {len(enemies)} enemies left. You see a ")
+    for enemy in enemies:
+        write(f"{enemy.name}, ")
+    
+    write(f"\nYou have {player.health} health left.\n")
+    write("ATTACK <enemy> <weapon>\tor\t")
+    write("CONSUME <item>\tor\t")
+    write("FLEE\n\n")
 
     
 def set_scene():
@@ -370,9 +406,20 @@ def set_scene():
 
     write("\n")
 
-def write(msg = "\n"):
+def write(msg = "\n", arg=None):
     ui_lock.acquire() # wait until ui can be modified
-    ui.write_text(msg) # write msg to text pad
+    if arg == None:
+        ui.text_pad.addstr(msg) # add string to text pad
+    else:
+        try:
+            ui.text_pad.addstr(msg, arg)
+        except:
+            ui.text_pad.addstr("\ninvalid curses attribute passed\n")
+    try: 
+        ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x-1) # could cause error when trying to refresh beyound apd extent
+    except:
+        ui.text_pad.refresh(ui.text_pad_pos-1, 0, 0, int(ui.x/2), ui.y-1, ui.x-1) # refresh without going out of pad extent
+    
     ui_lock.release() # allow ui to be modified
 
 def play_animation(animation, hold=False): # this function creates a thread to play the given animation
@@ -410,10 +457,11 @@ def main():
     global overflow
     global ui_lock
     global in_combat
+    global in_danger
 
     # Startup Logic
     generate_map()
-
+    
     #initialise curses screen
     init_screen()
 
@@ -445,7 +493,9 @@ def main():
 ╠╣  \______/__/     \__\ | _| `._____||_______/ |__| |__|     |__|      ╠╣
 ╠╬╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╬╣
 ╚╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╝
-""")
+""", curses.color_pair(23))
+    
+    write("Lorem ipsum", curses.color_pair(24))
 
     #refresh pads
     #ui.art_pad.refresh(0,0,0,0, ui.y-1, int(ui.x/2)-1)
@@ -512,13 +562,11 @@ def main():
                 if in_danger:
                     resolve_danger(normalised_user_input)
                 elif in_combat:
-                    execute_combat(normalised_user_input)
+                    in_combat = execute_combat(normalised_user_input)
                     set_scene_combat()
                 else:
                     execute_command(normalised_user_input)
                     set_scene()
-
-                #set_scene() # maybe dont run this everytime?
 
                 user_input = ""
                 overflow = 0

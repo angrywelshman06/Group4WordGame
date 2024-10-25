@@ -19,7 +19,7 @@ class Room:
             enemy_count = int(random.random() / 0.3) # number of enemies will be between 0 - 3, usually 1 or 2
             
             for i in range(0, enemy_count):
-                self.enemies.append(random.choice(combat.all_enemies)) # add a random enemy to room_enemies
+                self.enemies.append( combat.Enemy(random.choice(combat.all_enemies)) ) # add a random enemy to room_enemies
 
 
         self.items = []

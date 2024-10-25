@@ -39,7 +39,7 @@ def generate_map():
 
     # Add all special rooms
     for sr in special_rooms:
-        print(f"Generating {sr['name']}.")
+        #print(f"Generating {sr['name']}.")
         max_attempts = 100  # Maximum number of attempts to find a unique room
         attempts = 0
 
@@ -52,11 +52,12 @@ def generate_map():
                 used_rooms.add(sr['name'])
                 break
             else:
-                print(f"Attempt {attempts + 1}: Position ({x_coord}, {y_coord}) is already occupied or room name '{sr['name']}' is already used.")
+                #print(f"Attempt {attempts + 1}: Position ({x_coord}, {y_coord}) is already occupied or room name '{sr['name']}' is already used.")
+                pass
             attempts += 1
 
         if attempts == max_attempts:
-            print(f"Failed to place room {sr['name']} after {max_attempts} attempts.")
+            #print(f"Failed to place room {sr['name']} after {max_attempts} attempts.")
             continue
 
     # Add all generic rooms
@@ -181,7 +182,7 @@ def dist_from_edge(x, y):
             "east": len(map_matrix[y]) - 1 - x,
         }
     except IndexError:
-        print("Congratulations! You have escaped the matrix. You win!")
+        #print("Congratulations! You have escaped the matrix. You win!")
         sys.exit()
 
 # Gets the room based off its matrix position coordinates
