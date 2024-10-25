@@ -27,6 +27,7 @@ def curses_setcolors():
     curses.init_pair(19, 88, 88), # DARK RED
     curses.init_pair(20, 0, 7), # SILVER
     curses.init_pair(21, 0, 184), # ORANGE
+    curses.init_pair(22, 3, 33), # PROTAG_BLUE 2
     
 class spritesheet():
     def __init__(self, path, color, zlevel = 0, frames = 0, dx = 0, dy = 0, delay = 0, infolist = 0):
@@ -454,3 +455,11 @@ mirror_hrd = spritesheet(("room_hairdressers", "mirror_hrd"),16, zlevel = 2, fra
 wood_hrd = spritesheet(("room_hairdressers", "wood_hrd"),2, zlevel = 3, frames = 1)
 #####
 room_hairdressers = (outline,blood_hrd, floor_hrd, items_hrd, mirror_hrd, wood_hrd)
+
+#### Cutscene death 1
+blood_csd1 = spritesheet(("cutscene_death_1", "blood_csd1"),8, zlevel = 0.1, frames = 33)
+mc_csd1 = spritesheet(("cutscene_death_1", "mc_csd1"),22, zlevel = 2, frames = 33)
+zombie1_csd1 = spritesheet(("cutscene_death_1", "zombie1_csd1"),7, zlevel = 3, frames = 33)
+zombie2_csd1 = spritesheet(("cutscene_death_1", "zombie2_csd1"),7, zlevel = 1, frames = 33)
+#####
+cutscene_death_1 = (blood_csd1, mc_csd1, zombie1_csd1, zombie2_csd1, general_bg,outline)
