@@ -80,8 +80,6 @@ class Room:
 
         return False
 
-            if item.id in room_dict["items"]:
-
 # Special rooms
 # Add all to special rooms list at bottom of file
 
@@ -99,7 +97,7 @@ bedroom_tutorial = {
     "items": {"paracetamol" : 2},
 
     "win_requirements" : [
-        {"paracetamol" : 2, "mass" : 10000}
+        {"paracetamol" : 2, "mass" : 100}
     ]
 
 
