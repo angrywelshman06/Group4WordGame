@@ -1,26 +1,33 @@
 #!/usr/bin/python3
-import player
+from colorama import Fore
+
+# ui/animation
 from ui import *
 import ui
-from items import Consumable
-from gameparser import *
 from animator import *
 from ani_sprites import *
-import threading
-from threading import Thread
-from items import Consumable
+
+# game systems
+import player
+from items import Consumable, Weapon, Item
+import items
 from gameparser import *
 from player import current_room_position
 from map import get_room, map_matrix, door_assigner, Room, generate_map
-from colorama import Fore
+import combat
+
+# system shit innit
+import threading
+from threading import Thread
 import subprocess
 import sys
 import traceback
+import random
 
 
 #TODO add enemies to rooms
 #TODO add combat
-from combat import *
+#from combat import *
 #TODO add items
 #TODO add npc's
 #TODO add morphine and allow overdose based on chance
@@ -108,6 +115,12 @@ def execute_go(direction):
         player.current_room_position = new_pos
 
         write(f"You are going to {new_room.name}.\n")
+
+        global in_danger
+        if len(new_room.enemies) >= 1:
+            in_danger = True
+            write(f"You see near by {len(new_room.enemies)} zombies! You can either FIGHT or FLEE.\n")
+            
     else:
         write("You cannot go there.\n")
 
@@ -215,29 +228,127 @@ def execute_command(command):
     else:
         write("This makes no sense, it appears as though the first word is not one of the designated command words..\n")
 
+def resolve_danger(command):
+    if len(command) == 0:
+        return
+    
+    global in_danger
+    global in_combat
 
-def menu(exits, room_items, inv_items): # not needed anymore
-# Display menu
-    #print_menu(exits, room_items, inv_items)
+    if command[0] == "fight":
+        in_danger = False
+        in_combat = True
+        write("You ready yourself and approach the enemies\n")
 
-    # Read player's input
-    user_input = input("> ")
+    elif command[0] == "flee" or command[0] == "escape":
+        in_danger = False
+        # TODO go back to previous room
+        write("It's not worth the risk, you head back before you are seen\n")
 
-    # Normalise the input
-    normalised_user_input = normalise_input(user_input)
+    elif command[0] == "help" or command[0] == "what":
+        write("You have to choose FIGHT or to FLEE\n")
 
-    return normalised_user_input
+    else:
+        write("This makes no sense, it appears as though the first word is not one of the designated command words..\n")
+
+def execute_attack(enemy_id, enemy, weapon):
+    if random.random() < weapon.crit_chance:
+        write(f"You hit the {enemy.name} for critical damage and dealt {weapon.get_damage(True)} damage.\n")
+        enemy.health -= weapon.get_damage(True)
+    else:
+        write(f"You hit the {enemy.name} and dealt {weapon.get_damage(False)} damage.\n")
+        enemy.health -= weapon.get_damage(False)
+
+    if enemy.health > 0:
+        write(f"The {enemy.name} now has {enemy.health} health.\n")
+    else:
+        player.get_current_room().enemies.pop(enemy_id)
+        write(f"The {enemy.name} has been killed!\n")
+
+def execute_consume(item_id):
+    for item in player.inventory:
+        if item.id == item_id:
+            if type(item) != Consumable:
+                break
+
+            item.consume()
+            write(f"You consumed a {item.name}.\n")
+            player.inventory[item] -= 1
+            if player.inventory[item] <= 0:
+                player.inventory.pop(item)
+            return True
+        
+    write("You cannot consume that.\n")
+    return False
+
+def execute_combat(command):
+    if len(command) == 0:
+        return
+    
+    # player turn
+    
+    if command[0] == "flee":
+        if random.random() < 0.7:
+            # TODO escape to last room
+            write("You manage to escape the battle.\n")
+            global in_combat
+            in_combat = False
+        else:
+            write("You failed to escape.\n")
+            return
+
+    elif command[0] == "attack":
+                
+        # Checking correct number of prompts
+        if len(command) < 3:
+            write("Invalid command. Type HELP for command prompts\n")
+            return
+
+        # Checking enemy is valid
+        if command[1] not in player.get_current_room().enemies:
+            write(command[1] + " is an invalid enemy!\n")
+            return
+        
+        for item in player.inventory:
+            if item.id == command[2]:
+                if type(item) == items.Weapon:
+                    execute_attack(command[1], player.get_current_room().enemies[command[1]], item)
+                    return
+                else:
+                    write("This item is not a weapon!\n")
+                    return
+    
+    elif command[0] in ["use", "consume"]:
+        if execute_consume(command[1]):
+            return
+        else:
+            # bad??
+            return
+        
+    # enemy turn
+    enemy = random.choice(list(player.get_current_room().enemies.values()))
+    write(f"The {enemy.name} attacked you!")
+    if random.random() < enemy.crit_chance:
+        write(f"It hit you for critical damage and dealt {enemy.get_damage(True)} damage.")
+        player.health -= enemy.get_damage(True)
+    else:
+        write(f"It dealt {enemy.get_damage(False)} damage.")
+        player.health -= enemy.get_damage(False)
+
+    if player.health > 0:
+        write(f"You are now on {player.health} health.")
+    else:
+        write("You died!\n")
+        close()
+        pass
 
 
-def move(exits, direction): #needs to be changed to be used with the matrix in terms of navigating with the x and y coordinates
-    pass
 
+def set_scene_combat():
+    write("kill")
+    
 def set_scene():
     print_room(player.get_current_room())
-
-    if len(player.get_current_room().enemies) >= 1:
-        # Combat
-        pass
 
     inv_items = player.get_inventory_items()
     if inv_items != -1:
@@ -245,11 +356,7 @@ def set_scene():
 
     write(f"Current Inventory Mass: {player.inventory_mass()}g\n")
 
-    #write(current_room_position) what is this?
-    # are these needed?
-    #write(repr(player.get_current_room().exits)) 
-
-    write("\n\n")
+    write("\n")
 
 def write(msg = "\n"):
     ui_lock.acquire() # wait until ui can be modified
@@ -270,12 +377,15 @@ def play_animation(animation): # this function creates a thread to play the give
 user_input = ""
 overflow = 0
 ui_lock = threading.Lock()
+in_danger = False
+in_combat = False
 
 # This is the entry point of our program
 def main():
     global user_input
     global overflow
     global ui_lock
+    global in_combat
 
     # Startup Logic
     generate_map()
@@ -283,6 +393,7 @@ def main():
     #initialise curses screen
     init_screen()
 
+    # write title screen
     write(r"""\
 ╔╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╗
 ╠╬╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╬╣
@@ -313,13 +424,16 @@ def main():
     ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x-1)
     # play cutscene # temporary # in the future could be replaced with intro animation or something
     play_animation(cutscene_1)
-    zombies = [("zombie", 2),("zombie", 5), ("zombie", 1),("zombie", 1)] #this list will be what's returned from the random battle generator
-    fight = initiate_combat(ui.art_pad,zombies)
-    run_animation_curses(*fight.animation)
-    ui.art_pad.getch()
+
+    #zombies = [("zombie", 2),("zombie", 5), ("zombie", 1),("zombie", 1)] #this list will be what's returned from the random battle generator
+    #fight = initiate_combat(ui.art_pad,zombies)
+    #run_animation_curses(*fight.animation)
+    #ui.art_pad.getch()
+    
     try:
         ###### LOOP CAN BE WHATEVER, JUST FOR TESTING PURPOSES THIS ONE
-        for i in range(2):
+        # ill get to this soon ish
+        """ for i in range(2):
             print_stillshot_curses(*fight.stillstate) ## unpacking tuple with the necessary arguments
             display_win.getch()
             user_input = "attack 1" # REPLACE THIS WITH WHATEVER PARSED USER INPUT. In user_update, the only valid inputs so far are "escape" and "attack_1", "attack_2"... etc. This should check fight.creatures_dict to see if enemy exists before executing the function.
@@ -328,7 +442,8 @@ def main():
             print_stillshot_curses(*fight.stillstate)
             display_win.getch()
             fight.zombie_update() # handles which zombie attacks the player
-            run_animation_curses(*fight.animation)
+            run_animation_curses(*fight.animation) """
+
         set_scene()
 
         while True:
@@ -368,9 +483,14 @@ def main():
                 write()
 
                 normalised_user_input = normalise_input(user_input)
-                execute_command(normalised_user_input)
+                if in_danger:
+                    resolve_danger(normalised_user_input)
+                elif in_combat:
+                    execute_combat(normalised_user_input)
+                else:
+                    execute_command(normalised_user_input)
 
-                set_scene()
+                set_scene() # maybe dont run this everytime?
 
                 user_input = ""
                 overflow = 0
@@ -406,43 +526,6 @@ def main():
         print()
         print(traceback.format_exc())
         return
-
-        
-
-    return
-
-    # Startup Logic
-    generate_map()
-
-    # Main game loop
-    while True:
-        # Differentiates turns
-        # Can remove once formatted
-        print("=" * 40)
-
-        if player.get_current_room() is None:
-            print("Congratulations you have escaped the matrix, you are free from Cardiff and for you the game is over.")
-
-
-        # Display game status (room description, inventory etc.)
-        print_room(player.get_current_room())
-
-        if len(player.get_current_room().enemies) >= 1:
-            # Combat
-            pass
-
-        player.print_inventory_items()
-        print(f"Current Inventory Mass: {player.inventory_mass()}g")
-        print()
-
-        print(current_room_position)
-        print(player.get_current_room().exits)
-
-        # Show the menu with possible actions and ask the player
-        command = menu(player.get_current_room().exits, player.get_current_room().items, player.inventory)
-
-        # Execute the player's command
-        execute_command(command)
 
 
 # Are we being run as a script? If so, run main().

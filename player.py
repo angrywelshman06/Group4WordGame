@@ -16,7 +16,6 @@ def inventory_mass():
         mass += item.mass
     return mass
 
-
 def get_inventory_items():
     if len(inventory) == 0:
         return -1
@@ -34,9 +33,6 @@ def get_inventory_items():
         count += 1
 
     return f"You have {item_list}."
-
-
-
 
 # Stores players health
 health = 100

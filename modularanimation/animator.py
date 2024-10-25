@@ -3,7 +3,7 @@ import time
 import curses
 import os
 from ani_sprites import *
-from combat import *
+from combat_what import *
 from curses import wrapper
 from operator import attrgetter
 
