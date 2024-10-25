@@ -12,5 +12,4 @@ test_npc = {
     "id" : "test_npc",
     "name" : "Testing NPC",
     "lines" : ["Hi", "Hello", "Hey there", "Howdy"],
-    "escape_items" : None
 }
