@@ -1,5 +1,6 @@
 import random
 import enemies
+import npcs
 import rooms
 from enemies import Enemy
 from rooms import special_rooms, Room, generic_rooms
@@ -30,6 +31,33 @@ starting_position = [4, 4]
 bathroom_position = [4, 3]
 
 def generate_map():
+
+    # Used to avoid spawning multiple NPCs in one room
+    used_npc_positions = []
+
+    # Generates the turn of which each randomly placed npc is spawned on
+    for npc in npcs.randomly_placed_npcs:
+        bounds = npcs.randomly_placed_npcs[npc]
+
+        max_attempts = 7  # Maximum number of attempts to find a unique turn
+        attempts = 0
+
+        while attempts < max_attempts:
+            unique_turn = random.randint(bounds[0], bounds[1])
+            if unique_turn not in used_npc_positions:
+                used_npc_positions.append(unique_turn)
+                npcs.randomly_placed_npcs[npc] = unique_turn
+                break
+
+        if attempts == max_attempts:
+            for turn in range(bounds[1], bounds[1] + 10):
+                if turn not in used_npc_positions:
+                    used_npc_positions.append(turn)
+                    npcs.randomly_placed_npcs[npc] = turn
+                    break
+
+
+
     used_rooms = set()
 
     # Add in tutorial room

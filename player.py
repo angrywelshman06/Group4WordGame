@@ -34,10 +34,9 @@ def print_inventory_items():
         count += 1
 
     print(f"You have {item_list}.")
-    print()
 
-
-
+# Tracks how many individual rooms have been visited
+unique_rooms_visited = 0
 
 # Stores players health
 health = 100

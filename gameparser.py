@@ -49,7 +49,7 @@ def remove_punct(text):
     """
     no_punct = ""
     for char in text:
-        if not (char in string.punctuation):
+        if not (char in string.punctuation) or char == "_":
             no_punct = no_punct + char
 
     return no_punct
