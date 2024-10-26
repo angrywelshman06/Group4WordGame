@@ -227,7 +227,7 @@ def dist_from_edge(x, y):
         }
     except IndexError:
         pass
-        #print("Congratulations! You have escaped the matrix. You win!")
+
         #sys.exit()
 
 # Gets the room based off its matrix position coordinates
