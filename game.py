@@ -28,17 +28,13 @@ import traceback
 import random
 
 
-#TODO add enemies to rooms
-#TODO add combat
-#from combat import *
-#TODO add items
-#TODO add npc's
-#TODO add morphine and allow overdose based on chance
+
 
 
 def install_requirements():
     try:
         import colorama
+        import curses
     except ImportError:
         subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
 
@@ -145,7 +141,7 @@ def execute_go(direction):
             player.unique_rooms_visited += 1
 
         for npc in npcs.randomly_placed_npcs:
-            if npcs.randomly_placed_npcs[npc] == player.unique_rooms_visited:
+            if npcs.randomly_placed_npcs_placed_npcs[npc] == player.unique_rooms_visited:
                 player.get_current_room().npcs.append(npc)
 
         print(f"You are going to {new_room.name}.")

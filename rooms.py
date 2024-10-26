@@ -115,9 +115,9 @@ bedroom_tutorial = {
 
     "items": {"paracetamol" : 2},
 
-    "win_requirements" : [
-        {"paracetamol" : 20, "mass" : 100}
-    ]
+
+    "npcs" : []
+
 
 
 }
@@ -338,7 +338,11 @@ river = {
         {"flex tape" : 20},
     ],
 
+    "npcs" : [boat_captain]
+
+
     "visual": ani_sprites.room_river,
+
 }
 petrol_station = {
     "name": "Petrol Station",
