@@ -1,9 +1,8 @@
 import copy
-
-import enemies
 import items
 from items import *
 import player
+from npcs import *
 
 
 # Class for cleanly storing and accessing rooms
@@ -14,9 +13,20 @@ class Room:
         self.enemies = {}
         self.exits = set()
         self.position = position
+        self.visited = False
+        self.npcs = []
+        if "npcs" in room_dict:
+            for npc in room_dict["npcs"]:
+                self.npcs.append(npc)
         self.win_requirements = None
         if "win_requirements" in room_dict:
             self.win_requirements = room_dict["win_requirements"] # [{}]
+
+        self.npcs = []
+
+        if "npcs" in room_dict:
+            for npc in room_dict["npcs"]:
+                self.npcs.append(NPC(npc))
 
         self.items = {}
 
@@ -92,7 +102,9 @@ bedroom_tutorial = {
 
     "win_requirements" : [
         {"paracetamol" : 20, "mass" : 100}
-    ]
+    ],
+
+    "npcs" : []
 
 
 }

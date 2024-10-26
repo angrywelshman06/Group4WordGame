@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import enemies
 import items
+import npcs
 import player
 import random
 from items import Consumable, get_item_dict_from_list
@@ -62,17 +63,6 @@ def print_room(room: Room):
     print()
     print(room.description)
     print()
-    print_room_items(room)  # Displays items in room
-
-    if len(room.enemies) == 0:
-
-        # Print exits
-        if room.exits:
-            print("Exits: " + ", ".join(room.exits))
-        else:
-            print("No exits available seems you might be stuck. What a shame ;)")
-
-
 # Checks if the exit is valid in the current room
 def is_valid_exit(direction):
     return direction in player.get_current_room().exits
@@ -107,6 +97,14 @@ def execute_go(direction):
 
         player.previous_room_position = player.current_room_position
         player.current_room_position = new_pos
+
+        if not player.get_current_room().visited:
+            player.get_current_room().visited = True
+            player.unique_rooms_visited += 1
+
+        for npc in npcs.randomly_placed_npcs:
+            if npcs.randomly_placed_npcs[npc] == player.unique_rooms_visited:
+                player.get_current_room().npcs.append(npc)
 
         print(f"You are going to {new_room.name}.")
     else:
@@ -185,6 +183,15 @@ def execute_drop(item_id, amount=1):
             return
     print("You cannot drop that.")
 
+def execute_talk(npc_id):
+    print(npc_id)
+    for npc in player.get_current_room().npcs:
+        print(npc.id)
+        if npc.id == npc_id:
+            npc.talk()
+            return
+    print("You cannot talk to this NPC.")
+
 
 def execute_command(command):
     if 0 == len(command):
@@ -230,13 +237,21 @@ def execute_command(command):
     elif command[0] in ["consume"]:
         if len(command) > 1:
             execute_consume(command[1])
+        else:
+            print("Consume what>")
+
+    elif command[0] in ["talk"]:
+        if len(command) > 1:
+            execute_talk(command[1])
+        else:
+            print("Talk to who?")
 
     elif command[0] == "quit":
         print("Goodbye!")
         sys.exit()
 
     elif command[0] == "help":
-        print("Commands: go [direction], take [item], drop [item], use [item], quit")
+        print("Commands: go [direction], take [item], drop [item], use [item], talk [npc], quit")
 
     elif command[0] == "raptor":
         print(Fore.RED + r"""\
@@ -394,7 +409,7 @@ def menu():
 
 
     # Read player's input
-    user_input = input("> ")
+    user_input = input("Choose what you would like to do \n> ")
 
     # Normalise the input
     normalised_user_input = normalise_input(user_input)
