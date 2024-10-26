@@ -20,7 +20,7 @@ class Room:
         self.exits = set()
         self.position = position
 
-        if no_enemies == False and random.random() < 0.5: # 50% chance of a room having enemies
+        if no_enemies == False and random.random() < 0.6: # 60% chance of a room having enemies
             enemy_count = int(random.random() / 0.3) # number of enemies will be between 0 - 3, usually 1 or 2
             
             for i in range(0, enemy_count):
@@ -264,6 +264,8 @@ skyscraper = {
 
     "description":
     """The skyscrapers are looking half demolished with its parts and debris splattered everywhere and hanging against its walls with bland and dull appearances.""",
+
+    "visual": ani_sprites.skyscraper,
 }
 road = {
     "name": "Road",
@@ -278,27 +280,37 @@ armoured_van = {
 
     "description":
     """The armoured van, once a fortress on wheels, now sits abandoned with its thick, reinforced doors left slightly ajar. Bullet holes riddle its sides, and the cracked windshield is smeared with dust and grime. Inside, empty crates and torn money bags are strewn across the floor, a silent testament to the chaos and desperation that once unfolded here.""",
+
+    "visual": ani_sprites.room_armoredvan,
 }
 bank = {
     "name": "Bank",
     "description":
     """The bank’s lobby is eerily silent, with shattered glass doors and overturned counters. Security cameras hang lifeless from the ceiling, and vault doors are left wide open, their contents looted, while scattered bills and coins lay strewn across the marble floors, forgotten in the chaos.""",
+
+    "visual": ani_sprites.room_bank,
 }
 arcade = {
     "name": "Arcade",
     "description":
     """The arcade, once filled with flashing lights and excited laughter, is now a graveyard of broken machines and shattered screens. Prize claw machines stand empty, their glass cracked, and old tokens litter the floor beneath games that will never be played again, their cheerful music silenced forever.""",
+
+    "visual": ani_sprites.room_arcade,
 }
 nursery = {
     "name": "Nursery",
     "description":
     """
 The nursery is a heartbreaking scene, with tiny chairs tipped over and children's toys scattered across the floor. The walls, once brightly painted with cheerful murals, are peeling, and cribs sit empty, their blankets left askew as if their occupants were snatched away in a hurry.""",
+
+    "visual": ani_sprites.room_nursery,
 }
 pub = {
     "name": "Pub",
     "description":
     """The pub, once filled with laughter and clinking glasses, now stands in eerie silence, its stools overturned and tables coated in dust. Broken bottles and scattered chairs litter the floor, while the faint smell of stale alcohol mixes with the scent of decay, and shadows move unnervingly in the corners.""",
+
+    "visual": ani_sprites.room_pub,
 }
 river = {
     "name": "River",
@@ -306,7 +318,9 @@ river = {
     """The river, once a flowing lifeline, is now sluggish and murky, its waters dark and polluted with debris. Plastic bottles, driftwood, and other trash float along the surface, and the smell of decay hangs heavy in the air, while the distant sound of something splashing suggests the water isn’t as lifeless as it seems.""",
     "win_requirements" : [
         {"flex tape" : 20},
-    ]
+    ],
+
+    "visual": ani_sprites.room_river,
 }
 petrol_station = {
     "name": "Petrol Station",
@@ -314,7 +328,9 @@ petrol_station = {
     """The petrol station is a wasteland of rusting pumps and broken glass, with abandoned cars still parked at the empty fuel bays. The flickering neon sign buzzes faintly, casting a pale glow on the shattered windows of the convenience store, while dried bloodstains on the tarmac hint at a chaotic, violent end.""",
     "win_requirements" : [
         {"crowbar" : 1, "screwdriver" : 100},
-    ]
+    ],
+
+    "visual": ani_sprites.room_petrol,
 }
 
 

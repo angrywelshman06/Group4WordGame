@@ -4,7 +4,7 @@ import rooms
 from enemies import Enemy
 from rooms import special_rooms, Room, generic_rooms
 from collections import deque
-import sys
+#import sys
 
 map_matrix = [[None for x in range(10)] for y in range(10)]
 
@@ -84,7 +84,8 @@ def generate_map():
                 generic_room = {'name': room_name, 'description': description, 'items': items}
                 room = Room(generic_room, (x, y))
 
-                if random.random() <= 0.50:
+                # enemies are generated in rooms.py, can be changed if need be
+                """ if random.random() <= 0.50:
                     for num in range(random.randint(1, 3)):
                         chance = random.random()
                         level = 1
@@ -93,7 +94,7 @@ def generate_map():
                         elif chance < 0.5:
                             level = 2
 
-                        room.enemies[f"enemy{num}"] = Enemy(enemies.zombie, level=level)
+                        room.enemies[f"enemy{num}"] = Enemy(enemies.zombie, level=level) """
 
                 map_matrix[y][x] = room
     ensure_connected_graph()
@@ -200,8 +201,9 @@ def dist_from_edge(x, y):
             "east": len(map_matrix[y]) - 1 - x,
         }
     except IndexError:
+        pass
         #print("Congratulations! You have escaped the matrix. You win!")
-        sys.exit()
+        #sys.exit()
 
 # Gets the room based off its matrix position coordinates
 def get_room(x, y) -> Room:

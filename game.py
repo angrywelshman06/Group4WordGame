@@ -10,8 +10,7 @@ from ani_sprites import *
 # game systems
 import player
 import random
-from items import Consumable, Weapon, Item
-import items, get_item_dict_from_list
+from items import Consumable, Weapon, Item, get_item_dict_from_list
 from gameparser import *
 from map import get_room, map_matrix, door_assigner, Room, generate_map
 import combat
@@ -43,7 +42,7 @@ def install_requirements():
 install_requirements()
 
 
-def print_room_items(room: Room):
+def print_room_items(room: Room): #  TODO fix this innit
     # If there are no items, no output
     if len(room.items) == 0:
         return
@@ -54,7 +53,7 @@ def print_room_items(room: Room):
 
         item_dict = get_item_dict_from_list(item_id)
         if item_dict is None:
-            print(f"ERROR: {item_id} HAS NOT BEEN INITIALISED")
+            write(f"ERROR: {item_id} HAS NOT BEEN INITIALISED\n")
             continue
 
         item = items.Item(item_dict)
@@ -67,9 +66,9 @@ def print_room_items(room: Room):
         if room.items[item.id] > 1: item_list += "s"
         count += 1
 
-    print(f"There is {item_list} here.")
+    write(f"There is {item_list} here.\n")
 
-    print()
+    write()
 
 
 # Prints information about the given room
@@ -81,13 +80,15 @@ def print_room(room: Room):
     write()
     print_room_items(room)  # Displays items in room
 
-    if len(room.enemies) == 0:
+    #if len(room.enemies) == 0:
 
     # Print exits
     if room.exits:
         write("Exits: " + ", ".join(room.exits))
     else:
         write("No exits available seems you might be stuck. What a shame ;)\n")
+
+    
 
 
 # Checks if the exit is valid in the current room
@@ -166,7 +167,7 @@ def execute_take(item_id, amount=1):
             item = items.dict_to_item(get_item_dict_from_list(item_dict_id))
 
             if player.get_current_room().items[item_id] < amount:
-                print(f"There are not {amount} many {item.name}s in the room.")
+                write(f"There are not {amount} many {item.name}s in the room.")
                 return
 
 
@@ -186,7 +187,7 @@ def execute_take(item_id, amount=1):
             if not found:
                 player.inventory[item] = amount
 
-            print(f"You picked up {item.name}.")
+            write(f"You picked up {item.name}.\n")
             return
     write("You cannot take that.\n")
 
@@ -196,7 +197,7 @@ def execute_drop(item_id, amount=1):
         if item.id == item_id:
 
             if player.inventory[item] < amount:
-                print(f"You do not have {amount} {item.name}s.")
+                write(f"You do not have {amount} {item.name}s.\n")
                 return
 
             if player.inventory[item] > amount:
@@ -209,7 +210,7 @@ def execute_drop(item_id, amount=1):
             else:
                 player.get_current_room().items[item.id] = amount
 
-            print(f"You dropped {item.name}.")
+            write(f"You dropped {item.name}.\n")
             return
     write("You cannot drop that.\n")
 
@@ -226,10 +227,10 @@ def execute_command(command): # parse what needs to be executed based on command
 
         if command[0] in ["flee", "leave", "run"]:
             player.current_room_position = player.previous_room_position
-            print(f"You fled back to the previous room!")
+            write(f"You fled back to the previous room!\n") # TODO ermmm waht the sigma
             return
 
-        print("Not a valid command! Please choose either fight or flee.")
+        write("Not a valid command! Please choose either fight or flee.\n")
         return
 
     if command[0] == "go":
@@ -523,15 +524,24 @@ def main():
     global in_combat
     global in_danger
 
-    # Startup Logic
-    generate_map()
-    
-    #initialise curses screen
-    init_screen()
+    try:
 
-    # play intro animations
-    play_animation(intro_1, True) # hold main thread unntil this animation stops playing
-    play_animation(intro_2)
+        # Startup Logic
+        generate_map()
+        
+        #initialise curses screen
+        init_screen()
+
+        write("what\n")
+
+        # play intro animations
+        play_animation(intro_1, True) # hold main thread unntil this animation stops playing
+        #play_animation(intro_2)
+
+    except Exception as e:
+        close()
+        print(f"Exception '{e}' occured\n")
+        print(traceback.format_exc())
 
     # write title screen
     write(r"""\
