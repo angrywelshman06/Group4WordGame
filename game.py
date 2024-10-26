@@ -231,7 +231,7 @@ def execute_command(command):
         sys.exit()
 
     elif command[0] == "help":
-        print("Commands: go [direction], take [item], drop [item], use [item], quit")
+        print("Commands: go [direction], take [item], drop [item], use [item], talk [npc name], quit")
 
     elif command[0] == "raptor":
         print(Fore.RED + r"""\
@@ -257,7 +257,7 @@ def execute_command(command):
 
 
     else:
-        print("This makes no sense, it appears as though the first word is not one of the designated command words..")
+        print("This makes no sense, it appears as though the first word is not one of the designated command words...")
 
 
 def execute_attack(enemy_id, enemy: enemies.Enemy, weapon: items.Weapon):
