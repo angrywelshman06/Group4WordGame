@@ -94,7 +94,7 @@ bedroom_tutorial = {
     "name": "bedroom_tutorial",
 
     "description":
-    """TUTORIAL ROOM DESCRIPTION""",
+    """The rotten door led to the bedroom with a creak, it has a bed, with the mattress and the bed sheets not aligned at all.The walls covered with mould and paint long since peeled off, The floorboards creak with every step showing decay betraying its once great quality redwood flooring.  The air smells weird, prompting you to mask your nose from the smell. The once beautiful mattress with flowery design lay dusty with no care. There are stains in the floor , there are cobwebs in the roof and a radio lies on the empty wooden table showing signs of termite infestation.""",
 
 
 
@@ -120,7 +120,7 @@ bathroom_tutorial = {
 
 }
 
-kitchen = {
+kitchen_tutorial = {
     "name": "Kitchen",
 
     "description":
@@ -283,11 +283,64 @@ petrol_station = {
         {"crowbar" : 1, "screwdriver" : 100},
     ]
 }
+subway = {
+    "name": "Subway",
+    "description":
+    """The subway is a labyrinth of crumbling tiles, with dim lights flickering over graffiti-covered walls. Abandoned trains sit motionless, their doors half-open, while rats scurry between the tracks, the silence occasionally broken by the distant rumble of something unseen.""",
+}
+rooftop_garden = {
+    "name": "Rooftop Garden",
+    "description":
+    """Once a peaceful retreat, the rooftop garden is now overgrown and untamed, with vines creeping across cracked stone pathways. The view of the city below is eerily quiet, as skyscrapers loom in the hazy distance, their windows shattered and empty.""",
+}
+abandoned_hotel = {
+    "name": "Abandoned Hotel",
+    "description":
+    """The grand chandeliers sway slightly in the musty air, casting dim light over dusty furniture and torn upholstery. The reception desk is empty, the concierge long gone, and the eerie quiet is only disturbed by the sound of distant creaking from the upper floors.""",
+}
+parking_garage = {
+    "name": "Parking Garage",
+    "description":
+    """The underground parking garage is a concrete cavern filled with the stench of gasoline and decay. Cars sit abandoned in their spots, some with doors ajar and windows shattered, as a thick silence fills the air, broken by the occasional drip of water from unseen pipes.""",
+}
+industrial_warehouse = {
+    "name": "Industrial Warehouse",
+    "description":
+    """Rusting machinery and toppled crates clutter the darkened warehouse, casting long shadows under the faint glow of cracked windows. The air smells of oil and dust, and the silence is punctuated by the distant clang of metal, as if something is moving in the shadows.""",
+}
+old_school = {
+    "name": "Old School",
+    "description":
+    """Desks and chairs are haphazardly thrown about in classrooms, while faded chalkboards still display lessons left unfinished. Broken windows let in the cold breeze, carrying with it the faint echo of children's laughter, long gone but still haunting the empty halls.""",
+}
+bridge = {
+    "name": "Bridge",
+    "description":
+    """The once-bustling bridge now stands eerily quiet, with abandoned cars scattered across it and debris littering the lanes. Below, the river flows sluggishly, filled with trash and reflecting the hollow, broken skyline.""",
+}
+museum = {
+    "name": "Museum",
+    "description":
+    """The museum lobby, once pristine and polished, is now a desolate space, with cracked marble floors and broken display cases. Dust clings to ancient artefacts, and the eerie silence suggests that time itself has stopped in this forgotten place of history.""",
+}
+fountain = {
+    "name": "Fountain",
+    "description":
+    """The once-beautiful fountain is now dry, its stone cracked and overgrown with moss, with coins still visible at the bottom of the empty basin. Surrounding benches sit empty, rusting under the weight of time, as the square lies deserted, overtaken by nature.""",
+}
+skate_park = {
+    "name": "Skate Park",
+    "description":
+    """  Void arena with waste wooden boards scattered around and decaying benches around the arena""",
+}
+office_building = {
+    "name": "Office Building",
+    "description":
+    """Area in total disarray with furnitures flipped upside down with broken items and objects""",
+}
 
 
-
-
-special_rooms = [kitchen, park, the_hood, cinema, shopping_centre, graveyard, supermarket, hospital, pharmacy, gym, firestation, fastfoodplace, conveniencestore, trainstation, library, hairdresser, airport, skyscraper, road, armoured_van, bank, arcade, nursery, pub, river, petrol_station]
+special_rooms = [park, the_hood, cinema, shopping_centre, graveyard, supermarket, hospital, pharmacy, gym, firestation, fastfoodplace, conveniencestore, trainstation, library, hairdresser, airport, skyscraper, road, armoured_van, bank, arcade, nursery, pub, river, petrol_station, subway, rooftop_garden, abandoned_hotel, parking_garage, industrial_warehouse, old_school, bridge, museum, fountain, skate_park, office_building]
 
 
 generic_rooms = ['Vet', 'Telephone_box', 'Church', 'Bus_stop', 'Open-Air_Markets', 'Bike_street_stand', 'Post_office', 'Pedestrian_tunnels', 'Drive_thru_restaurant', 'Sports_bar', 'Construction_area', 'Street_supermarket', 'Abandoned_concert_aren', 'Firearms_Dealers', 'Abandoned_yacht', 'Abandoned_beach', 'Radio_station', 'Status_area', 'Cafe', 'Abandoned_car_mechanics', 'Abandoned_nightclub', 'Street_smoking_area', 'Abandoned_aquarium', 'Dock', 'Abandoned_clothing_workshop', 'Abandoned_factory', 'Dance_arena', 'Abandoned_zoo', 'Abandoned_museum', 'Ice_cream_store', 'Abandoned_gaming_store', 'Time_Capsule_Room', 'Abandoned_elderly_home', 'Kids_playground', 'Astroturf', 'Golf_course', 'Tennis_court', 'Basketball_court', 'Karting_course', 'Farm', 'Animal_shed', 'Abandoned_cinema', 'Forest', 'Canyon', 'Pond', 'Beach', 'Meadow', 'Canyon', 'Lake', 'Athletic_Track', 'Ice_Skating_Rink']
