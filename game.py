@@ -507,7 +507,32 @@ def set_scene_combat(): # gives the player info on how the battle is progressing
     write("CONSUME <item>\tor\t")
     write("FLEE\n\n")
 
-    
+def print_intro():
+    write("\nzzzzzzzzz.. brrrrrrrr… crrrrrrrr\n", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write(" bbbbbrrrrrr…zzzzzzzz… ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write("EMERGENCY CODE: 35627", curses.color_pair(25))
+    write(" beeeeeeeeep… ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write("Emergency Alert. If you can hear this you are currently a survivor.", curses.color_pair(25))
+    write(" ...zzzzzzzz ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write("The date is… 28TH OF OCTOBER 2024…", curses.color_pair(25))
+    write(" fzzzzzt bzzzzt ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write("Emergency contact systems are down due to unforeseen damage", curses.color_pair(25))
+    write(" zzzzzzzzz.. brrrrrrrr… crrrrrrrr ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write(" crrrrrrr ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write("Current status: The infected population has been walled off to the remaining population", curses.color_pair(25))
+    write(" zzzzzzzz ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write("despite this, Cardiff City has been classified as CRITICAL LEVEL", curses.color_pair(25))
+    write(" bzzzzzt ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write(" fzzzzzzt ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write("Do NOT approach infected individuals… They are extremely dangerous and can transmit the infection through direct contact ", curses.color_pair(25))
+    write(" beeeeeeeeeeep ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write("Military personnel are no longer in transit due to the lack of remaining survivors… ", curses.color_pair(25))
+    write(" fzzzzzt bzzzzzzzt ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write("Attempt to escape the city at you’re own risk…", curses.color_pair(25))
+    write(" ZZZZZZZZ ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write("\n – Transmission cuts.",curses.color_pair(25))
+
+
 def set_scene(): # gives the player info on the current room and thier charecter
     print_room(player.get_current_room())
 
@@ -616,21 +641,10 @@ def main():
 ╠╣  \______/__/     \__\ | _| `._____||_______/ |__| |__|     |__|      ╠╣
 ╠╬╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╬╣
 ╚╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╝
-""", curses.color_pair(24))
+""", curses.color_pair(24) | curses.A_BOLD)
     
-    write("Lorem ipsum (should be intro text)", curses.color_pair(25))
-
-    write("""
-zzzzzzzzz.. brrrrrrrr… crrrrrrrr
-
-bbbbbrrrrrr…zzzzzzzz… EMERGENCY CODE: 35627 beeeeeeeeep… Emergency Alert. If you can hear this you are currently a survivor. ...zzzzzzzz The date is… 28TH OF OCTOBER 2024… fzzzzzt bzzzzt Emergency contact systems are down due to unforeseen damage brrrrrrr
-
-crrrrrrr Current status: The infected population has been walled off to the remaining population zzzzzz despite this, Cardiff City has been classified as CRITICAL LEVEL bzzzzzt
-
-fzzzzzzt Do NOT approach infected individuals… They are extremely dangerous and can transmit the infection through direct contact beeeeeeeeep Military personnel are no longer in transit due to the lack of remaining survivors… fzzzzzt bzzzzzzzt Attempt to escape the city at you’re own risk… ZZZZZZZZ
-
-– Transmission cuts.
-""")
+    write()
+    print_intro()
     
     try:
 
