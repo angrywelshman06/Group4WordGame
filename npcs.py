@@ -1,6 +1,6 @@
 import random
-from map import map_matrix
-from map import map_matrix, starting_position, rooms
+#from map import map_matrix
+#from map import map_matrix, starting_position, rooms
 
 class NPC:
     def __init__(self, npc_dict : {}):
