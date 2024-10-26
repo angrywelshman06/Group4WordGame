@@ -12,12 +12,6 @@ import subprocess
 import sys
 
 
-#TODO add enemies to rooms
-#TODO add combat
-#TODO add items
-#TODO add npc's
-#TODO add morphine and allow overdose based on chance
-
 
 def install_requirements():
     try:
