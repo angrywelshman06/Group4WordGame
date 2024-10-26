@@ -1,6 +1,7 @@
 from types import new_class
 
 import map
+
 from items import *
 
 # Starting inventory
@@ -42,7 +43,7 @@ unique_rooms_visited = 0
 health = 100
 
 #Stores current room position as an array
-current_room_position = map.starting_position
+current_room_position = [4,4]
 
 # Stores the previous room position as an array
 # Used for fleeing enemy combat

@@ -10,6 +10,7 @@ from map import get_room, map_matrix, Room, generate_map
 from colorama import Fore
 import subprocess
 import sys
+from npcs import place_npcs
 
 
 
@@ -96,9 +97,9 @@ def execute_go(direction):
             player.get_current_room().visited = True
             player.unique_rooms_visited += 1
 
-        for npc in npcs.randomly_placed_npcs:
-            if npcs.randomly_placed_npcs[npc] == player.unique_rooms_visited:
-                player.get_current_room().npcs.append(npc)
+        # for npc in npcs.randomly_placed_npcs:
+        #     if npcs.randomly_placed_npcs[npc] == player.unique_rooms_visited:
+        #         player.get_current_room().npcs.append(npc)
 
         print(f"You are going to {new_room.name}.")
     else:
@@ -415,6 +416,7 @@ def menu():
 def main():
     # Startup Logic
     generate_map()
+    place_npcs()
 
     # Main game loop
     while True:
