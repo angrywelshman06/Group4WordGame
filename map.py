@@ -36,19 +36,19 @@ def generate_map():
     # Add in tutorial room
     tutorial_room = Room(rooms.bedroom_tutorial, tuple(starting_position))
     tutorial_room.exits = {"north"}
-    map_matrix[starting_position[0]][starting_position[1]] = tutorial_room
+    map_matrix[starting_position[1]][starting_position[0]] = tutorial_room
     used_rooms.add(rooms.bedroom_tutorial['name'])
 
     # Add bathroom room directly north of the starting position
     bathroom_room = Room(rooms.bathroom_tutorial, tuple(bathroom_position))
     bathroom_room.exits = {"north", "south", "east", "west"}
-    map_matrix[bathroom_position[0]][bathroom_position[1]] = bathroom_room
+    map_matrix[bathroom_position[1]][bathroom_position[0]] = bathroom_room
     used_rooms.add(rooms.bathroom_tutorial['name'])
 
     # Add kitchen room directly south of the starting position
     kitchen_room = Room(rooms.kitchen_tutorial, tuple(kitchen_position))
     kitchen_room.exits = {"north", "south", "east", "west"}
-    map_matrix[kitchen_position[0]][kitchen_position[1]] = kitchen_room
+    map_matrix[kitchen_position[1]][kitchen_position[0]] = kitchen_room
     used_rooms.add(rooms.kitchen_tutorial['name'])
 
     # Add all special rooms
@@ -59,9 +59,9 @@ def generate_map():
         while attempts < max_attempts:
             x_coord = random.randint(0, 9)
             y_coord = random.randint(0, 9)
-            if map_matrix[x_coord][y_coord] is None and sr['name'] not in used_rooms:
+            if map_matrix[y_coord][x_coord] is None and sr['name'] not in used_rooms:
                 room = Room(sr, (x_coord, y_coord))
-                map_matrix[x_coord][y_coord] = room
+                map_matrix[y_coord][x_coord] = room
                 used_rooms.add(sr['name'])
                 break
             attempts += 1
