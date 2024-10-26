@@ -31,6 +31,7 @@ def curses_setcolors():
     curses.init_pair(23, 240, 240), # GREY 3
     curses.init_pair(24, 196, 0), # red text
     curses.init_pair(25, 178, 0), # yellow text
+    curses.init_pair(50, 0, 196), # RED EXPLODING
     
 class spritesheet():
     def __init__(self, path, color, zlevel = 0, frames = 0, dx = 0, dy = 0, delay = 0, infolist = 0):
