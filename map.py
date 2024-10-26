@@ -28,6 +28,7 @@ room objects, and the 1 being the starting point (and tutorial room)
 #This is the starting position of the player, as shown above
 starting_position = [4, 4]
 bathroom_position = [4, 3]
+kitchen_position = [4, 5]
 
 def generate_map():
     used_rooms = set()
@@ -40,13 +41,18 @@ def generate_map():
 
     # Add bathroom room directly north of the starting position
     bathroom_room = Room(rooms.bathroom_tutorial, tuple(bathroom_position))
-    bathroom_room.exits = {"south"}
+    bathroom_room.exits = {"north", "south", "east", "west"}
     map_matrix[bathroom_position[0]][bathroom_position[1]] = bathroom_room
     used_rooms.add(rooms.bathroom_tutorial['name'])
 
+    # Add kitchen room directly south of the starting position
+    kitchen_room = Room(rooms.kitchen_tutorial, tuple(kitchen_position))
+    kitchen_room.exits = {"north", "south", "east", "west"}
+    map_matrix[kitchen_position[0]][kitchen_position[1]] = kitchen_room
+    used_rooms.add(rooms.kitchen_tutorial['name'])
+
     # Add all special rooms
     for sr in special_rooms:
-        print(f"Generating {sr['name']}.")
         max_attempts = 100  # Maximum number of attempts to find a unique room
         attempts = 0
 
@@ -58,15 +64,8 @@ def generate_map():
                 map_matrix[x_coord][y_coord] = room
                 used_rooms.add(sr['name'])
                 break
-            else:
-                print(f"Attempt {attempts + 1}: Position ({x_coord}, {y_coord}) is already occupied or room name '{sr['name']}' is already used.")
             attempts += 1
 
-        if attempts == max_attempts:
-            print(f"Failed to place room {sr['name']} after {max_attempts} attempts.")
-            continue
-
-    # Add all generic rooms
     # Add all generic rooms
     for y in range(len(map_matrix)):
         for x in range(len(map_matrix[y])):
@@ -95,6 +94,7 @@ def generate_map():
                         room.enemies[f"enemy{num}"] = Enemy(enemies.zombie, level=level)
 
                 map_matrix[y][x] = room
+
     ensure_connected_graph()
 
 def ensure_connected_graph():
@@ -150,35 +150,6 @@ def all_rooms():
                 rooms_list.append(room)
     return rooms_list
 
-
-def door_assigner(room_num, turns_num, x, y):
-    doors = set()
-    directions = ["north", "south", "east", "west"]
-    distances = dist_from_edge(x, y)
-
-    # Calculate weights based on distances and number of turns
-    weights = {
-        "north": distances["north"] + turns_num,
-        "south": distances["south"] + turns_num,
-        "east": distances["east"] + turns_num,
-        "west": distances["west"] + turns_num
-    }
-
-    # Normalize weights to create probabilities
-    total_weight = sum(weights.values())
-    probabilities = {direction: weight / total_weight for direction, weight in weights.items()}
-
-    # Ensure at least one door
-    door_direct = random.choices(directions, weights=[probabilities[dir] for dir in directions])[0]
-    doors.add(door_direct)
-
-    # Optionally add more doors
-    num_doors = random.randint(1, 3)
-    for _ in range(num_doors):
-        door_direct = random.choices(directions, weights=[probabilities[dir] for dir in directions])[0]
-        doors.add(door_direct)
-
-    return doors
 
 def dist_from_start(x, y): #This function takes the coordinates of the player and returns the distance from the starting position of the player
     starting = starting_position

@@ -5,7 +5,7 @@ import player
 import random
 from items import Consumable, get_item_dict_from_list
 from gameparser import *
-from map import get_room, map_matrix, door_assigner, Room, generate_map
+from map import get_room, map_matrix, Room, generate_map
 from colorama import Fore
 import subprocess
 import sys
