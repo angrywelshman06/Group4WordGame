@@ -12,13 +12,6 @@ import subprocess
 import sys
 
 
-#TODO add enemies to rooms
-#TODO add combat
-#TODO add items
-#TODO add npc's
-#TODO add morphine and allow overdose based on chance
-
-
 def install_requirements():
     try:
         import colorama
@@ -249,7 +242,8 @@ def execute_command(command):
         sys.exit()
 
     elif command[0] == "help":
-        print("Commands: go [direction], take [item], drop [item], use [item], talk [npc], quit")
+        print("Commands: go [direction], take [item], drop [item], use [item], talk [npc name], quit")
+
 
     elif command[0] == "raptor":
         print(Fore.RED + r"""\
@@ -275,7 +269,7 @@ def execute_command(command):
 
 
     else:
-        print("This makes no sense, it appears as though the first word is not one of the designated command words..")
+        print("This makes no sense, it appears as though the first word is not one of the designated command words...")
 
 
 def execute_attack(enemy_id, enemy: enemies.Enemy, weapon: items.Weapon):
