@@ -184,9 +184,7 @@ def execute_drop(item_id, amount=1):
     print("You cannot drop that.")
 
 def execute_talk(npc_id):
-    print(npc_id)
     for npc in player.get_current_room().npcs:
-        print(npc.id)
         if npc.id == npc_id:
             npc.talk()
             return
