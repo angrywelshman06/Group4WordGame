@@ -20,7 +20,7 @@ class Room:
         self.exits = set()
         self.position = position
 
-        if no_enemies == False and random.random() < 0.6: # 60% chance of a room having enemies
+        if no_enemies == False: #and random.random() < 0.9: for now allways generate enemies
             enemy_count = int(random.random() / 0.3) # number of enemies will be between 0 - 3, usually 1 or 2
             
             for i in range(0, enemy_count):
@@ -265,7 +265,7 @@ skyscraper = {
     "description":
     """The skyscrapers are looking half demolished with its parts and debris splattered everywhere and hanging against its walls with bland and dull appearances.""",
 
-    "visual": ani_sprites.skyscraper,
+    "visual": ani_sprites.skyscraper, # TODO this dont work or something
 }
 road = {
     "name": "Road",

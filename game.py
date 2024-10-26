@@ -11,6 +11,7 @@ from ani_sprites import *
 import player
 import random
 from items import Consumable, Weapon, Item, get_item_dict_from_list
+import items
 from gameparser import *
 from map import get_room, map_matrix, door_assigner, Room, generate_map
 import combat
@@ -56,14 +57,14 @@ def print_room_items(room: Room): #  TODO fix this innit
             write(f"ERROR: {item_id} HAS NOT BEEN INITIALISED\n")
             continue
 
-        item = items.Item(item_dict)
+        #item = room.items.get(item_dict)
 
         if count == len(room.items) - 1 and len(room.items) > 1:
             item_list += " and "
         elif count != 0:
             item_list += ", "
-        item_list += f"{room.items[item.id]} {item.name}"
-        if room.items[item.id] > 1: item_list += "s"
+        item_list += f"{room.items[item_dict["id"]]} {item_dict["name"]}"
+        if room.items[item_id] > 1: item_list += "s"
         count += 1
 
     write(f"There is {item_list} here.\n")
@@ -175,6 +176,7 @@ def execute_take(item_id, amount=1):
                 player.get_current_room().items[item_id] -= amount
             else:
                 player.get_current_room().items.pop(item_id)
+                #player.get_current_room().items.
 
 
             found = False
@@ -217,20 +219,6 @@ def execute_drop(item_id, amount=1):
 
 def execute_command(command): # parse what needs to be executed based on command
     if 0 == len(command):
-        return
-
-    if len(player.get_current_room().enemies) >= 1:
-
-        if command[0] == "fight":
-            combat()
-            return
-
-        if command[0] in ["flee", "leave", "run"]:
-            player.current_room_position = player.previous_room_position
-            write(f"You fled back to the previous room!\n") # TODO ermmm waht the sigma
-            return
-
-        write("Not a valid command! Please choose either fight or flee.\n")
         return
 
     if command[0] == "go":
@@ -296,28 +284,27 @@ def execute_command(command): # parse what needs to be executed based on command
         write("This makes no sense, it appears as though the first word is not one of the designated command words..\nTry asking for 'HELP'\n", curses.A_BOLD)
 
 def resolve_danger(command): # when entering a room with enemies the player can choose to flee to the last room or to engage enemies
+    # 0 - combat unresolved # 1 - out of combat # 2 - in combat
     if len(command) == 0:
-        return
-    
-    global in_danger
-    global in_combat
+        return 0
 
     if command[0] == "fight":
-        in_danger = False
-        in_combat = True
         write("You ready yourself and approach the enemies\n")
+        return 2
 
     elif command[0] == "flee" or command[0] == "escape":
-        in_danger = False
         player.current_room_position = player.previous_room_position
         write("It's not worth the risk, you head back before you are seen\n")
+        return 1
 
     elif command[0] == "help" or command[0] == "what":
         write("You have to choose FIGHT or to FLEE\n")
+        return 0
 
     else:
         write("This makes no sense, it appears as though the first word is not one of the designated command words..\n")
         write("You have to choose to FIGHT or to FLEE\n")
+        return 0
 
 def execute_attack(enemy_id, enemy, weapon): # attaks an enemy
     if random.random() < weapon.crit_chance:
@@ -354,10 +341,17 @@ def execute_consume(item_id): # consumes an item
     return
 
 def execute_combat(command): # returns if player is still in combat # executes combat
+
     if len(command) == 0:
-        return
+        write("no command\n")
+        return True
+    
+    #write(command)
+    #write()
 
     # player turn
+
+    write("executing combat\n")
     
     if command[0] in ["flee", "escape", "run"]:
         write("Attempting to flee\n")
@@ -532,11 +526,9 @@ def main():
         #initialise curses screen
         init_screen()
 
-        write("what\n")
-
         # play intro animations
         play_animation(intro_1, True) # hold main thread unntil this animation stops playing
-        #play_animation(intro_2)
+        play_animation(intro_2)
 
     except Exception as e:
         close()
@@ -611,14 +603,33 @@ def main():
 
             elif cmd == 10 or cmd == curses.KEY_ENTER: # enter key
                 write()
+                #write("enter pressed\n\n")
+                #write(f"{user_input} : uinp\n")
 
                 normalised_user_input = normalise_input(user_input)
-                if in_danger:
-                    resolve_danger(normalised_user_input)
-                elif in_combat:
+
+                #write(f"{normalised_user_input} : normal inp\ncombat:{in_combat}\n")
+
+                if in_combat == True:
+                    #write("execute combat!\n")
                     in_combat = execute_combat(normalised_user_input)
                     set_scene_combat()
-                else:
+                elif in_danger == True:
+                    #write("resolving danger\n")
+                    resolution = resolve_danger(normalised_user_input)
+                    if resolution == 0: # danger unresolved
+                       in_danger = True
+                    elif resolution == 1: # escaped from danger / fled back to last room
+                        in_danger = False
+                    elif resolution == 2: # combat started
+                        in_danger = False
+                        in_combat = True
+
+                    #write(f"in danger:{in_danger}|||in combnat:{in_combat}\n")
+
+                    
+                elif in_combat == False and in_danger == False:
+                    #write("executing normal command\n")
                     execute_command(normalised_user_input)
                     set_scene()
 
