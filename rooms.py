@@ -100,9 +100,6 @@ bedroom_tutorial = {
 
     "items": {"paracetamol" : 2},
 
-    "win_requirements" : [
-        {"paracetamol" : 20, "mass" : 100}
-    ],
 
     "npcs" : []
 
@@ -273,7 +270,8 @@ river = {
     """The river, once a flowing lifeline, is now sluggish and murky, its waters dark and polluted with debris. Plastic bottles, driftwood, and other trash float along the surface, and the smell of decay hangs heavy in the air, while the distant sound of something splashing suggests the water isn’t as lifeless as it seems.""",
     "win_requirements" : [
         {"flex tape" : 20},
-    ]
+    ],
+    "npcs" : [boat_captain]
 }
 petrol_station = {
     "name": "Petrol Station",

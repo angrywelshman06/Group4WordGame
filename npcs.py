@@ -15,35 +15,6 @@ class NPC:
         print()
 
 # Function to place NPCs
-def place_npcs():
-    used_positions = set()
-
-    # Find the river room coordinates
-    river_room_position = None
-    for y in range(len(map_matrix)):
-        for x in range(len(map_matrix[y])):
-            if map_matrix[y][x] and map_matrix[y][x].name == rooms.river['name']:
-                river_room_position = (x, y)
-                break
-        if river_room_position:
-            break
-
-    # Place the boat captain in the river room
-    if river_room_position:
-        map_matrix[river_room_position[1]][river_room_position[0]].npc = NPC(boat_captain)
-        used_positions.add(river_room_position)
-
-    # Place other NPCs randomly
-    for npc_dict in npcs:
-        if npc_dict["id"] == "boat_captain":
-            continue
-        while True:
-            x_coord = random.randint(0, len(map_matrix[0]) - 1)
-            y_coord = random.randint(0, len(map_matrix) - 1)
-            if (x_coord, y_coord) not in used_positions and map_matrix[y_coord][x_coord] is not None:
-                map_matrix[y_coord][x_coord].npc = NPC(npc_dict)
-                used_positions.add((x_coord, y_coord))
-                break
 
 
 
@@ -78,10 +49,13 @@ business_man = {
 
 
 # {NPC : Turns in which the npc is randomly placed on)
-# randomly_placed_npcs = {
-#         NPC(test_npc) : [2, 4]
-#      }
-npcs = [injured_civilian, boat_captain, mechanic, business_man]
+randomly_placed_npcs = {
+        NPC(business_man) : [2, 4],
+        NPC(mechanic) : [5, 7],
+        NPC(injured_civilian) : [8, 10],
+
+     }
+
 
 
 
