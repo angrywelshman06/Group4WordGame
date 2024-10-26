@@ -4,7 +4,7 @@ import map
 from items import *
 
 # Starting inventory
-inventory = {Consumable(paracetamol) : 2, Item(item_pen) : 1, Weapon(bat) : 1} # could be changed to the gun idc
+inventory = {Consumable(paracetamol) : 2, Weapon(bat) : 1} # could be changed to the gun idc
 
 # Current maximum capacity of inventory (in grams)
 max_mass = 10000
@@ -43,6 +43,8 @@ current_room_position = map.starting_position
 # Stores the previous room position as an array
 # Used for fleeing enemy combat
 previous_room_position = None
+
+unique_rooms_visited = 0
 
 def get_current_room():
     return map.get_room(current_room_position[0], current_room_position[1])

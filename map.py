@@ -174,7 +174,6 @@ def ensure_connected_graph():
             connect_to_nearest_visited_room(room, visited)
 
 def get_adjacent_room(room, direction) -> Room:
-def get_adjacent_room(room, direction) -> Room:
     x, y = room.position
     if direction == "north":
         y -= 1
@@ -189,7 +188,6 @@ def get_adjacent_room(room, direction) -> Room:
         return map_matrix[y][x]
     return None
 
-def connect_to_nearest_visited_room(room, visited):#This function connects the room to the nearest visited room
 def connect_to_nearest_visited_room(room, visited):#This function connects the room to the nearest visited room
     x, y = room.position
     for direction in ["north", "south", "east", "west"]:

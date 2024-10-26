@@ -16,7 +16,7 @@ import random
 from items import Consumable, Weapon, Item, get_item_dict_from_list
 import items
 from gameparser import *
-from map import get_room, map_matrix, door_assigner, Room, generate_map
+from map import get_room, Room, generate_map
 import combat
 
 # system shit innit
@@ -304,7 +304,7 @@ def execute_command(command): # parse what needs to be executed based on command
         write("up arrow : scroll up, down arrow : scroll down, escape key : quit\n")
 
     elif command[0] == "raptor":
-        write("""\
+        write("""
                 ____      ________    
                ,^.__.>--"~~'_.--~_)~^.  
               _L^~   ~    (~ _.-~ \. |\     
@@ -582,7 +582,7 @@ def main():
         print(traceback.format_exc())
 
     # write title screen
-    write(r"""\
+    write("""
 ╔╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╗
 ╠╬╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╬╣
 ╠╣  _______     _______.  ______     ___      .______    _______        ╠╣

@@ -57,8 +57,7 @@ paracetamol = {
 
     # Consumable specifics
 
-    "healing": 45
-    "healing": 45
+    "healing": 45,
 }
 
 morphine = {
@@ -78,7 +77,8 @@ gun = {
     "name" : "shotgun",
     "description" : "DESCRIPTION",
     "mass" : 3500,
-    "type": Weapon,
+    "type": Gun,
+    "ammo": 4,
     "damage" : 10,
     "crit_chance" : 0.4,
     "crit_multiplier" : 1.5
@@ -170,6 +170,17 @@ ammo = {
     "mass": 21
 }
 
+bat = {
+    "id": "bat",
+    "name" : "baseball bat",
+    "description" : "DESCRIPTION",
+    "type": Weapon,
+    "damage" : 20,
+    "crit_chance": 0.1,
+    "crit_mult": 2,
+    "mass": 1500
+}
+
 item_list = [paracetamol, morphine, gun, parachute,
              explosives, lighter, rope, duct_tape,
              crowbar, screwdriver, starter_knife,
@@ -192,84 +203,3 @@ def dict_to_item(item_dict : {}):
         case _:
             item = Item(item_dict)
     return item
-
-bat = {
-    "id": "bat",
-    "name" : "baseball bat",
-    "description" : "DESCRIPTION",
-    "type": Weapon,
-    "damage" : 20,
-    "crit_chance": 0.1,
-    "crit_mult": 2,
-    "mass": 1500
-}
-
-knife = {
-    "id": "knife",
-    "name" : "kitchen knife",
-    "description" : "DESCRIPTION",
-    "type": Weapon,
-    "damage" : 15,
-    "crit_chance": 0.5,
-    "crit_mult": 4,
-    "mass": 800
-}
-
-axe = {
-    "id": "axe",
-    "name" : "axe",
-    "description" : "DESCRIPTION",
-    "type": Weapon,
-    "damage" : 30,
-    "crit_chance": 0.25,
-    "crit_mult": 2,
-    "mass": 2000
-}
-
-gun = {
-    "id": "axe",
-    "name" : "axe",
-    "description" : "DESCRIPTION",
-    "type": Gun,
-    "damage" : 50,
-    "crit_chance": 0.25,
-    "crit_mult": 2,
-    "ammo": 4,
-    "mass": 2000
-}
-
-parachute = {
-    "id" : "parachute"
-}
-
-item_knife = {
-    "id" : "knife",
-    "name" : "knife",
-    "description" : "DESCRIPTION",
-    "mass" : 80,
-    type: Weapon,
-    "damage" : 5,
-    "crit_chance" : 0.2,
-    "crit_multiplier" : 2
-}
-
-item_list = [item_id_card, item_biscuits, item_handbook, item_laptop, item_money, item_pen, gun, paracetamol, morphine, item_knife]
-
-def get_item_dict_from_list(item_id : str) -> {}:
-    for item_dict in item_list:
-        if item_dict["id"] == item_id:
-            return item_dict
-    return None
-
-def dict_to_item(item_dict : {}):
-    if "type" not in item_dict:
-        item = Item(item_dict)
-        return item
-
-    match item_dict["type"].__name__:
-        case Consumable.__name__:
-            item = Consumable(item_dict)
-        case _:
-            item = Item(item_dict)
-    return item
-
