@@ -2,9 +2,8 @@ import random
 import enemies
 import npcs
 import rooms
-from enemies import Enemy
-from rooms import special_rooms, Room, generic_rooms
-from enemies import Enemy
+#from enemies import *
+from combat import *
 from rooms import special_rooms, Room, generic_rooms
 from collections import deque
 #import sys
@@ -91,9 +90,10 @@ def generate_map():
             y_coord = random.randint(0, 9)
             if map_matrix[x_coord][y_coord] is None and sr['name'] not in used_rooms:
                 room = Room(sr, (x_coord, y_coord), visual_in=sr["visual"])
+                #TODO add enemies to special rooms ????
                 map_matrix[x_coord][y_coord] = room
             if map_matrix[y_coord][x_coord] is None and sr['name'] not in used_rooms:
-                room = Room(sr, (x_coord, y_coord))
+                room = Room(sr, (x_coord, y_coord), visual_in=sr["visual"])
                 map_matrix[y_coord][x_coord] = room
                 used_rooms.add(sr['name'])
                 break
@@ -125,20 +125,7 @@ def generate_map():
                 generic_room = {'name': room_name, 'description': description, 'items': items}
                 room = Room(generic_room, (x, y))
 
-                # enemies are generated in rooms.py, can be changed if need be
-                """ if random.random() <= 0.50:
-                    for num in range(random.randint(1, 3)):
-                        chance = random.random()
-                        level = 1
-                        if chance < 0.2:
-                            level = 3
-                        elif chance < 0.5:
-                            level = 2
-
-                        room.enemies[f"enemy{num}"] = Enemy(enemies.zombie, level=level) """
-
-
-                if True:#random.random() <= 0.90:
+                if random.random() <= 0.50:
                     for num in range(random.randint(1, 3)):
                         
                         chance = random.random()
@@ -148,7 +135,7 @@ def generate_map():
                         elif chance < 0.5:
                             level = 2
 
-                        room.enemies[f"enemy{num}"] = Enemy(enemies.zombie, level=level)
+                        room.enemies[f"enemy{num}"] = Enemy(random.choice(all_enemies), level=level)
 
                 map_matrix[y][x] = room
 

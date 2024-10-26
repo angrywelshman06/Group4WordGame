@@ -51,4 +51,13 @@ zombie_strong = {
     "crit_multiplier" : 2
 }
 
-all_enemies = [zombie, zombie_child, zombie_dog, zombie_strong]
+zombie_soldier = {
+    "name" : "zombie soldier",
+    "description" : "DESCRIPTION",
+    "health" : 80,
+    "base_damage" : 20,
+    "crit_chance" : 0.2,
+    "crit_multiplier" : 2
+}
+
+all_enemies = [zombie, zombie_child, zombie_dog, zombie_strong, zombie_soldier]

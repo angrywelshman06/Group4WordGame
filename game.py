@@ -43,7 +43,10 @@ install_requirements()
 def print_room_items(room: Room): #  TODO fix this innit
     # If there are no items, no output
     if len(room.items) == 0:
+        #write("\nroom supposedlyt has no tiems!!\n")
         return
+    
+    #write("\nprint room items called!\n")
 
     item_list = ""
     count = 0
@@ -60,11 +63,11 @@ def print_room_items(room: Room): #  TODO fix this innit
             item_list += " and "
         elif count != 0:
             item_list += ", "
-        item_list += f"{room.items[item_dict["id"]]} {item_dict["name"]}"
+        item_list += f"{room.items[item_dict['id']]} {item_dict['name']}"
         if room.items[item_id] > 1: item_list += "s"
         count += 1
 
-    write(f"There is {item_list} here.\n")
+    write(f"\nThere is {item_list} here.\n", curses.color_pair(18))
 
     write()
 
@@ -191,7 +194,6 @@ def execute_take(item_id, amount=1):
             else:
                 player.get_current_room().items.pop(item_id)
                 #player.get_current_room().items.
-
 
             found = False
             for item in player.inventory.keys():
@@ -382,12 +384,8 @@ def execute_consume(item_id): # consumes an item
 def execute_combat(command): # returns if player is still in combat # executes combat
 
     if len(command) == 0:
-        write("no command\n")
         return True
     
-    #write(command)
-    #write()
-
     # player turn
 
     write("executing combat\n")
@@ -395,7 +393,6 @@ def execute_combat(command): # returns if player is still in combat # executes c
     if command[0] in ["flee", "escape", "run"]:
         write("Attempting to flee\n")
         if random.random() < 0.7:
-            # TODO escape to last room
             player.current_room_position = player.previous_room_position
             write("You manage to escape the battle.\n")
             return False
@@ -415,14 +412,14 @@ def execute_combat(command): # returns if player is still in combat # executes c
         enemy_count = len(player.get_current_room().enemies)
 
         # check target validity
-        if command[1] in ["1", "first"]:
+        if command[1] in ["1", "first", "1st"]:
             target_index = 0
-        elif command[1] in ["2", "second"]:
+        elif command[1] in ["2", "second", "2nd"]:
             target_index = 1
             if enemy_count < 2:
                 write("\nThere is only one enemy\n")
                 return True
-        elif command[1] in ["3", "third"]:
+        elif command[1] in ["3", "third", "3rd"]:
             target_index = 2
             if enemy_count < 3:
                 write("\nThere are only 2 enemies\n")
@@ -441,12 +438,11 @@ def execute_combat(command): # returns if player is still in combat # executes c
                             break
                         else:
                             count += 1
-                    #execute_attack(command[1], enem, item)
                 elif type(item) == items.Gun:
                     count = 1
                     for e in player.get_current_room().enemies:
                         if count == target_index:
-                            execute_attack(command[1], player.get_current_room().enemies[target_index], item)
+                            execute_attack(command[1], e, item)
                             break
                         else:
                             count += 1
@@ -503,11 +499,11 @@ def set_scene_combat(): # gives the player info on how the battle is progressing
         write(f"{enemy.name}, ")
     
     write(f"\nYou have {player.health} health left.\n")
-    write("ATTACK <enemy> <weapon>\tor\t")
-    write("CONSUME <item>\tor\t")
+    write("ATTACK <which enemy> <weapon>      or      ")
+    write("CONSUME <item>      or      ")
     write("FLEE\n\n")
 
-def print_intro():
+def print_intro(): # prints the intro text, makes all the sound effects italic and blinking
     write("\nzzzzzzzzz.. brrrrrrrr… crrrrrrrr\n", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
     write(" bbbbbrrrrrr…zzzzzzzz… ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
     write("EMERGENCY CODE: 35627", curses.color_pair(25))
@@ -530,7 +526,7 @@ def print_intro():
     write(" fzzzzzt bzzzzzzzt ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
     write("Attempt to escape the city at you’re own risk…", curses.color_pair(25))
     write(" ZZZZZZZZ ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
-    write("\n – Transmission cuts.",curses.color_pair(25))
+    write("\n – Transmission cuts.\n",curses.color_pair(25))
 
 
 def set_scene(): # gives the player info on the current room and thier charecter
@@ -614,7 +610,7 @@ def main():
 
     except Exception as e:
         close()
-        print(f"Exception '{e}' occured\n")
+        print(f"Exception '{e}' occured at startup\n")
         print(traceback.format_exc())
 
     # write title screen
@@ -686,19 +682,16 @@ def main():
 
             elif cmd == 10 or cmd == curses.KEY_ENTER: # enter key
                 write()
-                #write("enter pressed\n\n")
-                #write(f"{user_input} : uinp\n")
 
                 normalised_user_input = normalise_input(user_input)
 
-                #write(f"{normalised_user_input} : normal inp\ncombat:{in_combat}\n")
-
                 if in_combat == True:
-                    #write("execute combat!\n")
                     in_combat = execute_combat(normalised_user_input)
-                    set_scene_combat()
+                    if in_combat:
+                        set_scene_combat()
+                    else:
+                        set_scene()
                 elif in_danger == True:
-                    #write("resolving danger\n")
                     resolution = resolve_danger(normalised_user_input)
                     if resolution == 0: # danger unresolved
                        in_danger = True
@@ -707,12 +700,8 @@ def main():
                     elif resolution == 2: # combat started
                         in_danger = False
                         in_combat = True
-
-                    #write(f"in danger:{in_danger}|||in combnat:{in_combat}\n")
-
                     
                 elif in_combat == False and in_danger == False:
-                    #write("executing normal command\n")
                     execute_command(normalised_user_input)
                     set_scene()
 
