@@ -5,6 +5,7 @@ class NPC:
     def __init__(self, npc_dict : {}):
         self.id = npc_dict["id"]
         self.name = npc_dict["name"]
+        self.description = npc_dict["description"]
         self.lines = npc_dict["lines"]
 
     def talk(self):
@@ -20,6 +21,7 @@ class NPC:
 test_npc = {
     "id" : "test_man",
     "name" : "Testing Man",
+    "description" : "Test description",
     "lines" : ["Hi", "Hello", "Hey there", "Howdy"]
 }
 
