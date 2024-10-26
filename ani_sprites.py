@@ -500,3 +500,55 @@ zombie1_csd1 = spritesheet(("cutscene_death_1", "zombie1_csd1"),7, zlevel = 3, f
 zombie2_csd1 = spritesheet(("cutscene_death_1", "zombie2_csd1"),7, zlevel = 1, frames = 33)
 #####
 cutscene_death_1 = (blood_csd1, mc_csd1, zombie1_csd1, zombie2_csd1, general_bg,outline)
+
+#### Ending: Explosion
+bg_exploend = spritesheet(("ending_explosion", "bg_exploend"),4, zlevel = 1, frames = 55)
+c4_exploend = spritesheet(("ending_explosion", "c4_exploend"),50, zlevel = 3, frames = 15)
+fire_exploend = spritesheet(("ending_explosion", "fire_exploend"),8, zlevel = 4, frames = 29)
+mc_exploend = spritesheet(("ending_explosion", "mc_exploend"),22, zlevel = 5, frames = 55)
+wall_exploend = spritesheet(("ending_explosion", "wall_exploend"),3, zlevel = 2, frames = 55)#
+#####
+ending_explosion = (outline,bg_exploend, c4_exploend, fire_exploend, mc_exploend, wall_exploend)
+
+#### Ending: Rope escape
+bg_ropeend = spritesheet(("ending_rope", "bg_ropeend"),4, zlevel = 1, frames = 62)
+mc_ropeend = spritesheet(("ending_rope", "mc_ropeend"),22, zlevel = 3, frames = 23)
+mc2_ropeend = spritesheet(("ending_rope", "mc2_ropeend"),22, zlevel = 5, frames = 62)
+rope_ropeend = spritesheet(("ending_rope", "rope_ropeend"),21, zlevel = 4, frames = 62)
+wall_ropeend = spritesheet(("ending_rope", "wall_ropeend"),3, zlevel = 2, frames = 62)
+#####
+ending_rope = (outline, bg_ropeend, mc_ropeend, mc2_ropeend, rope_ropeend, wall_ropeend)
+
+#### Ending: Boat
+bg1_endboat = spritesheet(("ending_boat", "bg1_endboat"),8, zlevel = 0.2, frames = 50)
+bg2_endboat = spritesheet(("ending_boat", "bg2_endboat"),17, zlevel = 0.1, frames = 1)
+boat_endboat = spritesheet(("ending_boat", "boat_endboat"),16, zlevel = 7, frames = 50)
+building1_endboat = spritesheet(("ending_boat", "building1_endboat"),3, zlevel = 5, frames = 50)
+building2_endboat = spritesheet(("ending_boat", "building2_endboat"),3, zlevel = 6, frames = 50)
+mc_endboat = spritesheet(("ending_boat", "mc_endboat"),22, zlevel = 8, frames = 50)
+ocean_endboat = spritesheet(("ending_boat", "ocean_endboat"),18, zlevel = 4, frames = 1)
+sun_endboat = spritesheet(("ending_boat", "sun_endboat"),21, zlevel = 0.3, frames = 50)
+#####
+ending_boat = (outline, bg1_endboat, bg2_endboat, boat_endboat, building1_endboat, building2_endboat, mc_endboat, ocean_endboat, sun_endboat)
+
+#### Ending: Car
+car_endcar = spritesheet(("ending_car", "car_endcar"),16, zlevel = 7, frames = 1)
+mc_endcar = spritesheet(("ending_car", "mc_endcar"),22, zlevel = 6.8, frames = 1)
+road_endcar = spritesheet(("ending_car", "road_endcar"),20, zlevel = 4, frames = 50)
+#####
+ending_car = (outline, bg1_endboat, bg2_endboat, car_endcar, building1_endboat, building2_endboat, mc_endcar, road_endcar, sun_endboat)
+
+#### Ending: Parachute
+building_endpara = spritesheet(("ending_parachute", "building_endpara"),3, zlevel = 2, frames = 31)
+building2_endpara = spritesheet(("ending_parachute", "building2_endpara"),16, zlevel = 1, frames = 60)
+mc_endpara = spritesheet(("ending_parachute", "mc_endpara"),22, zlevel = 4, frames = 60)
+parachute_endpara = spritesheet(("ending_parachute", "parachute_endpara"),15, zlevel = 5, frames = 60)
+rooftop_endpara = spritesheet(("ending_parachute", "rooftop_endpara"),3, zlevel = 3, frames = 20)
+#####
+ending_parachute = (outline,building_endpara, building2_endpara, mc_endpara, parachute_endpara, rooftop_endpara, sun_endboat, red_skyline)
+
+#### Fight cutscene
+body_fight = spritesheet(("cutscene_fight", "body_fight"),7, zlevel = 1, frames = 31)
+eyes_fight = spritesheet(("cutscene_fight", "eyes_fight"),8, zlevel = 2, frames = 31)
+#####
+fight_cutscene = (body_fight,eyes_fight,outline, general_bg)
