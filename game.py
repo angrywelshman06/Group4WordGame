@@ -9,10 +9,10 @@ from ani_sprites import *
 
 # game systems
 import player
+import random
 from items import Consumable, Weapon, Item
-import items
+import items, get_item_dict_from_list
 from gameparser import *
-from player import current_room_position
 from map import get_room, map_matrix, door_assigner, Room, generate_map
 import combat
 
@@ -39,23 +39,38 @@ def install_requirements():
     except ImportError:
         subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
 
+
 install_requirements()
 
-def list_of_items(items):
-    new_string = ""
-    for i in range(len(items)):
-        if i != 0: new_string += ", "
-        new_string += items[i].name
-    return new_string
 
-
-def print_room_items(room : Room):
+def print_room_items(room: Room):
     # If there are no items, no output
     if len(room.items) == 0:
         return
 
-    write(f"There is {list_of_items(room.items)} here.\n")
-    write()
+    item_list = ""
+    count = 0
+    for item_id in room.items.keys():
+
+        item_dict = get_item_dict_from_list(item_id)
+        if item_dict is None:
+            print(f"ERROR: {item_id} HAS NOT BEEN INITIALISED")
+            continue
+
+        item = items.Item(item_dict)
+
+        if count == len(room.items) - 1 and len(room.items) > 1:
+            item_list += " and "
+        elif count != 0:
+            item_list += ", "
+        item_list += f"{room.items[item.id]} {item.name}"
+        if room.items[item.id] > 1: item_list += "s"
+        count += 1
+
+    print(f"There is {item_list} here.")
+
+    print()
+
 
 # Prints information about the given room
 def print_room(room: Room):
@@ -66,11 +81,14 @@ def print_room(room: Room):
     write()
     print_room_items(room)  # Displays items in room
 
+    if len(room.enemies) == 0:
+
     # Print exits
     if room.exits:
         write("Exits: " + ", ".join(room.exits))
     else:
         write("No exits available seems you might be stuck. What a shame ;)\n")
+
 
 # Checks if the exit is valid in the current room
 def is_valid_exit(direction):
@@ -83,10 +101,14 @@ def execute_go(direction):
 
         # Translating direction into vector movement
         match direction:
-            case "north": new_pos[1] -= 1
-            case "east": new_pos[0] += 1
-            case "south": new_pos[1] += 1
-            case "west": new_pos[0] -= 1
+            case "north":
+                new_pos[1] -= 1
+            case "east":
+                new_pos[0] += 1
+            case "south":
+                new_pos[1] += 1
+            case "west":
+                new_pos[0] -= 1
 
         # Ensure the new room has an exit back to the previous room
         current_room = player.get_current_room()
@@ -97,21 +119,10 @@ def execute_go(direction):
             close()
             #sys.exit()
 
-        if new_room is None:
-            new_room = Room()
-            map_matrix[new_pos[1]][new_pos[0]] = new_room
+        # Ensure the new room has an exit back to the current room
+        opposite_direction = {"north": "south", "south": "north", "east": "west", "west": "east"}
+        new_room.exits.add(opposite_direction[direction])
 
-            # Generate doors for the new room
-            new_room.exits = door_assigner(len(map_matrix), len(map_matrix[0]), new_pos[0], new_pos[1])
-
-            # Ensure the new room has an exit back to the current room
-            opposite_direction = {"north": "south", "south": "north", "east": "west", "west": "east"}
-            new_room.exits.add(opposite_direction[direction])
-
-        # Update the current room's exits
-        current_room.exits.add(direction)
-
-        # update room positions
         player.previous_room_position = player.current_room_position
         player.current_room_position = new_pos
 
@@ -147,34 +158,78 @@ def execute_consume(item_id): # consumes item in battle and regens health
     write("You cannot consume that.\n")
 
 
-def execute_take(item_id): # take item from the room
-    for item in player.get_current_room().items:
-        if item["id"] == item_id:
+def execute_take(item_id, amount=1):
 
-            if player.inventory_mass() + item.mass > player.max_mass:
-                write("You cannot take that, your inventory is too small\n")
-                write(f"Current Inventory Mass: {player.inventory_mass()}g\n")
-                write(f"Mass of {item.name}: {item.mass}g\n")
+    for item_dict_id in player.get_current_room().items.keys():
+        if item_dict_id == item_id:
+
+            item = items.dict_to_item(get_item_dict_from_list(item_dict_id))
+
+            if player.get_current_room().items[item_id] < amount:
+                print(f"There are not {amount} many {item.name}s in the room.")
                 return
-            player.get_current_room().items.pop(player.get_current_room().items.index(item))
-            player.inventory.append(item)
-            write(f"You picked up {item.name}.\n")
+
+
+            if player.get_current_room().items[item_id] > amount:
+                player.get_current_room().items[item_id] -= amount
+            else:
+                player.get_current_room().items.pop(item_id)
+
+
+            found = False
+            for item in player.inventory.keys():
+                if item.id == item_id:
+                    player.inventory[item] += amount
+                    found = True
+                    break
+
+            if not found:
+                player.inventory[item] = amount
+
+            print(f"You picked up {item.name}.")
             return
     write("You cannot take that.\n")
 
 
-def execute_drop(item_id): # drop an item from inventory
-    for item in player.inventory:
+def execute_drop(item_id, amount=1):
+    for item in player.inventory.keys():
         if item.id == item_id:
-            player.inventory.pop(player.inventory.index(item))
-            player.get_current_room().items.append(item)
-            write(f"You dropped {item.name}.\n")
+
+            if player.inventory[item] < amount:
+                print(f"You do not have {amount} {item.name}s.")
+                return
+
+            if player.inventory[item] > amount:
+                player.inventory[item] -= amount
+            else:
+                player.inventory.pop(item)
+
+            if item.id in player.get_current_room().items:
+                player.get_current_room().items[item.id] += amount
+            else:
+                player.get_current_room().items[item.id] = amount
+
+            print(f"You dropped {item.name}.")
             return
     write("You cannot drop that.\n")
 
 
 def execute_command(command): # parse what needs to be executed based on command
     if 0 == len(command):
+        return
+
+    if len(player.get_current_room().enemies) >= 1:
+
+        if command[0] == "fight":
+            combat()
+            return
+
+        if command[0] in ["flee", "leave", "run"]:
+            player.current_room_position = player.previous_room_position
+            print(f"You fled back to the previous room!")
+            return
+
+        print("Not a valid command! Please choose either fight or flee.")
         return
 
     if command[0] == "go":
@@ -185,12 +240,17 @@ def execute_command(command): # parse what needs to be executed based on command
 
     elif command[0] == "take":
         if len(command) > 1:
+            if len(command) >= 3 and str(command[2]).isdigit():
+                execute_take(command[1], amount=int(command[2]));
+                return
             execute_take(command[1])
         else:
             write("Take what?\n")
 
     elif command[0] == "drop":
         if len(command) > 1:
+            if len(command) >= 3 and str(command[2]).isdigit():
+                execute_drop(command[1], amount=int(command[2])); return
             execute_drop(command[1])
         else:
             write("Drop what?\n")
@@ -593,4 +653,3 @@ def main():
 # See https://docs.python.org/3.4/library/__main__.html for explanation
 if __name__ == "__main__":
     main()
-
