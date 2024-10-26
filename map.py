@@ -138,8 +138,9 @@ def generate_map():
                         room.enemies[f"enemy{num}"] = Enemy(enemies.zombie, level=level) """
 
 
-                if random.random() <= 0.50:
+                if True:#random.random() <= 0.90:
                     for num in range(random.randint(1, 3)):
+                        
                         chance = random.random()
                         level = 1
                         if chance < 0.2:

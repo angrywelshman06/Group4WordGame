@@ -278,7 +278,7 @@ skyscraper = {
     "description":
     """The skyscrapers are looking half demolished with its parts and debris splattered everywhere and hanging against its walls with bland and dull appearances.""",
 
-    "visual": ani_sprites.skyscraper, # TODO this dont work or something
+    "visual": ani_sprites.room_skyscraper, 
 
     "win_requirements" : [
         {"parachute" : 1}

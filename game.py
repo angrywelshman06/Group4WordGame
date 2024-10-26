@@ -434,9 +434,23 @@ def execute_combat(command): # returns if player is still in combat # executes c
         for item in player.inventory:
             if item.id == command[2] or item.name == command[2]:
                 if type(item) == items.Weapon:
-                    execute_attack(command[1], player.get_current_room().enemies[target_index], item)
+                    count = 1
+                    for e in player.get_current_room().enemies:
+                        if count == target_index:
+                            execute_attack(command[1], e, item)
+                            break
+                        else:
+                            count += 1
+                    #execute_attack(command[1], enem, item)
                 elif type(item) == items.Gun:
-                    execute_attack(command[1], player.get_current_room().enemies[target_index], item)
+                    count = 1
+                    for e in player.get_current_room().enemies:
+                        if count == target_index:
+                            execute_attack(command[1], player.get_current_room().enemies[target_index], item)
+                            break
+                        else:
+                            count += 1
+
                     item.ammo -= 1
                 else:
                     write("This item is not a weapon!\n")
@@ -455,7 +469,9 @@ def execute_combat(command): # returns if player is still in combat # executes c
         write("You won the battle!\n", curses.color_pair(7))
         return False
 
-    enemy = random.choice(list(player.get_current_room().enemies)) # choose random enemy to attack
+    enemy_key = random.choice([*player.get_current_room().enemies.keys()]) # choose random enemy to attack
+    enemy = player.get_current_room().enemies[enemy_key]
+
     write(f"The {enemy.name} attacked you!\n", curses.color_pair(25))
     if random.random() < enemy.crit_chance:
         damage = enemy.damage * enemy.crit_multiplier
@@ -482,7 +498,8 @@ def set_scene_combat(): # gives the player info on how the battle is progressing
     enemies = player.get_current_room().enemies
 
     write(f"There are {len(enemies)} enemies left. You see a ")
-    for enemy in enemies:
+    for enemy_id in enemies:
+        enemy = enemies[enemy_id]
         write(f"{enemy.name}, ")
     
     write(f"\nYou have {player.health} health left.\n")
