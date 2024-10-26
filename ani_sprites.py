@@ -1,7 +1,7 @@
 import os
 import curses
 
-# Here so I can set colors
+# Here so colors can be set
 curses.initscr()
 
 # Run this in the mainloop of the main file
@@ -32,111 +32,104 @@ def curses_setcolors():
     curses.init_pair(24, 196, 0), # red text
     curses.init_pair(25, 178, 0), # yellow text
     curses.init_pair(50, 0, 196), # RED EXPLODING
-    
-class spritesheet():
-    def __init__(self, path, color, zlevel = 0, frames = 0, dx = 0, dy = 0, delay = 0, infolist = 0):
-        self.path = path
-        self.color = color # curses pair
-        self.zlevel = zlevel
-        self.frames = frames
-        self.dx = dx 
-        self.dy = dy
-        self.delay = delay # not implemented
-        self.frameslist = self.gather_framelist() # list containing every frame
-        self.infolist = infolist
-        if infolist != 0:
-            self.frameslist = self.transform_to_details()
-        if (self.dx != 0) or (self.dy != 0):
-            self.frameslist = self.extend_frames()
 
-    def gather_framelist(self):
+
+""" 
+Spritesheets are objects that contain the data to be used when printing animations or still shots on the screen. 
+zlevel - When two or more ASCII characters share the same position on the screen, the highest zlevel determines which character gets printed.
+
+frames - The amount of text files read within a spritesheet. Used for determining the spritesheet with the highest amount of frames, 
+then duplicates the final frame of every other spritesheet to the highest amount.
+
+dx, dy - Allows to move the ascii frames to a different position on the screen
+
+infolist - By default 0. If not, the values contained within this list will be used to transform every frame in frameslist according to the 
+"""
+class spritesheet():
+    def __init__(self, path, color, zlevel = 0, frames = 0, dx = 0, dy = 0, infolist = 0):
+        self.path = path # folder path in ./spritesheets/
+        self.color = color # curses color pair
+        self.zlevel = zlevel # printing priority
+        self.frames = frames # number of text files to read
+        self.dx = dx # x change
+        self.dy = dy # y change
+        self.frameslist = self.gather_framelist() # list containing every frame. The standard dimensions for most text files read should be col 100 x ln 33
+        self.infolist = infolist ### Used for combat. Should be a list containing [creature type, number (in battle), level, hp]
+        if infolist != 0:
+            self.frameslist = self.transform_to_details() ### Tansforms every spritesheet to the details of a creature by using the infolist.
+            
+        ## dy and dx are meant to be used when a spritesheet contains text files of a much smaller dimension than the standard.       
+        if (self.dx != 0) or (self.dy != 0):
+            self.frameslist = self.extend_frames() ## Adds empty space around every item of the frameslist (according to dx and dy) to fit the standard of 100x33. 
+
+    def gather_framelist(self): # Gathers every textfile in the given path and appends it to frameslist.
         frameslist = []
         for frame in range(1,self.frames+1):
             # path = os.path.join("modularanimation","spritesheets","{0}".format(self.path), "txt", "ascii-art ({0}).txt".format(frame)) ## os.path.join works regardless of OS
             path = os.path.join("spritesheets",*self.path, "ascii-art ({0}).txt".format(frame)) #if ran directly from animator.py
-            file = open(path, "r", encoding="utf-8")
+            file = open(path, "r", encoding="utf-8") # utf-8 ecoding to allow extended ascii art
             frameslist.append(file.read())
             file.close()
         return frameslist
 
-    def transform_to_details(self): # By now we have a creature_dict value : spritesheet pair in info_dict
+    # Responsible for updating the graphical representation of the stats on the screen. [creature type, number (in battle), level, hp]
+    def transform_to_details(self): # Uses infolist
         name = self.infolist[0]
         number = self.infolist[1]
         level = self.infolist[2]
         hp = self.infolist[3]
         newframeslist = []
         
-        for index,value in enumerate(self.frameslist):
-            newframe = self.frameslist[index].splitlines()     
+        for index,value in enumerate(self.frameslist): # Goes through every item in frameslist
+            newframe = self.frameslist[index].splitlines() # Splits every line in the current index of frameslist. The resulting split is then appended as a list to newframe.
             
-            for index, value in enumerate(newframe):
-                newframe[index] = " "*len(newframe[index])
-            # for line in newframe:
-                # line = " "*len(line)
+            for index, value in enumerate(newframe): # Loops through every item of newframe.
+                newframe[index] = " "*len(newframe[index]) # Turns every character of the item into empty space. Reasoning behind this is to maintain dimensions.
             
-            for index,line in enumerate(newframe):
+            for index,line in enumerate(newframe): # Goes through newframe again and assigns the info from infolist arbitrarily to index 2 and 3.
                 if index == 2:
-                    newframe[index] = name +" No."+str(number)+line[len(name+" No."+str(number)):]
+                    newframe[index] = name +" No."+str(number)+line[len(name+" No."+str(number)):] ### Adds info whilst maintaining the lenght of the item.
                 if index == 3:
-                    newframe[index] = "Lv"+str(level)+" HP:"+str(hp)+line[index][len("Lv"+str(level)+" HP:"+str(hp)):]
+                    newframe[index] = "Lv"+str(level)+" HP:"+str(hp)+line[index][len("Lv"+str(level)+" HP:"+str(hp)):] ### Adds info whilst maintaining the lenght of the item.
                 else:
                     pass
-            # for line in newframe:
-                # for index, char in enumerate(line):
-                    # if index == 2:
-                        # line[index] = name +" No."+str(number)+line[index][len(name+" No."+str(number)):]
-                    # if index == 3:
-                        # line[index] = "Lv"+str(level)+" HP:"+str(hp)+line[len("Lv"+str(level)+" HP:"+str(hp)):]
-                    # else:
-             
             
-            newframe = "\n".join(newframe) # joins back the frames
-            newframeslist.append(newframe)
+            newframe = "\n".join(newframe) # joins back the items of newframe into one frame
+            newframeslist.append(newframe) # appends the new frame to newframeslist
         
-        return newframeslist
+        return newframeslist # Returns the altered frames list
 
-    
+    """ Adds empty space around every item of the frameslist (according to dx and dy) to fit the standard of 100x33. """
     def extend_frames(self):
-        ### Standard: col 100, rows 34
-        # don't go out of the standard bounds when working with dx and dy
         newframeslist = []
-        for index, value in enumerate(self.frameslist):
-            newframe = self.frameslist[index].splitlines()
+        for index, value in enumerate(self.frameslist): # Goes through every item in frameslist
+            newframe = self.frameslist[index].splitlines() # Splits every line in the current index of frameslist. The resulting split is then appended as a list to newframe.
             
-            for index, value in enumerate(newframe):
-                if len(newframe[index]) < 100:
-                    newframe[index] += " "*(100-len(newframe[index])) 
+            for index, value in enumerate(newframe): # Loops through every item of newframe.
+                if len(newframe[index]) < 100: 
+                    newframe[index] += " "*(100-len(newframe[index])) #fills newframe to the standard x dimension
                     
-            if len(newframe) < 34: # add empty space 
+            if len(newframe) < 34:
                 for i in range(len(newframe), 34):
-                    newframe.append(" "*100)
+                    newframe.append(" "*100) # fills newframe to the standard y dimension
                     
             for i in range(self.dy): # DY adjustment
-                newframe.insert(0,(" "*100))
-                del newframe[-1]
+                newframe.insert(0,(" "*100)) # Adds blank space at index 0
+                del newframe[-1] # Deletes the last item in newframe list
                 
-            if self.dx != 0:
-                for index, value in enumerate(newframe): # DX adjustment
-                    newframe[index] = (" "*(self.dx) + newframe[index])[:-(self.dx)]
+            if self.dx != 0: # DX adjustment
+                for index, value in enumerate(newframe): # loops through every item of newframe
+                    newframe[index] = (" "*(self.dx) + newframe[index])[:-(self.dx)] # pushes every item towards the right whilst maintaining the standard x dimension of 100.
                     
             newframe = "\n".join(newframe) # joins back the frames
             newframeslist.append(newframe)
             
-        return newframeslist
-        
-# All txt frames should have the same amount of lines and same col at the end of a line. For now.
-##################### path, escape code color, z-level, frames
+        return newframeslist # Returns the altered frames list
 
-###### Test
-# outline = spritesheet(("bg",),"\033[37m", zlevel = 22, frames = 1)
-# circle = spritesheet(("circle",),"\033[94m", zlevel = 6, frames = 5)
-# square = spritesheet(("square",),"\033[32m", zlevel = 4, frames = 5)
-# lightning = spritesheet(("lightning",),"\033[32m", zlevel = 5, frames = 5)
-# dude = spritesheet(("dude",), "\033[32m", zlevel= 5, frames = 28)
-# frontpillars = spritesheet(("frontpillars",),"\033[31m", zlevel = 8, frames = 28)
-# backpillars = spritesheet(("backpillars",),"\033[31m", zlevel = 2, frames = 28)
+###### SPRITESHEETS ###########
+""" After the spritesheets are declared, they are then assigned to a tuple which is used in run_animation_curses and print_stillshot_curses."""
 
-###### Multi-purpose
+###### Multi-purpose sprites
 general_bg = spritesheet(("background",), 3, zlevel = 0.05, frames = 1)
 general_bg2 = spritesheet(("background2",),23, zlevel = 0.1, frames = 1)
 outline = spritesheet(("outline1",), 9, zlevel = 500, frames = 1)
@@ -164,7 +157,7 @@ intro_male_body = spritesheet(("intro_2","intro_male_body"), 11, zlevel = 3, fra
 intro_male_hair = spritesheet(("intro_2","intro_male_hair"), 2, zlevel = 10, frames = 1)
 bed = spritesheet(("intro_2","bed"), 5, zlevel = 0.1, frames = 1)
 pillow = spritesheet(("intro_2","pillow"), 12, zlevel = 0.2, frames = 1)
-#### Unpack this in run_animation_curses
+####
 intro_2 = (intro_male_body,intro_male_hair,intro_male_eyes, bed, pillow, general_bg,outline)
 
 ##### Tutorial Room
@@ -174,7 +167,7 @@ cobweb = spritesheet(("room_tutorial", "cobweb"), 1, zlevel = 10, frames = 1)
 misc = spritesheet(("room_tutorial", "misc"), 1, zlevel = 20, frames = 1)
 scratches = spritesheet(("room_tutorial", "scratches"), 1, zlevel = 11, frames = 1)
 wood = spritesheet(("room_tutorial", "wood"), 2, zlevel = 15, frames = 1)
-#### Unpack in print_stillshot_curses. Should look like print_stillshot_curses([0,0,0,0,0,0,0],display_win, *room_tutorial). The list thing is dumb, I'll rework it.
+#### Unpack in print_stillshot_curses. Should look like print_stillshot_curses(display_win, *room_tutorial).
 room_tutorial = (outline,bed, bg, cobweb, misc, scratches, wood)
 
 ##### Cutscene 1
@@ -184,7 +177,7 @@ red_elements_1 = spritesheet(("cutscene_1", "red"), 8, zlevel = 15, frames = 58)
 red_elements_2 = spritesheet(("cutscene_1", "red2"), 8, zlevel = 4, frames = 1)
 cutscene_1 = (outline,zombie_1, red_elements_1, general_bg, body_1, red_elements_2)
 
-#####
+##### Combat placeholders
 holder1 = spritesheet(("placeholder",), 8, zlevel = 4, frames = 6, dx = 22, dy = 2)
 # holder2 = spritesheet(("placeholder",), 7, zlevel = 5, frames = 6, dx = 24, dy = 5)
 # holder3 = spritesheet(("placeholder",), 7, zlevel = 4, frames = 6, dx = 27, dy = 8)
