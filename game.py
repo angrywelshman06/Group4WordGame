@@ -122,7 +122,7 @@ def execute_go(direction):
         new_room = get_room(new_pos[0], new_pos[1])
 
         if new_room is None:
-            write("Congratulations! You have escaped the matrix. You win!\n")
+            write("CONGRATULATIONS YOU’VE ESCAPED CARDIFF! By going beyond the surrounding wall you have reached the safe haven, a span of gorgeous green land carefully tendered too by the remaining few. Although danger still remains within the city, signs of rebuilding life are slowly developing once again around you\n")
             close()
             #sys.exit()
 
@@ -581,6 +581,7 @@ def main():
         
         #initialise curses screen
         init_screen()
+        curses_setcolors()
 
         # play intro animations
         play_animation(intro_1, True) # hold main thread unntil this animation stops playing
@@ -650,7 +651,7 @@ fzzzzzzt Do NOT approach infected individuals… They are extremely dangerous an
                 close()
                 return
             
-            elif cmd == curses.KEY_BACKSPACE: # backspace # delete last char
+            elif cmd == curses.KEY_BACKSPACE or cmd == 127: # backspace # delete last char
                 ui_lock.acquire()
 
                 y, x = ui.text_pad.getyx() # get cursor position

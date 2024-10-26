@@ -340,6 +340,7 @@ river = {
 
     "npcs" : [boat_captain],
 
+
     "visual": ani_sprites.room_river,
 
 }

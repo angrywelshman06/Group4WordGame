@@ -9,6 +9,7 @@ y = 0
 
 def init_screen(): # initialise the screen
     global stdscreen
+    start_color()
     stdscreen = curses.initscr()
 
     noecho()
