@@ -64,19 +64,19 @@ def generate_map():
     used_rooms = set()
 
     # Add in tutorial room
-    tutorial_room = Room(rooms.bedroom_tutorial, tuple(starting_position), True)
+    tutorial_room = Room(rooms.bedroom_tutorial, tuple(starting_position), True, visual_in=rooms.bedroom_tutorial["visual"])
     tutorial_room.exits = {"north"}
     map_matrix[starting_position[1]][starting_position[0]] = tutorial_room
     used_rooms.add(rooms.bedroom_tutorial['name'])
 
     # Add bathroom room directly north of the starting position
-    bathroom_room = Room(rooms.bathroom_tutorial, tuple(bathroom_position))
+    bathroom_room = Room(rooms.bathroom_tutorial, tuple(bathroom_position), visual_in=rooms.bathroom_tutorial["visual"])
     bathroom_room.exits = {"north", "south", "east", "west"}
     map_matrix[bathroom_position[1]][bathroom_position[0]] = bathroom_room
     used_rooms.add(rooms.bathroom_tutorial['name'])
 
     # Add kitchen room directly south of the starting position
-    kitchen_room = Room(rooms.kitchen_tutorial, tuple(kitchen_position))
+    kitchen_room = Room(rooms.kitchen_tutorial, tuple(kitchen_position), visual_in=rooms.kitchen_tutorial["visual"])
     kitchen_room.exits = {"north", "south", "east", "west"}
     map_matrix[kitchen_position[1]][kitchen_position[0]] = kitchen_room
     used_rooms.add(rooms.kitchen_tutorial['name'])
