@@ -54,8 +54,6 @@ def print_room_items(room: Room):
 
     print(f"There is {item_list} here.")
 
-    print()
-
 
 # Prints information about the given room
 def print_room(room: Room):
@@ -363,8 +361,38 @@ def combat():
 
 
 def menu():
-    if player.get_current_room().can_escape():
-        print("You can ESCAPE!")
+
+    if len(player.get_current_room().enemies) >= 1:
+        print(
+            f"There are {len(player.get_current_room().enemies)} enemies in this room. Choose whether to FIGHT to continue or FLEE to the previous room.")
+    else:
+        if player.get_current_room().exits:
+            print("You can GO: " + ", ".join(player.get_current_room().exits))
+            print()
+        else:
+            print("No exits available seems you might be stuck. What a shame ;)")
+            print()
+
+        if len(player.get_current_room().items) >= 1:
+            print("You can TAKE any items in this room.")
+            print_room_items(player.get_current_room()) # Displays items in room
+            print()
+
+        if len(player.inventory) >= 1:
+            print("You can DROP any of the items in your inventory.")
+            player.print_inventory_items()
+            print(f"Current Inventory Mass: {player.inventory_mass()}g")
+            print()
+
+        if len(player.get_current_room().npcs) >= 1:
+            for npc in player.get_current_room().npcs:
+                print(f"You can TALK to {npc.id}.")
+            print()
+
+        if player.get_current_room().can_escape():
+            print("You can ESCAPE!")
+
+
     # Read player's input
     user_input = input("> ")
 
@@ -386,16 +414,6 @@ def main():
         print("=" * 40)
 
         print_room(player.get_current_room())
-
-        if len(player.get_current_room().enemies) >= 1:
-            print(
-                f"There are {len(player.get_current_room().enemies)} enemies in this room. Choose whether to FIGHT to continue or FLEE to the previous room.")
-        else:
-            # Display game status (room description, inventory etc.)
-            player.print_inventory_items()
-            print(f"Current Inventory Mass: {player.inventory_mass()}g")
-            print()
-            print(player.current_room_position)
 
         # Show the menu with possible actions and ask the player
         command = menu()

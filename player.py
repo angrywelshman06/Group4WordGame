@@ -34,8 +34,6 @@ def print_inventory_items():
         count += 1
 
     print(f"You have {item_list}.")
-    print()
-
 
 
 
