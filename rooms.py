@@ -1,6 +1,8 @@
-import enemies
+import copy
 import items
 from items import *
+import player
+from npcs import *
 
 
 # Class for cleanly storing and accessing rooms
@@ -11,6 +13,20 @@ class Room:
         self.enemies = {}
         self.exits = set()
         self.position = position
+        self.visited = False
+        self.npcs = []
+        if "npcs" in room_dict:
+            for npc in room_dict["npcs"]:
+                self.npcs.append(npc)
+        self.win_requirements = None
+        if "win_requirements" in room_dict:
+            self.win_requirements = room_dict["win_requirements"] # [{}]
+
+        self.npcs = []
+
+        if "npcs" in room_dict:
+            for npc in room_dict["npcs"]:
+                self.npcs.append(NPC(npc))
 
         self.items = {}
 
@@ -18,7 +34,6 @@ class Room:
             return
 
         for key in room_dict["items"]:
-
             # Searching for item dictionary
             item_dict = None
             for item_dictionary in item_list:
@@ -31,7 +46,8 @@ class Room:
 
             if "type" not in item_dict:
                 item = Item(item_dict)
-                self.items[item] = room_dict["items"][item]
+                if item in room_dict["items"]:
+                    self.items[item] = room_dict["items"][item]
                 continue
 
             match item_dict["type"]:
@@ -39,8 +55,34 @@ class Room:
                     item = Consumable(item_dict)
                 case _:
                     item = Item(item_dict)
+                    
             self.items[item.id] = room_dict["items"][item.id]
 
+    def can_escape(self) -> bool:
+
+        # If there are no win requirements in this room
+        if self.win_requirements is None:
+            return False
+
+        # For each requirement (if there are multiple ways of escaping through this room)
+        for list_of_requirements in self.win_requirements:
+            modified_list_of_requirements = copy.deepcopy(list_of_requirements)
+            for requirement_type in list_of_requirements: # the item
+                for item in player.inventory.keys():
+                    match requirement_type:
+                        case "mass" :
+                            if item.mass > list_of_requirements[requirement_type]:
+                                modified_list_of_requirements.pop(requirement_type)
+                                break
+
+                        case _:
+                            if item.id == requirement_type and player.inventory[item] >= modified_list_of_requirements[requirement_type]:
+                                modified_list_of_requirements.pop(requirement_type)
+                                break
+            if len(modified_list_of_requirements) == 0:
+                return True
+
+        return False
 
 # Special rooms
 # Add all to special rooms list at bottom of file
@@ -49,14 +91,21 @@ class Room:
 # Tutorial room
 # Do not add to either list, this has been implemented elsewhere
 bedroom_tutorial = {
-    "name": "ROOM",
+    "name": "bedroom_tutorial",
 
     "description":
-    """TUTORIAL ROOM DESCRIPTION""",
+    """The rotten door led to the bedroom with a creak, it has a bed, with the mattress and the bed sheets not aligned at all.The walls covered with mould and paint long since peeled off, The floorboards creak with every step showing decay betraying its once great quality redwood flooring.  The air smells weird, prompting you to mask your nose from the smell. The once beautiful mattress with flowery design lay dusty with no care. There are stains in the floor , there are cobwebs in the roof and a radio lies on the empty wooden table showing signs of termite infestation.""",
 
 
 
-    "items": [paracetamol]
+    "items": {"paracetamol" : 2},
+
+    "win_requirements" : [
+        {"paracetamol" : 20, "mass" : 100}
+    ],
+
+    "npcs" : []
+
 
 }
 bathroom_tutorial = {
@@ -67,17 +116,17 @@ bathroom_tutorial = {
 
 
 
-    #"items": [item_toothbrush, item_toothpaste]
+    "items": {'paracetamol': 2}
 
 }
 
-kitchen = {
+kitchen_tutorial = {
     "name": "Kitchen",
 
     "description":
     """The kitchen is a wreck, abandoned and coated in dust. Rusty pots and pans hang crookedly from hooks, while broken cabinets sag, their doors ajar. Dishes sit in a sink filled with stagnant, murky water, covered in mould. The once-shiny countertops are smeared with grime and old food stains, and a cracked fridge stands open, its contents long rotted away. The floor is littered with broken glass, utensils, and scattered cans, as if someone left in a hurry. Faint scratching sounds come from behind the walls, hinting at the infestation that's taken over this forgotten place.""",
 
-    #"items": [item_knife]
+    "items": {'knife': 1}
 }
 
 park = {
@@ -179,6 +228,11 @@ skyscraper = {
 
     "description":
     """The skyscrapers are looking half demolished with its parts and debris splattered everywhere and hanging against its walls with bland and dull appearances.""",
+
+    "win_requirements" : [
+        {"parachute" : 1}
+    ]
+
 }
 road = {
     "name": "Road",
@@ -217,17 +271,76 @@ river = {
     "name": "River",
     "description":
     """The river, once a flowing lifeline, is now sluggish and murky, its waters dark and polluted with debris. Plastic bottles, driftwood, and other trash float along the surface, and the smell of decay hangs heavy in the air, while the distant sound of something splashing suggests the water isn’t as lifeless as it seems.""",
+    "win_requirements" : [
+        {"flex tape" : 20},
+    ]
 }
 petrol_station = {
     "name": "Petrol Station",
     "description":
     """The petrol station is a wasteland of rusting pumps and broken glass, with abandoned cars still parked at the empty fuel bays. The flickering neon sign buzzes faintly, casting a pale glow on the shattered windows of the convenience store, while dried bloodstains on the tarmac hint at a chaotic, violent end.""",
+    "win_requirements" : [
+        {"crowbar" : 1, "screwdriver" : 100},
+    ]
+}
+subway = {
+    "name": "Subway",
+    "description":
+    """The subway is a labyrinth of crumbling tiles, with dim lights flickering over graffiti-covered walls. Abandoned trains sit motionless, their doors half-open, while rats scurry between the tracks, the silence occasionally broken by the distant rumble of something unseen.""",
+}
+rooftop_garden = {
+    "name": "Rooftop Garden",
+    "description":
+    """Once a peaceful retreat, the rooftop garden is now overgrown and untamed, with vines creeping across cracked stone pathways. The view of the city below is eerily quiet, as skyscrapers loom in the hazy distance, their windows shattered and empty.""",
+}
+abandoned_hotel = {
+    "name": "Abandoned Hotel",
+    "description":
+    """The grand chandeliers sway slightly in the musty air, casting dim light over dusty furniture and torn upholstery. The reception desk is empty, the concierge long gone, and the eerie quiet is only disturbed by the sound of distant creaking from the upper floors.""",
+}
+parking_garage = {
+    "name": "Parking Garage",
+    "description":
+    """The underground parking garage is a concrete cavern filled with the stench of gasoline and decay. Cars sit abandoned in their spots, some with doors ajar and windows shattered, as a thick silence fills the air, broken by the occasional drip of water from unseen pipes.""",
+}
+industrial_warehouse = {
+    "name": "Industrial Warehouse",
+    "description":
+    """Rusting machinery and toppled crates clutter the darkened warehouse, casting long shadows under the faint glow of cracked windows. The air smells of oil and dust, and the silence is punctuated by the distant clang of metal, as if something is moving in the shadows.""",
+}
+old_school = {
+    "name": "Old School",
+    "description":
+    """Desks and chairs are haphazardly thrown about in classrooms, while faded chalkboards still display lessons left unfinished. Broken windows let in the cold breeze, carrying with it the faint echo of children's laughter, long gone but still haunting the empty halls.""",
+}
+bridge = {
+    "name": "Bridge",
+    "description":
+    """The once-bustling bridge now stands eerily quiet, with abandoned cars scattered across it and debris littering the lanes. Below, the river flows sluggishly, filled with trash and reflecting the hollow, broken skyline.""",
+}
+museum = {
+    "name": "Museum",
+    "description":
+    """The museum lobby, once pristine and polished, is now a desolate space, with cracked marble floors and broken display cases. Dust clings to ancient artefacts, and the eerie silence suggests that time itself has stopped in this forgotten place of history.""",
+}
+fountain = {
+    "name": "Fountain",
+    "description":
+    """The once-beautiful fountain is now dry, its stone cracked and overgrown with moss, with coins still visible at the bottom of the empty basin. Surrounding benches sit empty, rusting under the weight of time, as the square lies deserted, overtaken by nature.""",
+}
+skate_park = {
+    "name": "Skate Park",
+    "description":
+    """  Void arena with waste wooden boards scattered around and decaying benches around the arena""",
+}
+office_building = {
+    "name": "Office Building",
+    "description":
+    """Area in total disarray with furnitures flipped upside down with broken items and objects""",
 }
 
 
-
-
-special_rooms = [bedroom_tutorial, bathroom_tutorial, kitchen, park, the_hood, cinema, shopping_centre, graveyard, supermarket, hospital, pharmacy, gym, firestation, fastfoodplace, conveniencestore, trainstation, library, hairdresser, airport, skyscraper, road, armoured_van, bank, arcade, nursery, pub, river, petrol_station]
+special_rooms = [park, the_hood, cinema, shopping_centre, graveyard, supermarket, hospital, pharmacy, gym, firestation, fastfoodplace, conveniencestore, trainstation, library, hairdresser, airport, skyscraper, road, armoured_van, bank, arcade, nursery, pub, river, petrol_station, subway, rooftop_garden, abandoned_hotel, parking_garage, industrial_warehouse, old_school, bridge, museum, fountain, skate_park, office_building]
 
 
 generic_rooms = ['Vet', 'Telephone_box', 'Church', 'Bus_stop', 'Open-Air_Markets', 'Bike_street_stand', 'Post_office', 'Pedestrian_tunnels', 'Drive_thru_restaurant', 'Sports_bar', 'Construction_area', 'Street_supermarket', 'Abandoned_concert_aren', 'Firearms_Dealers', 'Abandoned_yacht', 'Abandoned_beach', 'Radio_station', 'Status_area', 'Cafe', 'Abandoned_car_mechanics', 'Abandoned_nightclub', 'Street_smoking_area', 'Abandoned_aquarium', 'Dock', 'Abandoned_clothing_workshop', 'Abandoned_factory', 'Dance_arena', 'Abandoned_zoo', 'Abandoned_museum', 'Ice_cream_store', 'Abandoned_gaming_store', 'Time_Capsule_Room', 'Abandoned_elderly_home', 'Kids_playground', 'Astroturf', 'Golf_course', 'Tennis_court', 'Basketball_court', 'Karting_course', 'Farm', 'Animal_shed', 'Abandoned_cinema', 'Forest', 'Canyon', 'Pond', 'Beach', 'Meadow', 'Canyon', 'Lake', 'Athletic_Track', 'Ice_Skating_Rink']

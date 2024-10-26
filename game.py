@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 import enemies
 import items
+import npcs
 import player
 import random
 from items import Consumable, get_item_dict_from_list
 from gameparser import *
-from map import get_room, map_matrix, door_assigner, Room, generate_map
+from map import get_room, map_matrix, Room, generate_map
 from colorama import Fore
 import subprocess
 import sys
@@ -47,8 +48,6 @@ def print_room_items(room: Room):
 
     print(f"There is {item_list} here.")
 
-    print()
-
 
 # Prints information about the given room
 def print_room(room: Room):
@@ -57,17 +56,6 @@ def print_room(room: Room):
     print()
     print(room.description)
     print()
-    print_room_items(room)  # Displays items in room
-
-    if len(room.enemies) == 0:
-
-        # Print exits
-        if room.exits:
-            print("Exits: " + ", ".join(room.exits))
-        else:
-            print("No exits available seems you might be stuck. What a shame ;)")
-
-
 # Checks if the exit is valid in the current room
 def is_valid_exit(direction):
     return direction in player.get_current_room().exits
@@ -102,6 +90,14 @@ def execute_go(direction):
 
         player.previous_room_position = player.current_room_position
         player.current_room_position = new_pos
+
+        if not player.get_current_room().visited:
+            player.get_current_room().visited = True
+            player.unique_rooms_visited += 1
+
+        for npc in npcs.randomly_placed_npcs:
+            if npcs.randomly_placed_npcs[npc] == player.unique_rooms_visited:
+                player.get_current_room().npcs.append(npc)
 
         print(f"You are going to {new_room.name}.")
     else:
@@ -180,6 +176,13 @@ def execute_drop(item_id, amount=1):
             return
     print("You cannot drop that.")
 
+def execute_talk(npc_id):
+    for npc in player.get_current_room().npcs:
+        if npc.id == npc_id:
+            npc.talk()
+            return
+    print("You cannot talk to this NPC.")
+
 
 def execute_command(command):
     if 0 == len(command):
@@ -225,6 +228,14 @@ def execute_command(command):
     elif command[0] in ["consume"]:
         if len(command) > 1:
             execute_consume(command[1])
+        else:
+            print("Consume what>")
+
+    elif command[0] in ["talk"]:
+        if len(command) > 1:
+            execute_talk(command[1])
+        else:
+            print("Talk to who?")
 
     elif command[0] == "quit":
         print("Goodbye!")
@@ -232,6 +243,7 @@ def execute_command(command):
 
     elif command[0] == "help":
         print("Commands: go [direction], take [item], drop [item], use [item], talk [npc name], quit")
+
 
     elif command[0] == "raptor":
         print(Fore.RED + r"""\
@@ -356,8 +368,40 @@ def combat():
 
 
 def menu():
+
+    if len(player.get_current_room().enemies) >= 1:
+        print(
+            f"There are {len(player.get_current_room().enemies)} enemies in this room. Choose whether to FIGHT to continue or FLEE to the previous room.")
+    else:
+        if player.get_current_room().exits:
+            print("You can GO: " + ", ".join(player.get_current_room().exits))
+            print()
+        else:
+            print("No exits available seems you might be stuck. What a shame ;)")
+            print()
+
+        if len(player.get_current_room().items) >= 1:
+            print("You can TAKE any items in this room.")
+            print_room_items(player.get_current_room()) # Displays items in room
+            print()
+
+        if len(player.inventory) >= 1:
+            print("You can DROP any of the items in your inventory.")
+            player.print_inventory_items()
+            print(f"Current Inventory Mass: {player.inventory_mass()}g")
+            print()
+
+        if len(player.get_current_room().npcs) >= 1:
+            for npc in player.get_current_room().npcs:
+                print(f"You can TALK to {npc.id}.")
+            print()
+
+        if player.get_current_room().can_escape():
+            print("You can ESCAPE!")
+
+
     # Read player's input
-    user_input = input("> ")
+    user_input = input("Choose what you would like to do \n> ")
 
     # Normalise the input
     normalised_user_input = normalise_input(user_input)
@@ -376,24 +420,15 @@ def main():
         # Can remove once formatted
         print("=" * 40)
 
-        if player.get_current_room() is None:
-            print(
-                "Congratulations you have escaped the matrix, you are free from Cardiff and for you the game is over.")
-
         print_room(player.get_current_room())
-
-        if len(player.get_current_room().enemies) >= 1:
-            print(
-                f"There are {len(player.get_current_room().enemies)} enemies in this room. Choose whether to FIGHT to continue or FLEE to the previous room.")
-        else:
-            # Display game status (room description, inventory etc.)
-            player.print_inventory_items()
-            print(f"Current Inventory Mass: {player.inventory_mass()}g")
-            print()
-            print(player.current_room_position)
 
         # Show the menu with possible actions and ask the player
         command = menu()
+
+        if command[0] == "escape" and player.get_current_room().can_escape():
+            print(
+                "Congratulations you have escaped the matrix, you are free from Cardiff and for you the game is over.")
+            break
 
         # Execute the player's command
         execute_command(command)

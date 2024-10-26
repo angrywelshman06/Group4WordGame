@@ -154,7 +154,23 @@ gun = {
     "crit_multiplier" : 1.5
 }
 
-item_list = [item_id_card, item_biscuits, item_handbook, item_laptop, item_money, item_pen, gun, paracetamol, morphine]
+
+parachute = {
+    "id" : "parachute"
+}
+
+item_knife = {
+    "id" : "knife",
+    "name" : "knife",
+    "description" : "DESCRIPTION",
+    "mass" : 80,
+    type: Weapon,
+    "damage" : 5,
+    "crit_chance" : 0.2,
+    "crit_multiplier" : 2
+}
+
+item_list = [item_id_card, item_biscuits, item_handbook, item_laptop, item_money, item_pen, gun, paracetamol, morphine, item_knife]
 
 def get_item_dict_from_list(item_id : str) -> {}:
     for item_dict in item_list:
