@@ -7,6 +7,7 @@ class NPC:
         self.id = npc_dict["id"]
         self.description = npc_dict["description"]
         self.name = npc_dict["name"]
+        self.description = npc_dict["description"]
         self.lines = npc_dict["lines"]
 
     def talk(self):
@@ -21,6 +22,7 @@ class NPC:
 
 # Define NPC dictionaries here
 
+
 injured_civilian = {
     "id" : "injured_civilian",
     "description" : "An injured man sits propped against a wall. He is clutching his right arm - or whatever of it that remains. He looks up at you, showing initial fear in his eyes with an assumption of you being a zombie later changing to hope as he sees the humanity behind your eyes. Dread overcomes you knowing he can’t be saved and needs to go.",
@@ -32,6 +34,13 @@ boat_captain = {
     "description": " A huge, burly man stares at you while smoking a cigar, his bulged arms showing his tattoos of a Royal Marines army insignia. He waves at you, calling you towards him.",
     "name" : "Boat Captain",
     "lines" : ["Hey Mate! Nice to see another who hasn’t gone rotten… it's been a while. Suppose you’re trying to find a way out of here? I’ve been trying for weeks now but I managed to crack a pretty big hole in my last working boat. I’m sure I could get us out of ‘ere with some tape to fix the hole in the bottom of me boat. Let me know if you find any..."]
+}
+test_npc = {
+    "id" : "test_man",
+    "name" : "Testing Man",
+    "description" : "Test description",
+    "lines" : ["Hi", "Hello", "Hey there", "Howdy"]
+
 }
 mechanic = {
     "id" : "mechanic",

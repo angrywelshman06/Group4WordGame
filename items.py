@@ -1,3 +1,4 @@
+
 class Item:
     def __init__(self, item: {}):
         self.id = item["id"]
@@ -14,20 +15,22 @@ class Consumable(Item):
     def consume(self):
         import player
         player.health += self.healing
-        print("Consumed")
 
 
 class Weapon(Item):
     def __init__(self, item: {}):
         super().__init__(item)
-        self.damage = item["damage"]
-        self.crit_chance = item["crit_chance"] # Amount of damage the weapon inflicts
-        self.crit_multiplier = item["crit_multiplier"]
+        self.damage = item["damage"] # Amount of damage the weapon inflicts
+        self.crit_chance = item["crit_chance"] # critical hit chance
+        self.crit_mult = item["crit_mult"] # critical hit multiplier
 
-    def get_damage(self, crit_bool : bool):
-        if crit_bool:
-            return self.damage * self.crit_multiplier
-        return self.damage
+class Gun(Weapon):
+    def __init__(self, weapon: {}):
+        super().__init__(weapon)
+        self.ammo = weapon["ammo"]
+
+
+        
 
 
 """ 
@@ -44,83 +47,6 @@ type - The specific type of the item that links to the classes above (Item being
 IGNORE : NOTE: Add all items to the item list at the bottom of the file to initialise them
 """
 
-item_id_card = {
-    "id": "id",
-
-    "name": "id card",
-
-    "description":
-        """You new shiny student ID card. Expires 1 June 2017.
-    You wonder why they have printed a suicide hotline number on it?...""",
-
-    "mass": 100,
-
-    "type": Item
-}
-
-item_laptop = {
-    "id": "laptop",
-
-    "name": "laptop",
-
-    "description":
-        "It has seen better days. At least it has a WiFi card!",
-
-    "mass": 2000,
-
-    "type": Item
-}
-
-item_money = {
-    "id": "money",
-
-    "name": "money",
-
-    "description":
-        "This wad of cash is barely enough to pay your tuition fees.",
-
-    "mass": 50,
-
-    "type": Item
-}
-
-item_biscuits = {
-    "id": "biscuits",
-
-    "name": "a pack of biscuits",
-
-    "description": "A pack of biscuits."
-    ,
-
-    "mass": 200,
-
-    "type": Item
-}
-
-item_pen = {
-    "id": "pen",
-
-    "name": "pen",
-
-    "description": "A basic ballpoint pen.",
-
-    "mass": 2000,
-
-    "type": Item
-}
-
-item_handbook = {
-    "id": "handbook",
-
-    "name": "student handbook",
-
-    "description": "This student handbook explains everything. Seriously.",
-
-    "mass": 200,
-
-    "type": Item,
-}
-
 paracetamol = {
     "id": "paracetamol",
     "name": "paracetamol tablet",
@@ -131,24 +57,28 @@ paracetamol = {
 
     # Consumable specifics
 
-    "healing": 45
+    "healing": 45,
 }
 
 morphine = {
     "id": "morphine",
     "name": "morphine",
     "description": "DESCRIPTION",
+    "name": "morphine",
+    "description": "DESCRIPTION",
     "type": Consumable,
+    "healing": 70,
     "healing": 70,
     "mass": 100
 }
 
 gun = {
     "id" : "gun",
-    "name" : "gun",
+    "name" : "shotgun",
     "description" : "DESCRIPTION",
-    "mass" : 100,
-    type: Weapon,
+    "mass" : 3500,
+    "type": Gun,
+    "ammo": 4,
     "damage" : 10,
     "crit_chance" : 0.4,
     "crit_multiplier" : 1.5
@@ -156,21 +86,105 @@ gun = {
 
 
 parachute = {
-    "id" : "parachute"
+    "id" : "parachute",
+    "name" : "parachute",
+    "description" : "DESCRIPTION",
+    "mass" : 9000,
 }
 
-item_knife = {
+explosives = {
+    "id" : "explosives",
+    "name" : "explosives",
+    "description" : "DESCRIPTION",
+    "mass" : 45000,
+}
+
+lighter = {
+    "id" : "lighter",
+    "name" : "lighter",
+    "description" : "DESCRIPTION",
+    "mass" : 21
+}
+
+rope = {
+    "id" : "rope",
+    "name" : "rope",
+    "description" : "DESCRIPTION",
+    "mass" : 3900
+}
+
+duct_tape = {
+    "id" : "duct_tape",
+    "name" : "duct tape",
+    "description" : "DESCRIPTION",
+    "mass" : 350
+}
+
+crowbar = {
+    "id" : "crowbar",
+    "name" : "crowbar",
+    "description" : "DESCRIPTION",
+    "mass" : 45000
+}
+
+screwdriver = {
+    "id" : "screwdriver",
+    "name" : "screwdriver",
+    "description" : "DESCRIPTION",
+    "mass" : 80
+}
+
+starter_knife = {
     "id" : "knife",
     "name" : "knife",
     "description" : "DESCRIPTION",
-    "mass" : 80,
-    type: Weapon,
+    "mass" : 240,
     "damage" : 5,
     "crit_chance" : 0.2,
     "crit_multiplier" : 2
 }
 
-item_list = [item_id_card, item_biscuits, item_handbook, item_laptop, item_money, item_pen, gun, paracetamol, morphine, item_knife]
+machete = {
+    "id" : "machete",
+    "name" : "machete",
+    "description" : "DESCRIPTION",
+    "mass" : 250,
+
+    "type" : Weapon,
+    "damage" : 10,
+    "crit_chance" : 0.4,
+    "crit_multiplier" : 2
+}
+
+grappling_hook = {
+    "id": "grappling_hook",
+    "name": "grappling hook",
+    "description": "DESCRIPTION",
+    "mass": 1600
+}
+
+ammo = {
+    "id": "ammo",
+    "name": "ammo",
+    "description": "DESCRIPTION",
+    "mass": 21
+}
+
+bat = {
+    "id": "bat",
+    "name" : "baseball bat",
+    "description" : "DESCRIPTION",
+    "type": Weapon,
+    "damage" : 20,
+    "crit_chance": 0.1,
+    "crit_mult": 2,
+    "mass": 1500
+}
+
+item_list = [paracetamol, morphine, gun, parachute,
+             explosives, lighter, rope, duct_tape,
+             crowbar, screwdriver, starter_knife,
+             machete, ammo, grappling_hook]
 
 def get_item_dict_from_list(item_id : str) -> {}:
     for item_dict in item_list:
@@ -189,4 +203,3 @@ def dict_to_item(item_dict : {}):
         case _:
             item = Item(item_dict)
     return item
-

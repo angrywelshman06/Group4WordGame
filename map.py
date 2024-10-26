@@ -4,8 +4,10 @@ import npcs
 import rooms
 from enemies import Enemy
 from rooms import special_rooms, Room, generic_rooms
+from enemies import Enemy
+from rooms import special_rooms, Room, generic_rooms
 from collections import deque
-import sys
+#import sys
 
 map_matrix = [[None for x in range(10)] for y in range(10)]
 
@@ -62,7 +64,7 @@ def generate_map():
     used_rooms = set()
 
     # Add in tutorial room
-    tutorial_room = Room(rooms.bedroom_tutorial, tuple(starting_position))
+    tutorial_room = Room(rooms.bedroom_tutorial, tuple(starting_position), True)
     tutorial_room.exits = {"north"}
     map_matrix[starting_position[1]][starting_position[0]] = tutorial_room
     used_rooms.add(rooms.bedroom_tutorial['name'])
@@ -87,6 +89,9 @@ def generate_map():
         while attempts < max_attempts:
             x_coord = random.randint(0, 9)
             y_coord = random.randint(0, 9)
+            if map_matrix[x_coord][y_coord] is None and sr['name'] not in used_rooms:
+                room = Room(sr, (x_coord, y_coord), visual_in=sr["visual"])
+                map_matrix[x_coord][y_coord] = room
             if map_matrix[y_coord][x_coord] is None and sr['name'] not in used_rooms:
                 room = Room(sr, (x_coord, y_coord))
                 map_matrix[y_coord][x_coord] = room
@@ -108,7 +113,30 @@ def generate_map():
                     items = []
 
                 generic_room = {'name': room_name, 'description': description, 'items': items}
+                if generic_rooms:
+                    room_name = generic_rooms.pop(0)
+                    description = "This is a generic room."
+                    items = []
+                else:
+                    room_name = f"Generic Room {x}{y}"
+                    description = "This is a generic room."
+                    items = []
+
+                generic_room = {'name': room_name, 'description': description, 'items': items}
                 room = Room(generic_room, (x, y))
+
+                # enemies are generated in rooms.py, can be changed if need be
+                """ if random.random() <= 0.50:
+                    for num in range(random.randint(1, 3)):
+                        chance = random.random()
+                        level = 1
+                        if chance < 0.2:
+                            level = 3
+                        elif chance < 0.5:
+                            level = 2
+
+                        room.enemies[f"enemy{num}"] = Enemy(enemies.zombie, level=level) """
+
 
                 if random.random() <= 0.50:
                     for num in range(random.randint(1, 3)):
@@ -198,8 +226,9 @@ def dist_from_edge(x, y):
             "east": len(map_matrix[y]) - 1 - x,
         }
     except IndexError:
-        print("Congratulations! You have escaped the matrix. You win!")
-        sys.exit()
+        pass
+        #print("Congratulations! You have escaped the matrix. You win!")
+        #sys.exit()
 
 # Gets the room based off its matrix position coordinates
 def get_room(x, y) -> Room:
