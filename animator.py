@@ -83,36 +83,3 @@ def print_frame_curses(framelist,win,args): # Prints frame on the screen
             if i > to_print:
                 to_print = i
         win.addstr(z_char_color[to_print][0], curses.color_pair(z_char_color[to_print][1]))
-
-def main(stdscr): ### TESTING PURPOSES ## Uncomment whichever path you need in the gather_framelist method in ani_sprites.py.
-    stdscr.clear()
-    print(" ANIMATOR MAIN FUNCTION CALLED ANIMATOR MAIN FUNCTION CALLED ANIMATOR MAIN FUNCTION CALLED\n")
-    display_win = curses.newwin(36, 110, 0, 0)
-    display_win.clear()
-    display_win.scrollok(1) # This helps to prevent a curses-related crash.
-    # curses.start_color()
-    curses_setcolors() # imported from ani_sprites.py
-    # print(cutscene_1_1, "WORKING")
-    # run_animation_curses(display_win,*cutscene_1)
-    # zombies = (("zombie", 2),("zombie", 1), ("zombie", 1),("zombie", 1),("zombie", 1),("zombie", 1),("zombie", 1),("zombie", 1)) #this tuple will be what's returned from the random battle generator
-    #fight = initiate_combat(display_win,*zombies)
-    # print(fight.draw_on_window(), "NOT WORKING")
-    #print_stillshot_curses([0,0,0,0,0,0,0,0,0], display_win, *fight.draw_on_window())
-    # print_stillshot_curses([0,0], display_win, holder1, holder2)
-    # print_stillshot_curses([0,0], display_win, fight.creatures_dict["Enemy_1"].spritesheet, fight.creatures_dict["Enemy_2"].spritesheet)
-    # fight = initiate_combat()
-    #run_animation_curses(display_win,*cutscene_1)
-    # run_animation_curses(display_win,*intro_2)    
-    # print_stillshot_curses([22,3,10],display_win, dude, backpillars, frontpillars) ## ([frames to print for each arg], curses window, unlimited args..) #b4 commit
-    # print_stillshot_curses([0,0], display_win, randomobj,general_bg)
-    display_win.refresh()
-    display_win.getch()
-    display_win.clear()
-    # print_stillshot_curses([0,0,0,0,0,0,0,0,0],display_win, *room_tutorial) ## ([frames to print for each arg], curses window, unlimited args..)
-    display_win.refresh()
-    display_win.getch()
-
-wrapper(main)
-
-input()
-clear()

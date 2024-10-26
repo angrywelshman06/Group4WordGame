@@ -564,6 +564,7 @@ def main():
         
         #initialise curses screen
         init_screen()
+        curses_setcolors()
 
         # play intro animations
         play_animation(intro_1, True) # hold main thread unntil this animation stops playing
@@ -633,7 +634,7 @@ fzzzzzzt Do NOT approach infected individuals… They are extremely dangerous an
                 close()
                 return
             
-            elif cmd == curses.KEY_BACKSPACE: # backspace # delete last char
+            elif cmd == curses.KEY_BACKSPACE or cmd == 127: # backspace # delete last char
                 ui_lock.acquire()
 
                 y, x = ui.text_pad.getyx() # get cursor position
