@@ -122,7 +122,7 @@ def execute_go(direction):
         new_room = get_room(new_pos[0], new_pos[1])
 
         if new_room is None:
-            write("Congratulations! You have escaped the matrix. You win!\n")
+            write("CONGRATULATIONS YOU’VE ESCAPED CARDIFF! By going beyond the surrounding wall you have reached the safe haven, a span of gorgeous green land carefully tendered too by the remaining few. Although danger still remains within the city, signs of rebuilding life are slowly developing once again around you\n")
             close()
             #sys.exit()
 
