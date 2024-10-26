@@ -338,8 +338,7 @@ river = {
         {"flex tape" : 20},
     ],
 
-    "npcs" : [boat_captain]
-
+    "npcs" : [boat_captain],
 
     "visual": ani_sprites.room_river,
 

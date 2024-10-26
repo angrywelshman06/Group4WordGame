@@ -29,12 +29,9 @@ import random
 
 
 
-
-
 def install_requirements():
     try:
         import colorama
-        import curses
     except ImportError:
         subprocess.check_call([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"])
 
@@ -141,7 +138,7 @@ def execute_go(direction):
             player.unique_rooms_visited += 1
 
         for npc in npcs.randomly_placed_npcs:
-            if npcs.randomly_placed_npcs_placed_npcs[npc] == player.unique_rooms_visited:
+            if npcs.randomly_placed_npcs[npc] == player.unique_rooms_visited:
                 player.get_current_room().npcs.append(npc)
 
         print(f"You are going to {new_room.name}.")
@@ -604,6 +601,18 @@ def main():
 """, curses.color_pair(24))
     
     write("Lorem ipsum (should be intro text)", curses.color_pair(25))
+
+    write("""
+zzzzzzzzz.. brrrrrrrr… crrrrrrrr
+
+bbbbbrrrrrr…zzzzzzzz… EMERGENCY CODE: 35627 beeeeeeeeep… Emergency Alert. If you can hear this you are currently a survivor. ...zzzzzzzz The date is… 28TH OF OCTOBER 2024… fzzzzzt bzzzzt Emergency contact systems are down due to unforeseen damage brrrrrrr
+
+crrrrrrr Current status: The infected population has been walled off to the remaining population zzzzzz despite this, Cardiff City has been classified as CRITICAL LEVEL bzzzzzt
+
+fzzzzzzt Do NOT approach infected individuals… They are extremely dangerous and can transmit the infection through direct contact beeeeeeeeep Military personnel are no longer in transit due to the lack of remaining survivors… fzzzzzt bzzzzzzzt Attempt to escape the city at you’re own risk… ZZZZZZZZ
+
+– Transmission cuts.
+""")
     
     try:
 
