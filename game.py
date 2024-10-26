@@ -350,7 +350,7 @@ def resolve_danger(command): # when entering a room with enemies the player can 
 def execute_attack(enemy_id, enemy, weapon): # attaks an enemy
     if random.random() < weapon.crit_chance:
         damage = weapon.damage * weapon.crit_mult
-        write(f"You hit the {enemy.name} for critical damage and dealt {damage} damage.\n")
+        write(f"You hit the {enemy.name} for critical damage and dealt {damage} damage.\n", curses.color_pair(24))
         enemy.health -= damage
     else:
         damage = weapon.damage
@@ -387,8 +387,6 @@ def execute_combat(command): # returns if player is still in combat # executes c
         return True
     
     # player turn
-
-    write("executing combat\n")
     
     if command[0] in ["flee", "escape", "run"]:
         write("Attempting to flee\n")
@@ -413,26 +411,27 @@ def execute_combat(command): # returns if player is still in combat # executes c
 
         # check target validity
         if command[1] in ["1", "first", "1st"]:
-            target_index = 0
-        elif command[1] in ["2", "second", "2nd"]:
             target_index = 1
+            write("attaking first\n")
+        elif command[1] in ["2", "second", "2nd"]:
+            target_index = 2
             if enemy_count < 2:
                 write("\nThere is only one enemy\n")
                 return True
         elif command[1] in ["3", "third", "3rd"]:
-            target_index = 2
+            target_index = 3
             if enemy_count < 3:
                 write("\nThere are only 2 enemies\n")
                 return True
         else:
-            write("\nInvalid target, to choose an enemy write 'fisrt' or '1' to select the first enemy, same for every other enemy\n")
+            write("\nInvalid target, to choose an enemy write 'fisrt' or '1' to select the first enemy, same for every other enemy\n\n")
             return True
             
         for item in player.inventory:
             if item.id == command[2] or item.name == command[2]:
                 if type(item) == items.Weapon:
                     count = 1
-                    for e in player.get_current_room().enemies:
+                    for e in player.get_current_room().enemies.values():
                         if count == target_index:
                             execute_attack(command[1], e, item)
                             break
@@ -440,7 +439,7 @@ def execute_combat(command): # returns if player is still in combat # executes c
                             count += 1
                 elif type(item) == items.Gun:
                     count = 1
-                    for e in player.get_current_room().enemies:
+                    for e in player.get_current_room().enemies.values():
                         if count == target_index:
                             execute_attack(command[1], e, item)
                             break
@@ -449,14 +448,14 @@ def execute_combat(command): # returns if player is still in combat # executes c
 
                     item.ammo -= 1
                 else:
-                    write("This item is not a weapon!\n")
+                    write("This item is not a weapon!\n\n")
                     return True
     
     elif command[0] in ["use", "consume"]:
         execute_consume(command[1])
 
     else:
-        write("Thats not a valid action\n You can FIGHT, FLEE or USE\n")
+        write("Thats not a valid action\n You can FIGHT, FLEE or USE\n\n")
         return True
         
     # enemy turn
