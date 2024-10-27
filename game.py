@@ -343,12 +343,12 @@ def resolve_danger(command): # when entering a room with enemies the player can 
         return 1
 
     elif command[0] == "help" or command[0] == "what":
-        write("You have to choose FIGHT or to FLEE\n")
+        write("You have to choose FIGHT or to FLEE\n", curses.color_pair(25))
         return 0
 
     else:
-        write("This makes no sense, it appears as though the first word is not one of the designated command words..\n")
-        write("You have to choose to FIGHT or to FLEE\n")
+        write("This makes no sense, it appears as though the first word is not one of the designated command words..\n", curses.color_pair(25))
+        write("You have to choose to FIGHT or to FLEE\n", curses.color_pair(25))
         return 0
 
 def execute_attack(enemy_id, enemy, weapon): # attaks an enemy
@@ -372,7 +372,7 @@ def execute_consume(item_id): # consumes an item
     for item in player.inventory:
         if item.id == item_id:
             if type(item) != Consumable:
-                write("This item isn't consumable\n")
+                write("This item isn't consumable\n", curses.color_pair(25))
                 return
 
             item.consume()
@@ -382,7 +382,7 @@ def execute_consume(item_id): # consumes an item
                 player.inventory.pop(item)
             return
         
-    write("No such item in inventory\n")
+    write("No such item in inventory\n", curses.color_pair(25))
     return
 
 def execute_combat(command): # returns if player is still in combat # executes combat
@@ -403,7 +403,7 @@ def execute_combat(command): # returns if player is still in combat # executes c
                 draw_stillshot(room_placeholder) # room has no visuals to print, print generic visual
             return False
         else:
-            write("You failed to escape.\n")
+            write("You failed to escape.\n", curses.color_pair(25))
 
     elif command[0] == "attack":
                 
@@ -432,7 +432,7 @@ def execute_combat(command): # returns if player is still in combat # executes c
                 write("\nThere are only 2 enemies\n")
                 return True
         else:
-            write("\nInvalid target, to choose an enemy write 'fisrt' or '1' to select the first enemy, same for every other enemy\n\n")
+            write("\nInvalid target, to choose an enemy write 'fisrt' or '1' to select the first enemy, same for every other enemy\n\n", curses.color_pair(25))
             return True
             
         for item in player.inventory:
@@ -456,7 +456,7 @@ def execute_combat(command): # returns if player is still in combat # executes c
 
                     item.ammo -= 1
                 else:
-                    write("This item is not a weapon!\n\n")
+                    write("This item is not a weapon!\n\n", curses.color_pair(25))
                     return True
     
     elif command[0] in ["use", "consume"]:
@@ -504,12 +504,15 @@ def set_scene_combat(): # gives the player info on how the battle is progressing
     for enemy_id in enemies_dict:
         enemies.append(enemies_dict[enemy_id].name)
 
-    write(f"You spot {len(enemies)} enemies. ")
+    write(f"You spot {len(enemies)}")
+
     if len(enemies) == 0:
         write("no enemies (this prolly means theres an error, a user shouldnt see this)\n")
     if len(enemies) == 1:
+        write(" enemy. ") # if one enemy use enemy singular
         write(f"You see a {enemies[0]}.\n")
     else:
+        write(" enemies. ") # if more than one enemy use enemies plural
         write("You see a ")
         for i in range(0, len(enemies)):
             write(f"{enemies[i]} ")
@@ -599,6 +602,14 @@ def write(msg = "\n", arg=None): # writes text to text pad
         ui.text_pad.refresh(ui.text_pad_pos-1, 0, 0, int(ui.x/2), ui.y-1, ui.x-1) # refresh without going out of pad extent
     
     ui_lock.release() # allow ui to be modified
+
+def write_seperator():
+    str = "\n\n"
+    for i in range(0, int(ui.x/2)-2):
+        str += "="
+    str += "\n\n"
+
+    write(str, curses.color_pair(15) | curses.A_BOLD)
 
 def play_animation(animation, hold=False): # this function creates a thread to play the given animation
     # animation has to be a valid animation from ani_sprites.py
@@ -733,7 +744,7 @@ def main():
                 ui_lock.release()
 
             elif cmd == 10 or cmd == curses.KEY_ENTER: # enter key
-                write()
+                write_seperator() # turn seperator
 
                 normalised_user_input = normalise_input(user_input)
 
@@ -743,6 +754,7 @@ def main():
                         set_scene_combat()
                     else:
                         set_scene()
+                        
                 elif in_danger == True:
                     resolution = resolve_danger(normalised_user_input)
                     if resolution == 0: # danger unresolved
