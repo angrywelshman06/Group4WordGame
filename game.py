@@ -414,6 +414,10 @@ def execute_combat(command): # returns if player is still in combat # executes c
         write("You won the battle!\n", curses.color_pair(7))
         ui.art_pad.clear()
         combatprinter = False
+        try:
+            draw_stillshot(player.get_current_room().visual) # draw room visual
+        except:
+            draw_stillshot(room_placeholder) # room has no visuals to print, print generic visual
         return False
 
 
