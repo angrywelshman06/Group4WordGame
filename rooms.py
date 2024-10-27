@@ -68,6 +68,7 @@ class Room:
                     
             self.items[item.id] = room_dict["items"][item.id]
 
+
     def can_escape(self) -> bool:
 
         # If there are no win requirements in this room

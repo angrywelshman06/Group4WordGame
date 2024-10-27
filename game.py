@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import copy
 import curses
 
 import items
@@ -110,6 +111,9 @@ def execute_go(direction): # executes the go action
 
         player.previous_room_position = player.current_room_position
         player.current_room_position = new_pos
+
+        global escape_route
+        escape_route = None
 
         if not player.get_current_room().visited:
             player.get_current_room().visited = True
@@ -262,6 +266,15 @@ def execute_command(command): # parse what needs to be executed based on command
 
     elif command[0] == "escape" and player.get_current_room().can_escape():
         print("Congratulations you have escaped the matrix, you are free from Cardiff and for you the game is over.")
+        close()
+        sys.exit()
+
+    elif command[0] == "escape" and check_for_boundary_exit():
+        if escape_route == "climbing":
+            pass # Add escape animation for climbing
+        elif escape_route == "explosives":
+            pass # Add escape animation for climbing
+
         close()
         sys.exit()
 
@@ -531,6 +544,55 @@ def print_intro(): # prints the intro text, makes all the sound effects italic a
     write("\n – Transmission cuts.\n",curses.color_pair(25))
 
 
+border_win_requirements =  [
+        {"rope" : 1, "mass" : 5000},
+        {"explosives" : 1}
+    ]
+
+escape_route = None
+
+def check_for_boundary_exit():
+    if player.current_room_position[0] not in [0, 9]:
+        return False
+
+    if player.current_room_position[1] not in [0, 9]:
+        return False
+
+
+
+    for list_of_requirements in border_win_requirements:
+
+        modified_list_of_requirements = copy.deepcopy(list_of_requirements)
+        for requirement_type in list_of_requirements:  # Item id or specific requirement type (mass)
+
+            for item in player.inventory.keys():
+                match requirement_type:
+
+                    case "mass":
+                        if item.mass > list_of_requirements[requirement_type]:
+                            modified_list_of_requirements.pop(requirement_type)
+                            break
+
+                    case _:  # Assumed to be an item id
+                        if item.id == requirement_type and player.inventory[item] >= modified_list_of_requirements[
+                            requirement_type]:
+                            modified_list_of_requirements.pop(requirement_type)
+                            break
+
+        # If there are no more requirements in this set, player can escape if they wish
+        if len(modified_list_of_requirements) == 0:
+            global escape_route
+
+            if "rope" in list_of_requirements:
+                escape_route = "climbing"
+            elif "explosives" in list_of_requirements:
+                escape_route = "explosives"
+
+            return True
+
+    return False
+
+
 def menu(): # gives the player info on the current room and their character
 
     write(player.get_current_room().name.upper())
@@ -562,7 +624,7 @@ def menu(): # gives the player info on the current room and their character
                 write(f"\nYou can TALK to {npc.id}.")
             write()
 
-        if player.get_current_room().can_escape():
+        if player.get_current_room().can_escape() or check_for_boundary_exit():
             write("You can ESCAPE!")
 
     write("\n")
