@@ -90,7 +90,7 @@ parachute = {
     "mass" : 9000,
 
     "spawn_chance": 0.03,
-    "spawn_quantity": [1, 2],
+    "spawn_quantity": [1, 1],
 
 }
 
