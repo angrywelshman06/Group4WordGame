@@ -93,7 +93,7 @@ def generate_map():
                 map_matrix[y_coord][x_coord] = room
                 generate_loot(x_coord, y_coord)
 
-                if random.random() <= 0.5:
+                if random.random() <= 0:
                     for num in range(random.randint(1, 3)):
                         chance = random.random()
                         level = 1
@@ -125,7 +125,7 @@ def generate_map():
 
                 room = Room(generic_room, (x, y))
 
-                if random.random() <= 0.5:
+                if random.random() <= 0:
                     for num in range(random.randint(1, 3)):
                         
                         chance = random.random()

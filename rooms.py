@@ -20,7 +20,17 @@ class Room:
 
         self.enemies = {}
         self.exits = set()
+        self.exits = {"north", "south", "east", "west"}
         self.position = position
+
+        if self.position[0] == 9:
+            self.exits.discard("east")
+        if self.position[0] == 0:
+            self.exits.discard("west")
+        if self.position[1] == 9:
+            self.exits.discard("south")
+        if self.position[1] == 0:
+            self.exits.discard("north")
 
         if visual_in is not None:
             self.visual = visual_in
@@ -69,6 +79,7 @@ class Room:
                     
             self.items[item.id] = room_dict["items"][item.id]
 
+
     def can_escape(self) -> bool:
 
         # If there are no win requirements in this room
@@ -114,7 +125,7 @@ bedroom_tutorial = {
 
     "visual": ani_sprites.room_tutorial,
 
-    "items": {"paracetamol" : 2},
+    "items": {"paracetamol" : 3},
 
     "npcs" : [test_npc]
 
