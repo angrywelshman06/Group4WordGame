@@ -690,7 +690,6 @@ def main():
         #main game loop
         while True:
             cmd = ui.text_pad.getch() # wair for the user to press a key
-            ui.art_pad.addstr(str(cmd))
 
             match cmd:
 
