@@ -41,6 +41,11 @@ def init_screen(): # initialise the screen
 
     stdscreen.refresh()
 
+def resize_window():
+    global y
+    global x
+
+    y, x = stdscreen.getmaxyx()
 
 def close(): # return terminal to normal
     stdscreen.keypad(0)
