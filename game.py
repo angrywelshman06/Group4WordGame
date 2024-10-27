@@ -96,6 +96,9 @@ def execute_go(direction): # executes the go action
             case "west":
                 new_pos[0] -= 1
 
+        if not (0 <= new_pos[0] <= 9 or 0 <= new_pos[1] <= 9):
+            write("That way is blocked by walls! You need to find suitable items to escape this way!")
+
         # Ensure the new room has an exit back to the previous room
         current_room = player.get_current_room()
         new_room = get_room(new_pos[0], new_pos[1])
@@ -519,28 +522,28 @@ def set_scene_combat(): # gives the player info on how the battle is progressing
     write("FLEE\n\n")
 
 def print_intro(): # prints the intro text, makes all the sound effects italic and blinking
-    write("\nzzzzzzzzz.. brrrrrrrr… crrrrrrrr\n", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
-    write(" bbbbbrrrrrr…zzzzzzzz… ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write("\nzzzzzzzzz.. brrrrrrrr… crrrrrrrr\n", curses.color_pair(25)  | curses.A_BLINK)
+    write(" bbbbbrrrrrr…zzzzzzzz… ", curses.color_pair(25)  | curses.A_BLINK)
     write("EMERGENCY CODE: 35627", curses.color_pair(25))
-    write(" beeeeeeeeep… ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write(" beeeeeeeeep… ", curses.color_pair(25)  | curses.A_BLINK)
     write("Emergency Alert. If you can hear this you are currently a survivor.", curses.color_pair(25))
-    write(" ...zzzzzzzz ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write(" ...zzzzzzzz ", curses.color_pair(25)  | curses.A_BLINK)
     write("The date is… 28TH OF OCTOBER 2024…", curses.color_pair(25))
-    write(" fzzzzzt bzzzzt ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write(" fzzzzzt bzzzzt ", curses.color_pair(25)  | curses.A_BLINK)
     write("Emergency contact systems are down due to unforeseen damage", curses.color_pair(25))
-    write(" zzzzzzzzz.. brrrrrrrr… crrrrrrrr ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
-    write(" crrrrrrr ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write(" zzzzzzzzz.. brrrrrrrr… crrrrrrrr ", curses.color_pair(25)  | curses.A_BLINK)
+    write(" crrrrrrr ", curses.color_pair(25)  | curses.A_BLINK)
     write("Current status: The infected population has been walled off to the remaining population", curses.color_pair(25))
-    write(" zzzzzzzz ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write(" zzzzzzzz ", curses.color_pair(25)  | curses.A_BLINK)
     write("despite this, Cardiff City has been classified as CRITICAL LEVEL", curses.color_pair(25))
-    write(" bzzzzzt ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
-    write(" fzzzzzzt ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write(" bzzzzzt ", curses.color_pair(25)  | curses.A_BLINK)
+    write(" fzzzzzzt ", curses.color_pair(25)  | curses.A_BLINK)
     write("Do NOT approach infected individuals… They are extremely dangerous and can transmit the infection through direct contact ", curses.color_pair(25))
-    write(" beeeeeeeeeeep ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write(" beeeeeeeeeeep ", curses.color_pair(25)  | curses.A_BLINK)
     write("Military personnel are no longer in transit due to the lack of remaining survivors… ", curses.color_pair(25))
-    write(" fzzzzzt bzzzzzzzt ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write(" fzzzzzt bzzzzzzzt ", curses.color_pair(25)  | curses.A_BLINK)
     write("Attempt to escape the city at you’re own risk…", curses.color_pair(25))
-    write(" ZZZZZZZZ ", curses.color_pair(25) | curses.A_ITALIC | curses.A_BLINK)
+    write(" ZZZZZZZZ ", curses.color_pair(25)  | curses.A_BLINK)
     write("\n – Transmission cuts.\n",curses.color_pair(25))
 
 
@@ -552,12 +555,10 @@ border_win_requirements =  [
 escape_route = None
 
 def check_for_boundary_exit():
-    if player.current_room_position[0] not in [0, 9]:
+    if not (player.current_room_position[0] in [0, 9] or player.current_room_position[1] in [0,9]):
+        # write("\nFalse\n")
+        # print(player.current_room_position)
         return False
-
-    if player.current_room_position[1] not in [0, 9]:
-        return False
-
 
 
     for list_of_requirements in border_win_requirements:
@@ -589,13 +590,13 @@ def check_for_boundary_exit():
                 escape_route = "explosives"
 
             return True
-
     return False
 
 
 def menu(): # gives the player info on the current room and their character
 
     write(player.get_current_room().name.upper())
+    write(f"X: {player.current_room_position[0]} | Y: {player.current_room_position[1]}")
     write()
     write(player.get_current_room().description)
     write()
