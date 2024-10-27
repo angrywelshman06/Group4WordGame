@@ -113,8 +113,8 @@ def generate_map():
         for x in range(len(map_matrix[y])):
             if map_matrix[y][x] is None:
                 if generic_rooms:
-                    room_name = generic_rooms.pop(0)
-                    description = "This is a generic room."
+                    room_name = random.choice(generic_rooms)
+                    description = f"This is a {room_name}."
                     items = []
                 else:
                     room_name = f"Generic Room {x}{y}"
@@ -122,16 +122,7 @@ def generate_map():
                     items = []
 
                 generic_room = {'name': room_name, 'description': description, 'items': items}
-                """ if generic_rooms: # y is there duplicated code bruh
-                    room_name = generic_rooms.pop(0)
-                    description = "This is a generic room."
-                    items = []
-                else:
-                    room_name = f"Generic Room {x}{y}"
-                    description = "This is a generic room."
-                    items = []
 
-                generic_room = {'name': room_name, 'description': description, 'items': items} """
                 room = Room(generic_room, (x, y))
 
                 if random.random() <= 1:
