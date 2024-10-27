@@ -21,7 +21,7 @@ import combat
 
 # system shit innit
 import threading
-from threading import Thread
+from threading import Thread, Lock, Event
 import subprocess
 import sys
 import traceback
@@ -474,7 +474,6 @@ def execute_combat(command): # returns if player is still in combat # executes c
     enemy = player.get_current_room().enemies[enemy_key]
     
     write(f"The {enemy.name} attacked you!\n", curses.color_pair(25))
-    print("THIS IS THE ENEMY NAME", enemy.name)
     if random.random() < enemy.crit_chance:
         damage = enemy.damage * enemy.crit_multiplier
         write(f"It hit you for critical damage and dealt {damage} damage.\n", curses.color_pair(24))
@@ -575,10 +574,11 @@ def play_animation(animation, hold=False): # this function creates a thread to p
     # animation has to be a valid animation from ani_sprites.py
     art_pad_args = [0,0,0,0, ui.y-1, int(ui.x/2)-1]
     try:
-        anim_thread = Thread(target=run_animation_curses_pad, args=[ui.art_pad, art_pad_args, ui_lock, *animation])
+        anim_thread = Thread(target=run_animation_curses_pad, args=[ui.art_pad, art_pad_args, ui_lock, resize_window_event, *animation])
         anim_thread.start()
         if hold:
-            anim_thread.join()
+            anim_thread.join() # if hold is true wait for animation to finish
+            curses.flushinp() # flush any input from when animation was held
     except Exception as e:
         write(f"Exception occured in play_animation:\n{e}\n")
         write(traceback.format_exc())
@@ -600,6 +600,7 @@ ui_lock = threading.Lock()
 in_danger = False
 in_combat = False
 combatprinter = False ### EXPERIMENTAL
+resize_window_event = threading.Event()
 
 # This is the entry point of our program
 def main():
@@ -609,6 +610,7 @@ def main():
     global in_combat
     global in_danger
     global combatprinter ### EXPERIMENTAL
+    global resize_window_event
 
     try:
 
@@ -694,7 +696,13 @@ def main():
                     overflow -= 1
 
                 ui_lock.release()
-
+                
+            elif cmd == curses.KEY_RESIZE:
+                ui_lock.acquire()
+                resize_window() # update the x, y variables of ui
+                resize_window_event.set() # set the resize window event so that animation threds know that the window was resized and can update pad args
+                ui_lock.release()
+                
             elif cmd == 10 or cmd == curses.KEY_ENTER: # enter key
                 write()
 

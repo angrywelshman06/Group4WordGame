@@ -277,6 +277,7 @@ class Combatprinter():
         # self.refresh_sprites()
         #### FUNCTION TO UPDATE ANIMATION TUPLE HERE
      # (self,creature_number, backend_dict, creature_zlevel = 1, dx_change = 0, dy_change = 0)   
+     
     def place_creatures(self):
         dx_change = 20
         dy_change = -8
