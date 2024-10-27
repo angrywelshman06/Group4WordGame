@@ -14,6 +14,9 @@ class Room:
         self.name = room_dict["name"]
         self.description = room_dict["description"]
 
+        if "escape_animation" in room_dict:
+            self.escape_animation = room_dict["escape_animation"]
+
         self.enemies = {}
         self.exits = set()
         self.position = position
@@ -334,6 +337,7 @@ river = {
 
     "npcs" : [boat_captain],
 
+    "escape_animation" : None,
 
     "visual": ani_sprites.room_river,
 

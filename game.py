@@ -263,6 +263,8 @@ def execute_command(command): # parse what needs to be executed based on command
 
     elif command[0] == "escape" and player.get_current_room().can_escape():
         print("Congratulations you have escaped the matrix, you are free from Cardiff and for you the game is over.")
+        close()
+        sys.exit()
 
     elif command[0] == "help":
         write("Commands: go [direction], take [item], drop [item], use [item], quit\n")
