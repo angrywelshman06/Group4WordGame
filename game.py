@@ -127,6 +127,7 @@ def execute_go(direction):
             draw_stillshot(new_room.visual) # draw room visual
         except:
             draw_stillshot(room_placeholder) # room has no visuals to print, print generic visual
+        
         global in_danger
         if len(new_room.enemies) >= 1: # if there are enemies in the room put the player in danger
             in_danger = True 
@@ -381,10 +382,14 @@ def execute_combat(command): # returns if player is still in combat # executes c
         for item in player.inventory:
             if item.id == command[2] or item.name == command[2]:
                 if type(item) == items.Weapon:
-                    execute_attack(int(command[1]), enemy, item)
-                elif type(item) == items.Gun:
-                    execute_attack(int(command[1]), enemy, item)
-                    item.ammo -= 1
+                    if item == items.gun:
+                        if items.ammo in player.inventory:
+                            player.inventory[items.ammo] -= 1
+                            execute_attack(int(command[1]), enemy, item)
+                        else:
+                            write("You have no ammo!\n")
+                    else:
+                        execute_attack(int(command[1]), enemy, item)
                 else:
                     write("This item is not a weapon!\n\n", curses.color_pair(25))
                     return True

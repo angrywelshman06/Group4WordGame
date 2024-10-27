@@ -69,7 +69,7 @@ zombie_soldier = {
     "name" : "zombie soldier",
     "description" : "DESCRIPTION",
     "health" : 80,
-    "base_damage" : 20,
+    "base_damage" : 13,
     "crit_chance" : 0.2,
     "crit_multiplier" : 2
 }

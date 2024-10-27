@@ -24,15 +24,6 @@ class Weapon(Item):
         self.crit_chance = item["crit_chance"] # critical hit chance
         self.crit_mult = item["crit_mult"] # critical hit multiplier
 
-class Gun(Weapon):
-    def __init__(self, weapon: {}):
-        super().__init__(weapon)
-        self.ammo = weapon["ammo"]
-
-
-        
-
-
 """ 
 ITEM INFORMATION
 
@@ -77,8 +68,7 @@ gun = {
     "name" : "shotgun",
     "description" : "DESCRIPTION",
     "mass" : 3500,
-    "type": Gun,
-    "ammo": 4,
+    "type": Weapon,
     "damage" : 10,
     "crit_chance" : 0.4,
     "crit_multiplier" : 1.5
