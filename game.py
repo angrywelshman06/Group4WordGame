@@ -21,7 +21,7 @@ from gameparser import *
 from map import get_room, Room, generate_map
 import combat
 
-# system shit innit
+# threading
 import threading
 from threading import Thread, Lock, Event
 import subprocess
@@ -158,7 +158,7 @@ def execute_consume(item_id): # consumes item in battle and regens health
     write("You cannot consume that.\n")
 
 
-def execute_take(item_id, amount=1):
+def execute_take(item_id, amount=1): # take an item from the current room, possibly take multiple items
 
     for item_dict_id in player.get_current_room().items.keys():
         if item_dict_id == item_id:
@@ -269,6 +269,7 @@ def execute_command(command): # parse what needs to be executed based on command
 
     elif command[0] == "escape" and player.get_current_room().can_escape():
         print("Congratulations you have escaped the matrix, you are free from Cardiff and for you the game is over.")
+        play_animation(player.get_current_room().escape_animation, True)
         close()
         sys.exit()
 
@@ -418,6 +419,7 @@ def execute_combat(command): # returns if player is still in combat # executes c
 
         if attacked_bool == False:
             write("Couldn't attack\n")
+            return True
     
     elif command[0] in ["use", "consume"]:
         execute_consume(command[1])
@@ -517,6 +519,25 @@ def set_scene_combat(): # gives the player info on how the battle is progressing
             else:
                 write(f", ")
 
+    consumables = []
+    for item in player.inventory:
+        if type(item) is items.Consumable:
+            consumables.append(item.name)
+
+    if len(consumables) == 0:
+        write("You have no consumables\n")
+    elif len(consumables) == 1:
+        write(f"You have a {consumables[0]}.\n")
+    else:
+        write("You have a ")
+        for i in range(0, len(consumables)):
+            write(f"{consumables[i]} ")
+            if i == len(consumables)-2:
+                write(f" and {consumables[i+1]}.\n")
+                break
+            else:
+                write(f", ")
+
     write("ATTACK <which enemy> <weapon>   or   ")
     write("CONSUME <item>   or   ")
     write("FLEE\n\n")
@@ -604,7 +625,7 @@ def menu(): # gives the player info on the current room and their character
 
     if len(player.get_current_room().enemies) == 0:
         if player.get_current_room().exits:
-            write(f"You can GO: {", ".join(player.get_current_room().exits)}\n\n")
+            write(f"You can GO: {', '.join(player.get_current_room().exits)}\n\n")
         else:
             write("No exits available seems you might be stuck. What a shame ;)\n\n")
             write()
@@ -710,7 +731,7 @@ def main():
         curses_setcolors()
 
         # play intro animations
-        play_animation(intro_1, True) # hold main thread unntil this animation stops playing
+        play_animation(intro_1, True) # hold main thread until this animation stops playing
         play_animation(intro_2) # play animation on seperate thread
 
     except Exception as e:
@@ -756,6 +777,12 @@ def main():
         #main game loop
         while True:
             cmd = ui.text_pad.getch() # wair for the user to press a key
+
+            # scolling for windows
+            if cmd == ord('-'):
+                ui.text_pad_pos += 1
+            elif cmd == ord('='):
+                ui.text_pad_pos -= 1
 
             match cmd:
 
@@ -851,9 +878,9 @@ def main():
             ui_lock.acquire()
             ui.art_pad.refresh(0,0,0,0, ui.y-1, int(ui.x/2)-1)
             try: 
-                ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x)
+                ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x-1)
             except: #do nothing when trying to scroll past the available screen size
-                pass
+                ui.text_pad.refresh(ui.text_pad_pos-1, 0, 0, int(ui.x/2), ui.y-1, ui.x-1)
             ui_lock.release()
 
     except Exception as e: # if an error occurs return terminal to normal 

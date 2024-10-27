@@ -44,7 +44,7 @@ paracetamol = {
     "description": "DESCRIPTION",
     "mass": 100,
 
-    "spawn_chance": 0.08,
+    "spawn_chance": 0.1,
     "spawn_quantity" : [1, 5],
 
     "type": Consumable,
@@ -68,7 +68,7 @@ morphine = {
 }
 
 gun = {
-    "id" : "gun",
+    "id" : "shotgun",
     "name" : "shotgun",
     "description" : "DESCRIPTION",
     "mass" : 3500,
@@ -111,7 +111,7 @@ lighter = {
     "description" : "DESCRIPTION",
     "mass" : 21,
 
-    "spawn_chance": 0.03,
+    "spawn_chance": 0.23,
     "spawn_quantity": [1, 1],
 
 }
@@ -165,12 +165,13 @@ starter_knife = {
     "id" : "knife",
     "name" : "knife",
     "description" : "DESCRIPTION",
+    "type" : Weapon,
     "mass" : 240,
     "damage" : 20,
     "crit_chance" : 0.2,
     "crit_multiplier" : 2,
 
-    "spawn_chance": 0.08,
+    "spawn_chance": 0.13,
     "spawn_quantity": [1, 1],
 
 }
