@@ -6,6 +6,7 @@ import rooms
 from combat import *
 from rooms import special_rooms, Room, generic_rooms
 from collections import deque
+import items
 #import sys
 
 map_matrix = [[None for x in range(10)] for y in range(10)]
@@ -88,13 +89,13 @@ def generate_map():
         while attempts < max_attempts:
             x_coord = random.randint(0, 9)
             y_coord = random.randint(0, 9)
-            if map_matrix[x_coord][y_coord] is None and sr['name'] not in used_rooms:
-                room = Room(sr, (x_coord, y_coord), visual_in=sr["visual"])
-                map_matrix[x_coord][y_coord] = room
+            if map_matrix[y_coord][x_coord] is None and sr['name'] not in used_rooms:
+                room = Room(sr, (y_coord, x_coord), visual_in=sr["visual"])
+                map_matrix[y_coord][x_coord] = room
+                generate_loot(x_coord, y_coord)
 
-                if random.random() <= 1:
+                if random.random() <= 0.5:
                     for num in range(random.randint(1, 3)):
-                        
                         chance = random.random()
                         level = 1
                         if chance < 0.2:
@@ -125,7 +126,7 @@ def generate_map():
 
                 room = Room(generic_room, (x, y))
 
-                if random.random() <= 1:
+                if random.random() <= 0.5:
                     for num in range(random.randint(1, 3)):
                         
                         chance = random.random()
@@ -138,8 +139,26 @@ def generate_map():
                         room.enemies[num+1] = Creature(random.choice(all_enemies), level=level)
 
                 map_matrix[y][x] = room
+                generate_loot(x, y)
 
     ensure_connected_graph()
+
+
+def generate_loot(x_coord, y_coord):
+    room = map_matrix[y_coord][x_coord]
+
+    if len(room.items) != 0:
+        return
+
+    for item_dict in items.item_list:
+        if random.random() <= item_dict["spawn_chance"]:
+            amount = random.randint(item_dict["spawn_quantity"][0],item_dict["spawn_quantity"][1])
+
+            if item_dict["id"] not in room.items:
+                room.items[item_dict["id"]] = amount
+            else:
+                room.items[item_dict["id"]] += amount
+
 
 def ensure_connected_graph():
     start_room = get_room(starting_position[0], starting_position[1])

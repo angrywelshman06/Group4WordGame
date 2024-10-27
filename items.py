@@ -44,6 +44,9 @@ paracetamol = {
     "description": "DESCRIPTION",
     "mass": 100,
 
+    "spawn_chance": 0.03,
+    "spawn_quantity" : [1, 5],
+
     "type": Consumable,
 
     # Consumable specifics
@@ -55,10 +58,11 @@ morphine = {
     "id": "morphine",
     "name": "morphine",
     "description": "DESCRIPTION",
-    "name": "morphine",
-    "description": "DESCRIPTION",
+
+    "spawn_chance": 0.03,
+    "spawn_quantity" : [1, 2],
+
     "type": Consumable,
-    "healing": 70,
     "healing": 70,
     "mass": 100
 }
@@ -68,6 +72,10 @@ gun = {
     "name" : "shotgun",
     "description" : "DESCRIPTION",
     "mass" : 3500,
+
+    "spawn_chance": 0.03,
+    "spawn_quantity": [1, 1],
+
     "type": Weapon,
     "damage" : 35,
     "crit_chance" : 0.4,
@@ -80,6 +88,10 @@ parachute = {
     "name" : "parachute",
     "description" : "DESCRIPTION",
     "mass" : 9000,
+
+    "spawn_chance": 0.03,
+    "spawn_quantity": [1, 2],
+
 }
 
 explosives = {
@@ -87,33 +99,54 @@ explosives = {
     "name" : "explosives",
     "description" : "DESCRIPTION",
     "mass" : 45000,
+
+    "spawn_chance": 0.03,
+    "spawn_quantity" : [1, 1],
+
 }
 
 lighter = {
     "id" : "lighter",
     "name" : "lighter",
     "description" : "DESCRIPTION",
-    "mass" : 21
+    "mass" : 21,
+
+    "spawn_chance": 0.03,
+    "spawn_quantity": [1, 1],
+
 }
 
 rope = {
     "id" : "rope",
     "name" : "rope",
     "description" : "DESCRIPTION",
-    "mass" : 3900
+    "mass" : 3900,
+
+    "spawn_chance": 0.03,
+    "spawn_quantity": [1, 1],
+
 }
 
 duct_tape = {
     "id" : "duct_tape",
     "name" : "duct tape",
     "description" : "DESCRIPTION",
-    "mass" : 350
+    "mass" : 350,
+
+    "spawn_chance": 0.03,
+    "spawn_quantity": [1, 1],
+
 }
 
 crowbar = {
     "id" : "crowbar",
     "name" : "crowbar",
     "description" : "DESCRIPTION",
+
+
+    "spawn_chance": 0.03,
+    "spawn_quantity": [1, 1],
+  
     "mass" : 4500
 }
 
@@ -121,7 +154,11 @@ screwdriver = {
     "id" : "screwdriver",
     "name" : "screwdriver",
     "description" : "DESCRIPTION",
-    "mass" : 80
+    "mass" : 80,
+
+    "spawn_chance": 0.03,
+    "spawn_quantity": [1, 1],
+
 }
 
 starter_knife = {
@@ -131,7 +168,11 @@ starter_knife = {
     "mass" : 240,
     "damage" : 20,
     "crit_chance" : 0.2,
-    "crit_multiplier" : 2
+    "crit_multiplier" : 2,
+
+    "spawn_chance": 0.03,
+    "spawn_quantity": [1, 1],
+
 }
 
 machete = {
@@ -143,13 +184,21 @@ machete = {
     "type" : Weapon,
     "damage" : 25,
     "crit_chance" : 0.4,
-    "crit_multiplier" : 2
+    "crit_multiplier" : 2,
+
+    "spawn_chance": 0.03,
+    "spawn_quantity": [1, 1],
+
 }
 
 grappling_hook = {
     "id": "grappling_hook",
     "name": "grappling hook",
     "description": "DESCRIPTION",
+
+    "spawn_chance": 0.03,
+    "spawn_quantity": [1, 1],
+
     "mass": 5000
 }
 
@@ -157,7 +206,11 @@ ammo = {
     "id": "ammo",
     "name": "ammo",
     "description": "DESCRIPTION",
-    "mass": 21
+    "mass": 21,
+
+    "spawn_chance": 0.5,
+    "spawn_quantity": [1, 3],
+
 }
 
 bat = {
@@ -168,13 +221,17 @@ bat = {
     "damage" : 15,
     "crit_chance": 0.1,
     "crit_mult": 2,
-    "mass": 1500
+    "mass": 1500,
+
+    "spawn_chance": 0.03,
+    "spawn_quantity": [1, 1],
+
 }
 
 item_list = [paracetamol, morphine, gun, parachute,
              explosives, lighter, rope, duct_tape,
              crowbar, screwdriver, starter_knife,
-             machete, ammo, grappling_hook]
+             machete, ammo, grappling_hook, bat]
 
 def get_item_dict_from_list(item_id : str) -> {}:
     for item_dict in item_list:
