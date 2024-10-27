@@ -103,7 +103,7 @@ def execute_go(direction): # executes the go action
         if new_room is None:
             write("CONGRATULATIONS YOU’VE ESCAPED CARDIFF! By going beyond the surrounding wall you have reached the safe haven, a span of gorgeous green land carefully tendered too by the remaining few. Although danger still remains within the city, signs of rebuilding life are slowly developing once again around you\n")
             close()
-            #sys.exit()
+            sys.exit()
 
         # Ensure the new room has an exit back to the current room
         opposite_direction = {"north": "south", "south": "north", "east": "west", "west": "east"}
@@ -444,7 +444,7 @@ def execute_combat(command): # returns if player is still in combat # executes c
         close()
         close()
         close()
-        pass
+        sys.exit()
 
     write()
     return True
