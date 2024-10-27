@@ -1,12 +1,9 @@
 import copy
 
-import enemies
 import items
 from items import *
 from npcs import *
 
-import combat
-import random
 import ani_sprites
 import player
 
@@ -16,29 +13,24 @@ class Room:
     def __init__(self, room_dict: {}, position: tuple, no_enemies=False, visual_in=None):
         self.name = room_dict["name"]
         self.description = room_dict["description"]
-        if visual_in != None:
-            self.visual = visual_in
+
         self.enemies = {}
         self.exits = set()
         self.position = position
 
-        """ if no_enemies == False: #and random.random() < 0.9: for now allways generate enemies
-            enemy_count = int(random.random() / 0.3) # number of enemies will be between 0 - 3, usually 1 or 2
-            
-            for i in range(0, enemy_count):
-                self.enemies.append( combat.Enemy(random.choice(combat.all_enemies)) ) # add a random enemy to room_enemies """
+        if visual_in is not None:
+            self.visual = visual_in
 
         self.visited = False
-        self.npcs = []
-        if "npcs" in room_dict:
-            for npc in room_dict["npcs"]:
-                self.npcs.append(npc)
+
+        # Copying over win requirements from the room dictionary
         self.win_requirements = None
         if "win_requirements" in room_dict:
             self.win_requirements = room_dict["win_requirements"] # [{}]
 
         self.npcs = []
 
+        # Initialising each NPC in the dictionary and storing into room object
         if "npcs" in room_dict:
             for npc in room_dict["npcs"]:
                 self.npcs.append(NPC(npc))
@@ -81,19 +73,24 @@ class Room:
 
         # For each requirement (if there are multiple ways of escaping through this room)
         for list_of_requirements in self.win_requirements:
+
             modified_list_of_requirements = copy.deepcopy(list_of_requirements)
-            for requirement_type in list_of_requirements: # the item
+            for requirement_type in list_of_requirements: # Item id or specific requirement type (mass)
+
                 for item in player.inventory.keys():
                     match requirement_type:
+
                         case "mass" :
                             if item.mass > list_of_requirements[requirement_type]:
                                 modified_list_of_requirements.pop(requirement_type)
                                 break
 
-                        case _:
+                        case _: # Assumed to be an item id
                             if item.id == requirement_type and player.inventory[item] >= modified_list_of_requirements[requirement_type]:
                                 modified_list_of_requirements.pop(requirement_type)
                                 break
+
+            # If there are no more requirements in this set, player can escape if they wish
             if len(modified_list_of_requirements) == 0:
                 return True
 
@@ -106,7 +103,7 @@ class Room:
 # Tutorial room
 # Do not add to either list, this has been implemented elsewhere
 bedroom_tutorial = {
-    "name": "bedroom_tutorial",
+    "name": "Bedroom (Tutorial)",
 
     "description":
     """The rotten door led to the bedroom with a creak, it has a bed, with the mattress and the bed sheets not aligned at all.The walls covered with mould and paint long since peeled off, The floorboards creak with every step showing decay betraying its once great quality redwood flooring.  The air smells weird, prompting you to mask your nose from the smell. The once beautiful mattress with flowery design lay dusty with no care. There are stains in the floor , there are cobwebs in the roof and a radio lies on the empty wooden table showing signs of termite infestation.""",
@@ -116,7 +113,7 @@ bedroom_tutorial = {
     "items": {"paracetamol" : 2},
 
 
-    "npcs" : []
+    "npcs" : [test_npc]
 
 
 
