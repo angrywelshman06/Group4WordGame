@@ -150,7 +150,7 @@ climbers = spritesheet(("intro_1","climbers"), 7, zlevel = 10, frames = 95)
 dudeontop = spritesheet(("intro_1","dudeontop"), 3, zlevel = 11, frames = 95)
 moon = spritesheet(("intro_1","moon"), 8, zlevel = 0.5, frames = 1)
 #### Unpack this in run_animation_curses. Should look like this: run_animation_curses([insert curses window here],*intro_1) 
-intro_1 = (fire,fire2,fire3,skyscraper,building1,heli,citybg,pulse, climbers, dudeontop, moon)
+intro_1 = (fire,fire2,fire3,skyscraper,building1,heli,citybg,pulse, climbers, dudeontop, moon, outline)
 
 ##### Intro part 2 
 intro_male_eyes = spritesheet(("intro_2","intro_male_eyes"), 1, zlevel = 5, frames = 38)
@@ -483,11 +483,6 @@ tent_camp = spritesheet(("room_camp", "tent_camp"),11, zlevel = 2, frames = 1)
 ####
 room_camp = (outline, blood_camp, floor_camp, items_camp, sleepingbags_camp, tent_camp)
 
-#### Placeholder for minor rooms
-mainlogo_placeholder = spritesheet(("room_placeholder",),3, zlevel = 1, frames = 1, dx = 12, dy = 5)
-####
-room_placeholder = (outline, mainlogo_placeholder, general_bg2)
-
 #### Cutscene death 1
 blood_csd1 = spritesheet(("cutscene_death_1", "blood_csd1"),8, zlevel = 0.1, frames = 33)
 mc_csd1 = spritesheet(("cutscene_death_1", "mc_csd1"),22, zlevel = 2, frames = 33)
@@ -541,6 +536,14 @@ parachute_endpara = spritesheet(("ending_parachute", "parachute_endpara"),15, zl
 rooftop_endpara = spritesheet(("ending_parachute", "rooftop_endpara"),3, zlevel = 3, frames = 20)
 #####
 ending_parachute = (outline,building_endpara, building2_endpara, mc_endpara, parachute_endpara, rooftop_endpara, sun_endboat, red_skyline)
+
+#### Placeholder for minor rooms
+building_placeholder = spritesheet(("city_placeholder","building_plhl"),16, zlevel = 6, frames = 1)
+building2_placeholder = spritesheet(("city_placeholder","building2_plhl"),3, zlevel = 5, frames = 1)
+road_placeholder = spritesheet(("city_placeholder","road_plhl"),20, zlevel = 4, frames = 1)
+sun_placeholder = spritesheet(("city_placeholder","sun_plhl"),21, zlevel = 2, frames = 1)
+####
+room_placeholder = (outline, building_placeholder, building2_placeholder, road_placeholder, sun_placeholder, red_skyline)
 
 #### Fight cutscene
 body_fight = spritesheet(("cutscene_fight", "body_fight"),7, zlevel = 1, frames = 31)

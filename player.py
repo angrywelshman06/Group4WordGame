@@ -36,7 +36,7 @@ def get_inventory_items():
     return f"You have {item_list}."
 
 # Stores players health
-health = 100
+health = 1
 
 #Stores current room position as an array
 current_room_position = [4,4]

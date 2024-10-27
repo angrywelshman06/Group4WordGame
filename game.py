@@ -574,6 +574,7 @@ def play_animation(animation, hold=False): # this function creates a thread to p
     # animation has to be a valid animation from ani_sprites.py
     art_pad_args = [0,0,0,0, ui.y-1, int(ui.x/2)-1]
     try:
+        ui.art_pad.clear()
         anim_thread = Thread(target=run_animation_curses_pad, args=[ui.art_pad, art_pad_args, ui_lock, resize_window_event, *animation])
         anim_thread.start()
         if hold:
