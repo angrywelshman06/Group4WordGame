@@ -246,12 +246,12 @@ class Combatprinter():
         return (general_bg, outline, *self.spritesheets_tuple())
     
     def general_update(self, attacker = 0, attacked = 0):
-        self.update_infosheet()
         # if attacker == "You":
             # self.set_new_sprites(attacker,attacked) # "You", "1"/"2"....
             # return
         if attacker != 0:
             self.set_new_sprites(attacker,attacked) # "1"/"2"...., "You"
+        self.update_infosheet()
             
         
     # def user_update(self, user_input): #### this should also 
