@@ -28,9 +28,6 @@ import sys
 import traceback
 import random
 
-#Full Screen
-import keyboard
-keyboard.press('f11') 
 
 
 def install_requirements():
