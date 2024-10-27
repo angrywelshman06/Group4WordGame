@@ -342,8 +342,9 @@ def execute_attack(enemy_id, enemy, weapon):
         write(f"The {enemy.name} has been killed!\n")
 
 def execute_combat(command): # returns if player is still in combat # executes combat
+  
     global combatprinter #### EXPERIMENTAL
-    
+
     if len(command) == 0:
         return True
     
@@ -360,7 +361,7 @@ def execute_combat(command): # returns if player is still in combat # executes c
                 draw_stillshot(room_placeholder) # room has no visuals to print, print generic visual
             return False
         else:
-            write("You failed to escape.\n")
+            write("You failed to escape.\n", curses.color_pair(25))
 
     elif command[0] == "attack":
                 
@@ -385,10 +386,12 @@ def execute_combat(command): # returns if player is still in combat # executes c
                     execute_attack(int(command[1]), enemy, item)
                     item.ammo -= 1
                 else:
-                    write("This item is not a weapon!\n\n")
+                    write("This item is not a weapon!\n\n", curses.color_pair(25))
                     return True
+                  
                 combatprinter.general_update(attacker = "You", attacked = command[1]) #### EXPERIMENTAL
                 play_animation(combatprinter.animation, True) # EXPERIMENTAL. Hold main thread until animation finished
+
             else:
                 write("You do not have that item.\n\n")
     
@@ -434,19 +437,22 @@ def execute_combat(command): # returns if player is still in combat # executes c
 def set_scene_combat(): # gives the player info on how the battle is progressing
     global combatprinter ### EXPERIMENTAL
     draw_stillshot(combatprinter.stillstate) ### EXPERIMENTAL
-    
+
     enemies_dict = player.get_current_room().enemies
     enemies = []
 
     for enemy_id in enemies_dict:
         enemies.append(enemies_dict[enemy_id].name)
 
-    write(f"You spot {len(enemies)} enemies. ")
+    write(f"You spot {len(enemies)}")
+
     if len(enemies) == 0:
         write("no enemies (this prolly means theres an error, a user shouldnt see this)\n")
     if len(enemies) == 1:
+        write(" enemy. ") # if one enemy use enemy singular
         write(f"You see a {enemies[0]}.\n")
     else:
+        write(" enemies. ") # if more than one enemy use enemies plural
         write("You see a ")
         for i in range(0, len(enemies)):
             write(f"{enemies[i]} ")
@@ -515,10 +521,8 @@ def menu(): # gives the player info on the current room and their character
     write(player.get_current_room().description)
     write()
 
-    if len(player.get_current_room().enemies) >= 1:
-        write(
-            f"There are {len(player.get_current_room().enemies)} enemies in this room. Choose whether to FIGHT to continue or FLEE to the previous room.")
-    else:
+
+    if len(player.get_current_room().enemies) == 0:
         if player.get_current_room().exits:
             write(f"You can GO: {", ".join(player.get_current_room().exits)}\n\n")
         else:
@@ -563,6 +567,14 @@ def write(msg = "\n", arg=None): # writes text to text pad
         ui.text_pad.refresh(ui.text_pad_pos-1, 0, 0, int(ui.x/2), ui.y-1, ui.x-1) # refresh without going out of pad extent
     
     ui_lock.release() # allow ui to be modified
+
+def write_seperator():
+    str = "\n\n"
+    for i in range(0, int(ui.x/2)-2):
+        str += "="
+    str += "\n\n"
+
+    write(str, curses.color_pair(15) | curses.A_BOLD)
 
 def play_animation(animation, hold=False): # this function creates a thread to play the given animation
     # animation has to be a valid animation from ani_sprites.py
@@ -694,7 +706,8 @@ def main():
                     ui_lock.release()
 
                 case curses.KEY_ENTER | 10:
-                    write()
+                    write_seperator() # turn seperator
+                    ui.text_pad_pos += 10
 
                     normalised_user_input = normalise_input(user_input)
 
