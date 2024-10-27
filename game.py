@@ -409,6 +409,8 @@ def execute_combat(command): # returns if player is still in combat # executes c
 
     if len(player.get_current_room().enemies) == 0:
         write("You won the battle!\n", curses.color_pair(7))
+        ui.art_pad.clear()
+        combatprinter = False
         return False
 
 
@@ -719,7 +721,8 @@ def main():
                         if combatprinter == False: ### EXPERIMENTAL
                             combatprinter = combat.Combatprinter() ### EXPERIMENTAL
                         in_combat = execute_combat(normalised_user_input)
-                        combatprinter.general_update() ### EXPERIMENTAL
+                        if combatprinter != False:
+                            combatprinter.general_update() ### EXPERIMENTAL
                         if in_combat:
                             set_scene_combat()
                         else:
