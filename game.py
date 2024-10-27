@@ -512,10 +512,7 @@ def menu(): # gives the player info on the current room and their character
     write(player.get_current_room().description)
     write()
 
-    if len(player.get_current_room().enemies) >= 1:
-        write(
-            f"There are {len(player.get_current_room().enemies)} enemies in this room. Choose whether to FIGHT to continue or FLEE to the previous room.")
-    else:
+    if len(player.get_current_room().enemies) == 0:
         if player.get_current_room().exits:
             write(f"You can GO: {", ".join(player.get_current_room().exits)}\n\n")
         else:
