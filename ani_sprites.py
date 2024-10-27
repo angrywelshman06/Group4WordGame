@@ -54,14 +54,16 @@ class spritesheet():
         self.dx = dx # x change
         self.dy = dy # y change
         self.frameslist = self.gather_framelist() # list containing every frame. The standard dimensions for most text files read should be col 100 x ln 33
-        self.infolist = infolist ### Used for combat. Should be a list containing [creature type, number (in battle), level, hp]
+        self.infolist = infolist ### Used for combat. Should be a list containing [creature type, number (in battle), level, hp].
         if infolist != 0:
-            self.frameslist = self.transform_to_details() ### Tansforms every spritesheet to the details of a creature by using the infolist.
+            # if "protag" not in self.path: This should work but it doesn't
+                # self.color = 8
+            self.frameslist = self.transform_to_info(infolist) ### Tansforms every spritesheet to the details of a creature by using the infolist.
             
         ## dy and dx are meant to be used when a spritesheet contains text files of a much smaller dimension than the standard.       
         if (self.dx != 0) or (self.dy != 0):
             self.frameslist = self.extend_frames() ## Adds empty space around every item of the frameslist (according to dx and dy) to fit the standard of 100x33. 
-
+        
     def gather_framelist(self): # Gathers every textfile in the given path and appends it to frameslist.
         frameslist = []
         for frame in range(1,self.frames+1):
@@ -73,11 +75,11 @@ class spritesheet():
         return frameslist
 
     # Responsible for updating the graphical representation of the stats on the screen. [creature type, number (in battle), level, hp]
-    def transform_to_details(self): # Uses infolist
-        name = self.infolist[0]
-        number = self.infolist[1]
-        level = self.infolist[2]
-        hp = self.infolist[3]
+    def transform_to_info(self, infolist): # Uses infolist
+        name = infolist[0]
+        number = infolist[1]
+        level = infolist[2]
+        hp = infolist[3]
         newframeslist = []
         
         for index,value in enumerate(self.frameslist): # Goes through every item in frameslist
@@ -96,7 +98,6 @@ class spritesheet():
             
             newframe = "\n".join(newframe) # joins back the items of newframe into one frame
             newframeslist.append(newframe) # appends the new frame to newframeslist
-        
         return newframeslist # Returns the altered frames list
 
     """ Adds empty space around every item of the frameslist (according to dx and dy) to fit the standard of 100x33. """
@@ -149,7 +150,7 @@ climbers = spritesheet(("intro_1","climbers"), 7, zlevel = 10, frames = 95)
 dudeontop = spritesheet(("intro_1","dudeontop"), 3, zlevel = 11, frames = 95)
 moon = spritesheet(("intro_1","moon"), 8, zlevel = 0.5, frames = 1)
 #### Unpack this in run_animation_curses. Should look like this: run_animation_curses([insert curses window here],*intro_1) 
-intro_1 = (fire,fire2,fire3,skyscraper,building1,heli,citybg,pulse, climbers, dudeontop, moon)
+intro_1 = (fire,fire2,fire3,skyscraper,building1,heli,citybg,pulse, climbers, dudeontop, moon, outline)
 
 ##### Intro part 2 
 intro_male_eyes = spritesheet(("intro_2","intro_male_eyes"), 1, zlevel = 5, frames = 38)
@@ -482,11 +483,6 @@ tent_camp = spritesheet(("room_camp", "tent_camp"),11, zlevel = 2, frames = 1)
 ####
 room_camp = (outline, blood_camp, floor_camp, items_camp, sleepingbags_camp, tent_camp)
 
-#### Placeholder for minor rooms
-mainlogo_placeholder = spritesheet(("room_placeholder",),3, zlevel = 1, frames = 1, dx = 12, dy = 5)
-####
-room_placeholder = (outline, mainlogo_placeholder, general_bg2)
-
 #### Cutscene death 1
 blood_csd1 = spritesheet(("cutscene_death_1", "blood_csd1"),8, zlevel = 0.1, frames = 33)
 mc_csd1 = spritesheet(("cutscene_death_1", "mc_csd1"),22, zlevel = 2, frames = 33)
@@ -540,6 +536,14 @@ parachute_endpara = spritesheet(("ending_parachute", "parachute_endpara"),15, zl
 rooftop_endpara = spritesheet(("ending_parachute", "rooftop_endpara"),3, zlevel = 3, frames = 20)
 #####
 ending_parachute = (outline,building_endpara, building2_endpara, mc_endpara, parachute_endpara, rooftop_endpara, sun_endboat, red_skyline)
+
+#### Placeholder for minor rooms
+building_placeholder = spritesheet(("city_placeholder","building_plhl"),16, zlevel = 6, frames = 1)
+building2_placeholder = spritesheet(("city_placeholder","building2_plhl"),3, zlevel = 5, frames = 1)
+road_placeholder = spritesheet(("city_placeholder","road_plhl"),20, zlevel = 4, frames = 1)
+sun_placeholder = spritesheet(("city_placeholder","sun_plhl"),21, zlevel = 2, frames = 1)
+####
+room_placeholder = (outline, building_placeholder, building2_placeholder, road_placeholder, sun_placeholder, red_skyline)
 
 #### Fight cutscene
 body_fight = spritesheet(("cutscene_fight", "body_fight"),7, zlevel = 1, frames = 31)

@@ -155,7 +155,7 @@ class initiate_combat():
         if user_input[:-2] == "attack":
             damage = 5 # Placeholder. This can go through a random damage generator that's based on the player's base attack stat
             protag = self.creatures_dict["protag"]
-            enemy = self.creatures_dict["Enemy_{0}".format(user_input[-1:])]
+            enemy = self.creatures_dict["Creature_{0}".format(user_input[-1:])]
             enemy.hp -= damage
             self.set_new_sprites(protag, enemy)
 
@@ -194,7 +194,7 @@ class initiate_combat():
             # print(self.enemies[name_counter-1][1])
             enemy_level = self.enemies[name_counter-1][1] #grabs second item from tuple
             enemy = creature(("placeholder",),enemy_number,enemy_type, 7, enemy_level,hp, z, dx_change, dy_change)
-            self.creatures_dict["Enemy_{0}".format(name_counter)] = enemy
+            self.creatures_dict["Creature_{0}".format(name_counter)] = enemy
             info = spritesheet(("placeholder",),14, zlevel = z+0.1, frames = 6, dx = dx_change, dy = dy_change+5, infolist = [enemy_type, enemy_number,enemy_level,hp])
             self.info_dict[enemy] = info
             if counter == 4:

@@ -342,6 +342,9 @@ def execute_attack(enemy_id, enemy, weapon):
         write(f"The {enemy.name} has been killed!\n")
 
 def execute_combat(command): # returns if player is still in combat # executes combat
+  
+    global combatprinter #### EXPERIMENTAL
+
     if len(command) == 0:
         return True
     
@@ -385,6 +388,9 @@ def execute_combat(command): # returns if player is still in combat # executes c
                 else:
                     write("This item is not a weapon!\n\n", curses.color_pair(25))
                     return True
+                  
+                combatprinter.general_update(attacker = "You", attacked = command[1]) #### EXPERIMENTAL
+                play_animation(combatprinter.animation, True) # EXPERIMENTAL. Hold main thread until animation finished
 
             else:
                 write("You do not have that item.\n\n")
@@ -429,6 +435,9 @@ def execute_combat(command): # returns if player is still in combat # executes c
 
 
 def set_scene_combat(): # gives the player info on how the battle is progressing
+    global combatprinter ### EXPERIMENTAL
+    draw_stillshot(combatprinter.stillstate) ### EXPERIMENTAL
+
     enemies_dict = player.get_current_room().enemies
     enemies = []
 
@@ -511,6 +520,7 @@ def menu(): # gives the player info on the current room and their character
     write()
     write(player.get_current_room().description)
     write()
+
 
     if len(player.get_current_room().enemies) == 0:
         if player.get_current_room().exits:
@@ -596,6 +606,7 @@ overflow = 0
 ui_lock = threading.Lock()
 in_danger = False
 in_combat = False
+combatprinter = False ### EXPERIMENTAL
 resize_window_event = threading.Event()
 
 # This is the entry point of our program
@@ -605,6 +616,7 @@ def main():
     global ui_lock
     global in_combat
     global in_danger
+    global combatprinter
     global resize_window_event
 
     try:
@@ -695,14 +707,19 @@ def main():
 
                 case curses.KEY_ENTER | 10:
                     write_seperator() # turn seperator
+                    ui.text_pad_pos += 10
 
                     normalised_user_input = normalise_input(user_input)
 
                     if in_combat:
+                        if combatprinter == False: ### EXPERIMENTAL
+                            combatprinter = combat.Combatprinter() ### EXPERIMENTAL
                         in_combat = execute_combat(normalised_user_input)
+                        combatprinter.general_update() ### EXPERIMENTAL
                         if in_combat:
                             set_scene_combat()
                         else:
+                            combatprinter = False ### Assuming this is where combat ends. EXPERIMENTAL.
                             menu()
                     elif in_danger:
                         resolution = resolve_danger(normalised_user_input)
@@ -715,6 +732,7 @@ def main():
                             in_combat = True
 
                     elif in_combat == False and in_danger == False:
+                        combatprinter = False ### EXPERIMENTAL
                         execute_command(normalised_user_input)
                         menu()
 
