@@ -24,15 +24,6 @@ class Weapon(Item):
         self.crit_chance = item["crit_chance"] # critical hit chance
         self.crit_mult = item["crit_mult"] # critical hit multiplier
 
-class Gun(Weapon):
-    def __init__(self, weapon: {}):
-        super().__init__(weapon)
-        self.ammo = weapon["ammo"]
-
-
-        
-
-
 """ 
 ITEM INFORMATION
 
@@ -85,10 +76,9 @@ gun = {
     "spawn_chance": 0.03,
     "spawn_quantity": [1, 1],
 
-    "type": Gun,
-    "ammo": 4,
-    "damage" : 10,
-    "crit_chance" : 0.1,
+    "type": Weapon,
+    "damage" : 35,
+    "crit_chance" : 0.4,
     "crit_multiplier" : 1.5
 }
 
@@ -152,11 +142,12 @@ crowbar = {
     "id" : "crowbar",
     "name" : "crowbar",
     "description" : "DESCRIPTION",
-    "mass" : 45000,
+
 
     "spawn_chance": 0.03,
     "spawn_quantity": [1, 1],
-
+  
+    "mass" : 4500
 }
 
 screwdriver = {
@@ -175,7 +166,7 @@ starter_knife = {
     "name" : "knife",
     "description" : "DESCRIPTION",
     "mass" : 240,
-    "damage" : 5,
+    "damage" : 20,
     "crit_chance" : 0.2,
     "crit_multiplier" : 2,
 
@@ -191,7 +182,7 @@ machete = {
     "mass" : 250,
 
     "type" : Weapon,
-    "damage" : 10,
+    "damage" : 25,
     "crit_chance" : 0.4,
     "crit_multiplier" : 2,
 
@@ -204,11 +195,11 @@ grappling_hook = {
     "id": "grappling_hook",
     "name": "grappling hook",
     "description": "DESCRIPTION",
-    "mass": 1600,
 
     "spawn_chance": 0.03,
     "spawn_quantity": [1, 1],
 
+    "mass": 5000
 }
 
 ammo = {
@@ -227,7 +218,7 @@ bat = {
     "name" : "baseball bat",
     "description" : "DESCRIPTION",
     "type": Weapon,
-    "damage" : 20,
+    "damage" : 15,
     "crit_chance": 0.1,
     "crit_mult": 2,
     "mass": 1500,

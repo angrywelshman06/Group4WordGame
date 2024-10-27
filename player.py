@@ -8,7 +8,7 @@ from items import *
 inventory = {Consumable(paracetamol) : 2, Weapon(bat) : 1} # could be changed to the gun idc
 
 # Current maximum capacity of inventory (in grams)
-max_mass = 10000
+max_mass = 50000
 
 # Calculates total mass of the inventory
 def inventory_mass():

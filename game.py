@@ -73,8 +73,7 @@ def print_room_items(room: Room): #  TODO fix this innit
 def is_valid_exit(direction):
     return direction in player.get_current_room().exits
 
-
-def execute_go(direction):
+def execute_go(direction): # executes the go action
     if is_valid_exit(direction):
         new_pos = player.current_room_position[:]
 
@@ -127,6 +126,7 @@ def execute_go(direction):
             draw_stillshot(new_room.visual) # draw room visual
         except:
             draw_stillshot(room_placeholder) # room has no visuals to print, print generic visual
+        
         global in_danger
         if len(new_room.enemies) >= 1: # if there are enemies in the room put the player in danger
             in_danger = True 
@@ -162,7 +162,6 @@ def execute_take(item_id, amount=1):
             if player.get_current_room().items[item_id] < amount:
                 write(f"There are not {amount} many {item.name}s in the room.")
                 return
-
 
             if player.get_current_room().items[item_id] > amount:
                 player.get_current_room().items[item_id] -= amount
@@ -307,7 +306,7 @@ def resolve_danger(command):
         return 0
 
     if command[0] == "fight":
-        write("You ready yourself and approach the enemies\n")
+        write("You ready yourself and approach the enemies\nPress enter to continue...")
         return 2
 
     elif command[0] in ["flee", "escape"]:
@@ -316,7 +315,7 @@ def resolve_danger(command):
             draw_stillshot(player.get_current_room().visual) # draw room visual
         except:
             draw_stillshot(room_placeholder) # room has no visuals to print, print generic visual
-        write("It's not worth the risk, you head back before you are seen\n")
+        write("It's not worth the risk, you head back before you are seen\nPress enter to continue...")
         return 1
 
     else:
@@ -325,6 +324,8 @@ def resolve_danger(command):
 
 # Executes a player attack on a given enemy
 def execute_attack(enemy_id, enemy, weapon):
+    global combatprinter
+    
     print("ATTACK EXECUTED")
     if random.random() < weapon.crit_chance:
         damage = weapon.damage * weapon.crit_mult
@@ -338,12 +339,13 @@ def execute_attack(enemy_id, enemy, weapon):
     if enemy.health > 0:
         write(f"The {enemy.name} now has {enemy.health} health.\n")
     else:
+        draw_stillshot(combatprinter.stillstate)
         player.get_current_room().enemies.pop(enemy_id)
         write(f"The {enemy.name} has been killed!\n")
 
 def execute_combat(command): # returns if player is still in combat # executes combat
   
-    global combatprinter #### EXPERIMENTAL
+    global combatprinter
 
     if len(command) == 0:
         return True
@@ -363,7 +365,7 @@ def execute_combat(command): # returns if player is still in combat # executes c
         else:
             write("You failed to escape.\n", curses.color_pair(25))
 
-    elif command[0] == "attack":
+    elif command[0] in ["attack", "fight", "hit", "shoot", "kill"]:
                 
         # Checking correct number of prompts
         if len(command) < 3:
@@ -377,23 +379,31 @@ def execute_combat(command): # returns if player is still in combat # executes c
             write("\n Invalid target. Choose the enemy number of the enemy you wish to attack.\n\n")
             return True
         enemy = player.get_current_room().enemies[int(command[1])]
+
+        attacked_bool = False
             
         for item in player.inventory:
             if item.id == command[2] or item.name == command[2]:
                 if type(item) == items.Weapon:
-                    execute_attack(int(command[1]), enemy, item)
-                elif type(item) == items.Gun:
-                    execute_attack(int(command[1]), enemy, item)
-                    item.ammo -= 1
+                    if item == items.gun:
+                        if items.ammo in player.inventory:
+                            player.inventory[items.ammo] -= 1
+                            attacked_bool = True
+                            execute_attack(int(command[1]), enemy, item)
+                        else:
+                            write("You have no ammo!\n")
+                    else:
+                        attacked_bool = True
+                        execute_attack(int(command[1]), enemy, item)
                 else:
                     write("This item is not a weapon!\n\n", curses.color_pair(25))
                     return True
                   
-                combatprinter.general_update(attacker = "You", attacked = command[1]) #### EXPERIMENTAL
-                play_animation(combatprinter.animation, True) # EXPERIMENTAL. Hold main thread until animation finished
+                combatprinter.general_update(attacker = "You", attacked = command[1])
+                play_animation(combatprinter.animation, True) # Hold main thread until animation finished
 
-            else:
-                write("You do not have that item.\n\n")
+        if attacked_bool == False:
+            write("Couldn't attack\n")
     
     elif command[0] in ["use", "consume"]:
         execute_consume(command[1])
@@ -404,6 +414,12 @@ def execute_combat(command): # returns if player is still in combat # executes c
 
     if len(player.get_current_room().enemies) == 0:
         write("You won the battle!\n", curses.color_pair(7))
+        ui.art_pad.clear()
+        combatprinter = False
+        try:
+            draw_stillshot(player.get_current_room().visual) # draw room visual
+        except:
+            draw_stillshot(room_placeholder) # room has no visuals to print, print generic visual
         return False
 
 
@@ -428,6 +444,9 @@ def execute_combat(command): # returns if player is still in combat # executes c
         write("You died!\n",curses.color_pair(24))
         play_animation(cutscene_death_1, True)
         close()
+        close()
+        close()
+        close()
         pass
 
     write()
@@ -435,8 +454,8 @@ def execute_combat(command): # returns if player is still in combat # executes c
 
 
 def set_scene_combat(): # gives the player info on how the battle is progressing
-    global combatprinter ### EXPERIMENTAL
-    draw_stillshot(combatprinter.stillstate) ### EXPERIMENTAL
+    global combatprinter
+    draw_stillshot(combatprinter.stillstate)
 
     enemies_dict = player.get_current_room().enemies
     enemies = []
@@ -466,7 +485,7 @@ def set_scene_combat(): # gives the player info on how the battle is progressing
 
     weapons = []
     for item in player.inventory:
-        if type(item) is items.Weapon or type(item) is items.Gun:
+        if type(item) is items.Weapon:
             weapons.append(item.name)
 
     weapon_num = len(weapons)
@@ -606,11 +625,12 @@ overflow = 0
 ui_lock = threading.Lock()
 in_danger = False
 in_combat = False
-combatprinter = False ### EXPERIMENTAL
+combatprinter = False
 resize_window_event = threading.Event()
 
 # This is the entry point of our program
 def main():
+    
     global user_input
     global overflow
     global ui_lock
@@ -630,7 +650,7 @@ def main():
 
         # play intro animations
         play_animation(intro_1, True) # hold main thread unntil this animation stops playing
-        play_animation(intro_2)
+        play_animation(intro_2) # play animation on seperate thread
 
     except Exception as e:
         close()
@@ -663,11 +683,13 @@ def main():
 ╚╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╝
 """, curses.color_pair(24) | curses.A_BOLD)
     
+    #move down a line and print the intro text
     write()
     print_intro()
     
     try:
-
+        
+        #print menu
         menu()
 
         #main game loop
@@ -686,7 +708,7 @@ def main():
                     close()
                     return
 
-                case curses.KEY_BACKSPACE | 127:
+                case curses.KEY_BACKSPACE | 127: # delete last letter # "| 127" makes it work on mac
                     ui_lock.acquire()
 
                     y, x = ui.text_pad.getyx()  # get cursor position
@@ -705,33 +727,38 @@ def main():
 
                     ui_lock.release()
 
-                case curses.KEY_ENTER | 10:
+                case curses.KEY_ENTER | 10: # enter command
                     write_seperator() # turn seperator
 
-                    normalised_user_input = normalise_input(user_input)
+                    normalised_user_input = normalise_input(user_input) #  normalise user input
 
-                    if in_combat:
-                        if combatprinter == False: ### EXPERIMENTAL
-                            combatprinter = combat.Combatprinter() ### EXPERIMENTAL
+                    if in_combat: # combat main loop
+                        if combatprinter == False:
+                            combatprinter = combat.Combatprinter()
+
                         in_combat = execute_combat(normalised_user_input)
-                        combatprinter.general_update() ### EXPERIMENTAL
+
+                        if combatprinter != False:
+                            combatprinter.general_update()
                         if in_combat:
                             set_scene_combat()
                         else:
-                            combatprinter = False ### Assuming this is where combat ends. EXPERIMENTAL.
+                            combatprinter = False
                             menu()
-                    elif in_danger:
+                    elif in_danger: # resolve danger loop
                         resolution = resolve_danger(normalised_user_input)
                         if resolution == 0:  # danger unresolved
                             in_danger = True
                         elif resolution == 1:  # escaped from danger / fled back to last room
                             in_danger = False
+                            menu()
                         elif resolution == 2:  # combat started
                             in_danger = False
                             in_combat = True
 
+                    # default loop
                     elif in_combat == False and in_danger == False:
-                        combatprinter = False ### EXPERIMENTAL
+                        combatprinter = False
                         execute_command(normalised_user_input)
                         menu()
 

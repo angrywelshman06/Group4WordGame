@@ -69,7 +69,7 @@ zombie_soldier = {
     "name" : "zombie soldier",
     "description" : "DESCRIPTION",
     "health" : 80,
-    "base_damage" : 20,
+    "base_damage" : 13,
     "crit_chance" : 0.2,
     "crit_multiplier" : 2
 }
@@ -174,6 +174,7 @@ class Combatprinter():
         if to_delete:
             del self.creatures_dict[to_delete]
             del self.info_dict[to_delete]
+        self.stillstate = self.set_stillstate()
         
         ### Alters the info
         for i in self.creatures_dict:
@@ -182,22 +183,12 @@ class Combatprinter():
             creature = self.info_dict[i]
             creature.create_sprites(creature_zlevel = creature.zlevel, dx_change = creature.dx_change, dy_change = creature.dy_change, infosheet = True)
         
-            
-    # def get_current_room():
-        # return map.get_room(current_room_position[0], current_room_position[1])
-    
     def refresh_sprites(self): # sets the spritesheets back to their original state
         for i in self.creatures_dict:
             self.creatures_dict[i].set_original_spritesheet()
         # for i in self.info_dict: # WIP, UPDATES INFO AFTER EVERY ATTACK
             # self.info_dict[i]
         self.stillstate = self.set_stillstate()    
-    
-    def refresh_info(self, spritesheet, info):
-        pass
-        
-    def change_protag_sprites(self): #WIP. This will fire when the protag changes weapons.
-        pass
         
     def blank_out_frames(self, spritesheet_to_modify): # NEW
         for index, value in enumerate(spritesheet_to_modify):

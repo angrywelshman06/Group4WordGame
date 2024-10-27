@@ -112,7 +112,6 @@ bedroom_tutorial = {
 
     "items": {"paracetamol" : 2},
 
-
     "npcs" : [test_npc]
 
 }
