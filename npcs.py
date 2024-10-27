@@ -45,7 +45,7 @@ mechanic = {
     "lines" : ["Never thought I’d see another fresh person in here, hope you’re ok bro. I gave up trying to escape after my last screwdriver snapped, pretty sure you could still break into that car in the petrol station too - there’s enough petrol to get you out too just need a crowbar and another screwdriver… shame."]
 }
 business_man = {
-    "id" : "business man",
+    "id" : "business_man",
     "description": "A man in a bloodied suit looks at you, he is panting with sweat trailing down his forehead and tightly clutching his suitcase - with anticipation of you being another zombie in his way.",
     "name" : "Business man",
     "lines" : ["Oh god man, I thought you were a zombie! I’ve been running around looking for a way to escape - I suppose you’re looking for a way out too. I’ve seen some people flying a few times, pretty sure they’re using the skyscraper; however, I’m not sure if there are more parachutes left in here!"]
