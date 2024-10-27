@@ -1,6 +1,4 @@
 import random
-#from map import map_matrix
-#from map import map_matrix, starting_position, rooms
 
 class NPC:
     def __init__(self, npc_dict : {}):
@@ -11,9 +9,7 @@ class NPC:
         self.lines = npc_dict["lines"]
 
     def talk(self):
-        print()
-        print(f"{self.name}: {random.choice(self.lines)}")
-        print()
+        return f"{self.name}: {random.choice(self.lines)}"
 
 # Function to place NPCs
 

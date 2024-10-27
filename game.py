@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+import curses
+
 import enemies
 import items
 import npcs
@@ -43,10 +45,7 @@ install_requirements()
 def print_room_items(room: Room): #  TODO fix this innit
     # If there are no items, no output
     if len(room.items) == 0:
-        #write("\nroom supposedlyt has no tiems!!\n")
         return
-    
-    #write("\nprint room items called!\n")
 
     item_list = ""
     count = 0
@@ -68,28 +67,6 @@ def print_room_items(room: Room): #  TODO fix this innit
         count += 1
 
     write(f"\nThere is {item_list} here.\n", curses.color_pair(18))
-
-    write()
-
-
-# Prints information about the given room
-def print_room(room: Room):
-    write()
-    write(room.name.upper())
-    write()
-    write(room.description)
-    write()
-    print_room_items(room)  # Displays items in room
-
-    #if len(room.enemies) == 0:
-
-    # Print exits
-    if room.exits:
-        write("Exits: " + ", ".join(room.exits))
-    else:
-        write("No exits available seems you might be stuck. What a shame ;)\n")
-
-    
 
 
 # Checks if the exit is valid in the current room
@@ -144,14 +121,12 @@ def execute_go(direction):
             if npcs.randomly_placed_npcs[npc] == player.unique_rooms_visited:
                 player.get_current_room().npcs.append(npc)
 
-        print(f"You are going to {new_room.name}.")
         write(f"You are going to {new_room.name}.\n")
 
         try:
             draw_stillshot(new_room.visual) # draw room visual
         except:
             draw_stillshot(room_placeholder) # room has no visuals to print, print generic visual
-
         global in_danger
         if len(new_room.enemies) >= 1: # if there are enemies in the room put the player in danger
             in_danger = True 
@@ -168,7 +143,7 @@ def execute_consume(item_id): # consumes item in battle and regens health
                 break
 
             item.consume()
-            write(f"You consumed a {item.name}.\n")
+            write(f"You consumed a {item.name} and regained {item.healing} health!\n", curses.color_pair(7))
 
             player.inventory[item] -= 1
             if player.inventory[item] <= 0:
@@ -235,16 +210,12 @@ def execute_drop(item_id, amount=1):
 def execute_talk(npc_id):
     for npc in player.get_current_room().npcs:
         if npc.id == npc_id:
-            npc.talk()
+            write()
+            write(npc.talk(), curses.color_pair(25))
+            write("\n")
+            write()
             return
-    print("You cannot talk to this NPC.")
-
-def execute_talk(npc_id):
-    for npc in player.get_current_room().npcs:
-        if npc.id == npc_id:
-            npc.talk()
-            return
-    print("You cannot talk to this NPC.")
+    write("You cannot talk to this NPC.")
 
 
 def execute_command(command): # parse what needs to be executed based on command
@@ -260,10 +231,10 @@ def execute_command(command): # parse what needs to be executed based on command
     elif command[0] == "take":
         if len(command) > 1:
             if len(command) >= 3 and str(command[2]).isdigit():
-                execute_take(command[1], amount=int(command[2]));
+                execute_take(command[1], amount=int(command[2]))
                 return
             if len(command) >= 3 and str(command[2]).isdigit():
-                execute_take(command[1], amount=int(command[2]));
+                execute_take(command[1], amount=int(command[2]))
                 return
             execute_take(command[1])
         else:
@@ -281,18 +252,21 @@ def execute_command(command): # parse what needs to be executed based on command
         if len(command) > 1:
             execute_consume(command[1])
         else:
-            print("Consume what>")
+            write("Consume what>")
 
     elif command[0] in ["talk"]:
         if len(command) > 1:
             execute_talk(command[1])
         else:
-            print("Talk to who?")
+            write("Talk to who?")
 
     elif command[0] == "quit":
         write("Goodbye!\n")
         close()
         sys.exit()
+
+    elif command[0] == "escape" and player.get_current_room().can_escape():
+        print("Congratulations you have escaped the matrix, you are free from Cardiff and for you the game is over.")
 
     elif command[0] == "help":
         write("Commands: go [direction], take [item], drop [item], use [item], quit\n")
@@ -324,8 +298,11 @@ def execute_command(command): # parse what needs to be executed based on command
     else:
         write("This makes no sense, it appears as though the first word is not one of the designated command words..\nTry asking for 'HELP'\n", curses.A_BOLD)
 
-def resolve_danger(command): # when entering a room with enemies the player can choose to flee to the last room or to engage enemies
-    # 0 - combat unresolved # 1 - out of combat # 2 - in combat
+
+
+# when entering a room with enemies the player can choose to flee to the last room or to engage enemies
+# 0 - combat unresolved # 1 - out of combat # 2 - in combat
+def resolve_danger(command):
     if len(command) == 0:
         return 0
 
@@ -333,7 +310,7 @@ def resolve_danger(command): # when entering a room with enemies the player can 
         write("You ready yourself and approach the enemies\n")
         return 2
 
-    elif command[0] == "flee" or command[0] == "escape":
+    elif command[0] in ["flee", "escape"]:
         player.current_room_position = player.previous_room_position
         try:
             draw_stillshot(player.get_current_room().visual) # draw room visual
@@ -342,16 +319,13 @@ def resolve_danger(command): # when entering a room with enemies the player can 
         write("It's not worth the risk, you head back before you are seen\n")
         return 1
 
-    elif command[0] == "help" or command[0] == "what":
-        write("You have to choose FIGHT or to FLEE\n", curses.color_pair(25))
-        return 0
-
     else:
-        write("This makes no sense, it appears as though the first word is not one of the designated command words..\n", curses.color_pair(25))
-        write("You have to choose to FIGHT or to FLEE\n", curses.color_pair(25))
+        write("You have to choose to FIGHT or to FLEE\n")
         return 0
 
-def execute_attack(enemy_id, enemy, weapon): # attaks an enemy
+# Executes a player attack on a given enemy
+def execute_attack(enemy_id, enemy, weapon):
+    print("ATTACK EXECUTED")
     if random.random() < weapon.crit_chance:
         damage = weapon.damage * weapon.crit_mult
         write(f"You hit the {enemy.name} for critical damage and dealt {damage} damage.\n", curses.color_pair(24))
@@ -364,33 +338,14 @@ def execute_attack(enemy_id, enemy, weapon): # attaks an enemy
     if enemy.health > 0:
         write(f"The {enemy.name} now has {enemy.health} health.\n")
     else:
-        #player.get_current_room().enemies.pop(enemy_id)
-        player.get_current_room().enemies.remove(enemy_id)
+        player.get_current_room().enemies.pop(enemy_id)
         write(f"The {enemy.name} has been killed!\n")
 
-def execute_consume(item_id): # consumes an item
-    for item in player.inventory:
-        if item.id == item_id:
-            if type(item) != Consumable:
-                write("This item isn't consumable\n", curses.color_pair(25))
-                return
-
-            item.consume()
-            write(f"You consumed a {item.name} and regain {item.healing} health!\n", curses.color_pair(7))
-            player.inventory[item] -= 1
-            if player.inventory[item] <= 0:
-                player.inventory.pop(item)
-            return
-        
-    write("No such item in inventory\n", curses.color_pair(25))
-    return
-
 def execute_combat(command): # returns if player is still in combat # executes combat
-
     if len(command) == 0:
         return True
     
-    # player turn
+    # Player turn
     
     if command[0] in ["flee", "escape", "run"]:
         write("Attempting to flee\n")
@@ -414,50 +369,25 @@ def execute_combat(command): # returns if player is still in combat # executes c
             write("Or write HELP for the help menu\n")
             return True
 
-        target_index = -1
-        enemy_count = len(player.get_current_room().enemies)
-
-        # check target validity
-        if command[1] in ["1", "first", "1st"]:
-            target_index = 1
-            write("attaking first\n")
-        elif command[1] in ["2", "second", "2nd"]:
-            target_index = 2
-            if enemy_count < 2:
-                write("\nThere is only one enemy\n")
-                return True
-        elif command[1] in ["3", "third", "3rd"]:
-            target_index = 3
-            if enemy_count < 3:
-                write("\nThere are only 2 enemies\n")
-                return True
-        else:
-            write("\nInvalid target, to choose an enemy write 'fisrt' or '1' to select the first enemy, same for every other enemy\n\n", curses.color_pair(25))
+        # Checks target validity
+        if int(command[1]) not in player.get_current_room().enemies:
+            write("\n Invalid target. Choose the enemy number of the enemy you wish to attack.\n\n")
             return True
+        enemy = player.get_current_room().enemies[int(command[1])]
             
         for item in player.inventory:
             if item.id == command[2] or item.name == command[2]:
                 if type(item) == items.Weapon:
-                    count = 1
-                    for e in player.get_current_room().enemies.values():
-                        if count == target_index:
-                            execute_attack(command[1], e, item)
-                            break
-                        else:
-                            count += 1
+                    execute_attack(int(command[1]), enemy, item)
                 elif type(item) == items.Gun:
-                    count = 1
-                    for e in player.get_current_room().enemies.values():
-                        if count == target_index:
-                            execute_attack(command[1], e, item)
-                            break
-                        else:
-                            count += 1
-
+                    execute_attack(int(command[1]), enemy, item)
                     item.ammo -= 1
                 else:
                     write("This item is not a weapon!\n\n", curses.color_pair(25))
                     return True
+
+            else:
+                write("You do not have that item.\n\n")
     
     elif command[0] in ["use", "consume"]:
         execute_consume(command[1])
@@ -465,12 +395,13 @@ def execute_combat(command): # returns if player is still in combat # executes c
     else:
         write("Thats not a valid action\n You can FIGHT, FLEE or USE\n\n")
         return True
-        
-    # enemy turn
 
     if len(player.get_current_room().enemies) == 0:
         write("You won the battle!\n", curses.color_pair(7))
         return False
+
+
+    # Enemy turn
 
     enemy_key = random.choice([*player.get_current_room().enemies.keys()]) # choose random enemy to attack
     enemy = player.get_current_room().enemies[enemy_key]
@@ -574,20 +505,47 @@ def print_intro(): # prints the intro text, makes all the sound effects italic a
     write("\n – Transmission cuts.\n",curses.color_pair(25))
 
 
-def set_scene(): # gives the player info on the current room and thier charecter
-    print_room(player.get_current_room())
+def menu(): # gives the player info on the current room and their character
 
-    inv_items = player.get_inventory_items()
-    if inv_items != -1:
-        write("\n" + inv_items + "\n")
+    write(player.get_current_room().name.upper())
+    write()
+    write(player.get_current_room().description)
+    write()
 
-    write(f"Current Inventory Mass: {player.inventory_mass()}g\n")
+    if len(player.get_current_room().enemies) >= 1:
+        write(
+            f"There are {len(player.get_current_room().enemies)} enemies in this room. Choose whether to FIGHT to continue or FLEE to the previous room.")
+    else:
+        if player.get_current_room().exits:
+            write(f"You can GO: {", ".join(player.get_current_room().exits)}\n\n")
+        else:
+            write("No exits available seems you might be stuck. What a shame ;)\n\n")
+            write()
+
+        if len(player.get_current_room().items) >= 1:
+            write("You can TAKE any items in this room.")
+            print_room_items(player.get_current_room())  # Displays items in room
+            write()
+
+        if len(player.inventory) >= 1:
+            write("You can DROP any of the items in your inventory.\n")
+            write(player.get_inventory_items())
+            write(f"\nCurrent Inventory Mass: {player.inventory_mass()}g")
+            write()
+
+        if len(player.get_current_room().npcs) >= 1:
+            for npc in player.get_current_room().npcs:
+                write(f"\nYou can TALK to {npc.id}.")
+            write()
+
+        if player.get_current_room().can_escape():
+            write("You can ESCAPE!")
 
     write("\n")
 
 def write(msg = "\n", arg=None): # writes text to text pad
     ui_lock.acquire() # wait until ui can be modified
-    if arg == None:
+    if arg is None:
         ui.text_pad.addstr(msg) # add string to text pad
     else:
         try:
@@ -622,7 +580,7 @@ def play_animation(animation, hold=False): # this function creates a thread to p
             anim_thread.join() # if hold is true wait for animation to finish
             curses.flushinp() # flush any input from when animation was held
     except Exception as e:
-        write(f"Exception occured in play_animation:\n{e}\n")
+        write(f"Exception occurred in play_animation:\n{e}\n")
         write(traceback.format_exc())
 
 def draw_stillshot(stillshot): # prints a still shot to the art pad
@@ -632,7 +590,7 @@ def draw_stillshot(stillshot): # prints a still shot to the art pad
         ui.art_pad.clear()
         print_stillshot_curses_pad(ui.art_pad, art_pad_args, ui_lock, *stillshot)
     except Exception as e:
-        write(f"Exception occured in draw_stillshot\n{e}\n")
+        write(f"Exception occurred in draw_stillshot\n{e}\n")
         write(traceback.format_exc())
     
 # global variables
@@ -701,92 +659,91 @@ def main():
     
     try:
 
-        set_scene()
+        menu()
 
         #main game loop
         while True:
             cmd = ui.text_pad.getch() # wair for the user to press a key
 
-            if cmd == curses.KEY_DOWN: # scroll down
-                ui.text_pad_pos += 1
-                
-            elif cmd == curses.KEY_UP: # scroll up
-                ui.text_pad_pos -= 1
-                
-            elif cmd == 27: # escape key # stop program
-                ui_lock.acquire()
-                close()
-                return
-            
-            elif cmd == curses.KEY_BACKSPACE or cmd == 127: # backspace # delete last char
-                ui_lock.acquire()
+            match cmd:
 
-                y, x = ui.text_pad.getyx() # get cursor position
+                # Scrolling
+                case curses.KEY_DOWN: ui.text_pad_pos += 1
+                case curses.KEY_UP: ui.text_pad_pos -= 1
 
-                # x is 0 when at the left edge of the screen
-                if x != 0: # delete char normally
-                    ui.text_pad.move(y, x-1)
-                    ui.text_pad.delch()
-                    user_input = user_input[:-1]
-                elif overflow > 0: # if line overflowed move up a line and delete
-                    y_2, x_2 = ui.text_pad.getmaxyx()
-                    ui.text_pad.move(y-1, x_2-1)
-                    ui.text_pad.delch()
-                    user_input = user_input[:-1]
-                    overflow -= 1
+                # Stopping program (ESC key)
+                case 27:
+                    ui_lock.acquire()
+                    close()
+                    return
 
-                ui_lock.release()
+                case curses.KEY_BACKSPACE | 127:
+                    ui_lock.acquire()
 
-            elif cmd == curses.KEY_RESIZE:
-                ui_lock.acquire()
-                resize_window() # update the x, y variables of ui
-                resize_window_event.set() # set the resize window event so that animation threds know that the window was resized and can update pad args
-                ui_lock.release()
+                    y, x = ui.text_pad.getyx()  # get cursor position
 
-            elif cmd == 10 or cmd == curses.KEY_ENTER: # enter key
-                write_seperator() # turn seperator
+                    # x is 0 when at the left edge of the screen
+                    if x != 0:  # delete char normally
+                        ui.text_pad.move(y, x - 1)
+                        ui.text_pad.delch()
+                        user_input = user_input[:-1]
+                    elif overflow > 0:  # if line overflowed move up a line and delete
+                        y_2, x_2 = ui.text_pad.getmaxyx()
+                        ui.text_pad.move(y - 1, x_2 - 1)
+                        ui.text_pad.delch()
+                        user_input = user_input[:-1]
+                        overflow -= 1
 
-                normalised_user_input = normalise_input(user_input)
+                    ui_lock.release()
 
-                if in_combat == True:
-                    in_combat = execute_combat(normalised_user_input)
+                case curses.KEY_ENTER | 10:
+                    write_seperator() # turn seperator
+
+                    normalised_user_input = normalise_input(user_input)
+
                     if in_combat:
-                        set_scene_combat()
-                    else:
-                        set_scene()
-                        
-                elif in_danger == True:
-                    resolution = resolve_danger(normalised_user_input)
-                    if resolution == 0: # danger unresolved
-                       in_danger = True
-                    elif resolution == 1: # escaped from danger / fled back to last room
-                        in_danger = False
-                    elif resolution == 2: # combat started
-                        in_danger = False
-                        in_combat = True
-                        play_animation(fight_cutscene)
-                    
-                elif in_combat == False and in_danger == False:
-                    execute_command(normalised_user_input)
-                    set_scene()
+                        in_combat = execute_combat(normalised_user_input)
+                        if in_combat:
+                            set_scene_combat()
+                        else:
+                            menu()
+                    elif in_danger:
+                        resolution = resolve_danger(normalised_user_input)
+                        if resolution == 0:  # danger unresolved
+                            in_danger = True
+                        elif resolution == 1:  # escaped from danger / fled back to last room
+                            in_danger = False
+                        elif resolution == 2:  # combat started
+                            in_danger = False
+                            in_combat = True
 
-                user_input = ""
-                overflow = 0
+                    elif in_combat == False and in_danger == False:
+                        execute_command(normalised_user_input)
+                        menu()
 
-            else: # write a letter to text_pad
-                ui_lock.acquire()
+                    user_input = ""
+                    overflow = 0
+                  
+                case curses.KEY_RESIZE:
+                    ui_lock.acquire()
+                    resize_window() # update the x, y variables of ui
+                    resize_window_event.set() # set the resize window event so that animation threds know that the window was resized and can update pad args
+                    ui_lock.release()
 
-                y, x = ui.text_pad.getyx()
+                case _:
+                    ui_lock.acquire()
 
-                ui.text_pad.addch(cmd)
-                user_input += chr(cmd)
-                
-                y_2, x_2 = ui.text_pad.getyx()
+                    y, x = ui.text_pad.getyx()
 
-                if y != y_2: # check if after adding char the cursor goes down a line
-                    overflow += 1 # if so increment the overflow
+                    ui.text_pad.addch(cmd)
+                    user_input += chr(cmd)
 
-                ui_lock.release()
+                    y_2, x_2 = ui.text_pad.getyx()
+
+                    if y != y_2:  # check if after adding char the cursor goes down a line
+                        overflow += 1  # if so increment the overflow
+
+                    ui_lock.release()
 
             #refresh the pads 
             ui_lock.acquire()
@@ -799,7 +756,7 @@ def main():
 
     except Exception as e: # if an error occurs return terminal to normal 
         close()
-        print("exception occured\n")
+        print("exception occurred\n")
         print(e)
         print()
         print(traceback.format_exc())
