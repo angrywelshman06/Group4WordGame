@@ -1,5 +1,4 @@
 import random
-import enemies
 import npcs
 import rooms
 #from enemies import *

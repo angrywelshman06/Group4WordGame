@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 import curses
 
-import enemies
 import items
 import npcs
 from colorama import Fore

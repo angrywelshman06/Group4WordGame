@@ -1,38 +1,6 @@
 import os
 import curses
 
-# Here so colors can be set
-curses.initscr()
-
-# Run this in the mainloop of the main file
-def curses_setcolors():
-    curses.init_pair(1, 0, 243), # GREY
-    curses.init_pair(2, 0, 136), # WOOD MATERIALS 1
-    curses.init_pair(3, 0, 240), # DARK ROOM
-    curses.init_pair(4, 0, 34), # GREEN 1
-    curses.init_pair(5, 0, 64), # GREY 2 
-    curses.init_pair(6, 178, 88), # FIRE
-    curses.init_pair(7, 70, 0), # ZOMBIE GREEN
-    curses.init_pair(8, 196, 52), # RED
-    curses.init_pair(9, 245, 0), # HELICOPTER GREY
-    curses.init_pair(10, 0, 249), # BUILDINGS GREY
-    curses.init_pair(11, 0, 33), # PROTAG_BLUE
-    curses.init_pair(12, 15, 0), # PILLOW WHITE
-    curses.init_pair(13, 33, 33), # PROTAG_BLUE2
-    curses.init_pair(14, 178,33), # ENEMY INFO PAIR
-    curses.init_pair(15, 0, 54), # PURPLE
-    curses.init_pair(16, 0, 255), # WHITE
-    curses.init_pair(17, 0, 109), # BLUE HUE
-    curses.init_pair(18, 0, 105), # SLATE BLUE
-    curses.init_pair(19, 88, 88), # DARK RED
-    curses.init_pair(20, 0, 7), # SILVER
-    curses.init_pair(21, 0, 184), # ORANGE
-    curses.init_pair(22, 33, 33), # PROTAG_BLUE 2
-    curses.init_pair(23, 240, 240), # GREY 3
-    curses.init_pair(24, 196, 0), # red text
-    curses.init_pair(25, 11, 0), # yellow text
-    curses.init_pair(50, 0, 196), # RED EXPLODING
-
 
 """ 
 Spritesheets are objects that contain the data to be used when printing animations or still shots on the screen. 
