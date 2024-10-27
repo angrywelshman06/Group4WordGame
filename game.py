@@ -715,6 +715,12 @@ def main():
         while True:
             cmd = ui.text_pad.getch() # wair for the user to press a key
 
+            ui.art_pad.addstr(str(cmd))
+            ui.art_pad.addstr("\n")
+            
+            if cmd == ord('-') or cmd == ord('='):
+                ui.art_pad.addstr("hit!\n")
+
             match cmd:
 
                 # Scrolling

@@ -68,7 +68,7 @@ morphine = {
 }
 
 gun = {
-    "id" : "gun",
+    "id" : "shotgun",
     "name" : "shotgun",
     "description" : "DESCRIPTION",
     "mass" : 3500,
@@ -165,6 +165,7 @@ starter_knife = {
     "id" : "knife",
     "name" : "knife",
     "description" : "DESCRIPTION",
+    "type" : Weapon,
     "mass" : 240,
     "damage" : 20,
     "crit_chance" : 0.2,
