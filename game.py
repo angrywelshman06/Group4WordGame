@@ -265,6 +265,9 @@ def execute_command(command): # parse what needs to be executed based on command
         close()
         sys.exit()
 
+    elif command[0] == "escape" and player.get_current_room().can_escape():
+        print("Congratulations you have escaped the matrix, you are free from Cardiff and for you the game is over.")
+
     elif command[0] == "help":
         write("Commands: go [direction], take [item], drop [item], use [item], quit\n")
         write("up arrow : scroll up, down arrow : scroll down, escape key : quit\n")
@@ -730,83 +733,6 @@ def main():
                         overflow += 1  # if so increment the overflow
 
                     ui_lock.release()
-
-
-
-
-
-            # if cmd == curses.KEY_DOWN: # scroll down
-            #     ui.text_pad_pos += 1
-            #
-            # elif cmd == curses.KEY_UP: # scroll up
-            #     ui.text_pad_pos -= 1
-            #
-            # elif cmd == 27: # escape key # stop program
-            #     ui_lock.acquire()
-            #     close()
-            #     return
-            #
-            # elif cmd == curses.KEY_BACKSPACE or cmd == 127: # backspace # delete last char
-            #     ui_lock.acquire()
-            #
-            #     y, x = ui.text_pad.getyx() # get cursor position
-            #
-            #     # x is 0 when at the left edge of the screen
-            #     if x != 0: # delete char normally
-            #         ui.text_pad.move(y, x-1)
-            #         ui.text_pad.delch()
-            #         user_input = user_input[:-1]
-            #     elif overflow > 0: # if line overflowed move up a line and delete
-            #         y_2, x_2 = ui.text_pad.getmaxyx()
-            #         ui.text_pad.move(y-1, x_2-1)
-            #         ui.text_pad.delch()
-            #         user_input = user_input[:-1]
-            #         overflow -= 1
-            #
-            #     ui_lock.release()
-
-            # elif cmd == 10 or cmd == curses.KEY_ENTER: # enter key
-            #     write()
-            #
-            #     normalised_user_input = normalise_input(user_input)
-            #
-            #     if in_combat == True:
-            #         in_combat = execute_combat(normalised_user_input)
-            #         if in_combat:
-            #             set_scene_combat()
-            #         else:
-            #             menu()
-            #     elif in_danger == True:
-            #         resolution = resolve_danger(normalised_user_input)
-            #         if resolution == 0: # danger unresolved
-            #            in_danger = True
-            #         elif resolution == 1: # escaped from danger / fled back to last room
-            #             in_danger = False
-            #         elif resolution == 2: # combat started
-            #             in_danger = False
-            #             in_combat = True
-            #
-            #     elif in_combat == False and in_danger == False:
-            #         execute_command(normalised_user_input)
-            #         menu()
-            #
-            #     user_input = ""
-            #     overflow = 0
-            #
-            # else: # write a letter to text_pad
-            #     ui_lock.acquire()
-            #
-            #     y, x = ui.text_pad.getyx()
-            #
-            #     ui.text_pad.addch(cmd)
-            #     user_input += chr(cmd)
-            #
-            #     y_2, x_2 = ui.text_pad.getyx()
-            #
-            #     if y != y_2: # check if after adding char the cursor goes down a line
-            #         overflow += 1 # if so increment the overflow
-            #
-            #     ui_lock.release()
 
             #refresh the pads 
             ui_lock.acquire()
