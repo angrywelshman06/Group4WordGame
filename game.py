@@ -156,9 +156,7 @@ def execute_take(item_id, amount=1):
 
     for item_dict_id in player.get_current_room().items.keys():
         if item_dict_id == item_id:
-
             item = items.dict_to_item(get_item_dict_from_list(item_dict_id))
-
             if player.get_current_room().items[item_id] < amount:
                 write(f"There are not {amount} many {item.name}s in the room.")
                 return
@@ -167,12 +165,11 @@ def execute_take(item_id, amount=1):
                 player.get_current_room().items[item_id] -= amount
             else:
                 player.get_current_room().items.pop(item_id)
-                #player.get_current_room().items.
 
             found = False
-            for item in player.inventory.keys():
-                if item.id == item_id:
-                    player.inventory[item] += amount
+            for new_item in player.inventory.keys():
+                if new_item.id == item_id:
+                    player.inventory[new_item] += amount
                     found = True
                     break
 
