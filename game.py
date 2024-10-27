@@ -335,6 +335,10 @@ def resolve_danger(command): # when entering a room with enemies the player can 
 
     elif command[0] == "flee" or command[0] == "escape":
         player.current_room_position = player.previous_room_position
+        try:
+            draw_stillshot(player.get_current_room().visual) # draw room visual
+        except:
+            draw_stillshot(room_placeholder) # room has no visuals to print, print generic visual
         write("It's not worth the risk, you head back before you are seen\n")
         return 1
 
@@ -393,6 +397,10 @@ def execute_combat(command): # returns if player is still in combat # executes c
         if random.random() < 0.7:
             player.current_room_position = player.previous_room_position
             write("You manage to escape the battle.\n")
+            try:
+                draw_stillshot(player.get_current_room().visual) # draw room visual
+            except:
+                draw_stillshot(room_placeholder) # room has no visuals to print, print generic visual
             return False
         else:
             write("You failed to escape.\n")
@@ -490,16 +498,51 @@ def execute_combat(command): # returns if player is still in combat # executes c
 
 
 def set_scene_combat(): # gives the player info on how the battle is progressing
-    enemies = player.get_current_room().enemies
+    enemies_dict = player.get_current_room().enemies
+    enemies = []
 
-    write(f"There are {len(enemies)} enemies left. You see a ")
-    for enemy_id in enemies:
-        enemy = enemies[enemy_id]
-        write(f"{enemy.name}, ")
+    for enemy_id in enemies_dict:
+        enemies.append(enemies_dict[enemy_id].name)
+
+    write(f"You spot {len(enemies)} enemies. ")
+    if len(enemies) == 0:
+        write("no enemies (this prolly means theres an error, a user shouldnt see this)\n")
+    if len(enemies) == 1:
+        write(f"You see a {enemies[0]}.\n")
+    else:
+        write("You see a ")
+        for i in range(0, len(enemies)):
+            write(f"{enemies[i]} ")
+            if i == len(enemies)-2:
+                write(f"and {enemies[i+1]}.\n")
+                break
+            else:
+                write(", ")
     
     write(f"\nYou have {player.health} health left.\n")
-    write("ATTACK <which enemy> <weapon>      or      ")
-    write("CONSUME <item>      or      ")
+
+    weapons = []
+    for item in player.inventory:
+        if type(item) is items.Weapon or type(item) is items.Gun:
+            weapons.append(item.name)
+
+    weapon_num = len(weapons)
+    if weapon_num == 0:
+        write("You have no weapons to fight with.\n")
+    elif weapon_num == 1:
+        write(f"You have a {weapons[0]}.\n")
+    else:
+        write("You have a ")
+        for i in range(0,weapon_num):
+            write(f"{weapons[i]} ")
+            if i == weapon_num-2:
+                write(f"and {weapons[i+1]}.\n")
+                break
+            else:
+                write(f", ")
+
+    write("ATTACK <which enemy> <weapon>   or   ")
+    write("CONSUME <item>   or   ")
     write("FLEE\n\n")
 
 def print_intro(): # prints the intro text, makes all the sound effects italic and blinking
@@ -560,6 +603,7 @@ def write(msg = "\n", arg=None): # writes text to text pad
 def play_animation(animation, hold=False): # this function creates a thread to play the given animation
     # animation has to be a valid animation from ani_sprites.py
     art_pad_args = [0,0,0,0, ui.y-1, int(ui.x/2)-1]
+    ui.art_pad.clear()
     try:
         anim_thread = Thread(target=run_animation_curses_pad, args=[ui.art_pad, art_pad_args, ui_lock, resize_window_event, *animation])
         anim_thread.start()
@@ -708,6 +752,7 @@ def main():
                     elif resolution == 2: # combat started
                         in_danger = False
                         in_combat = True
+                        play_animation(fight_cutscene)
                     
                 elif in_combat == False and in_danger == False:
                     execute_command(normalised_user_input)
