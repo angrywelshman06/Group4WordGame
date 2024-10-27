@@ -20,7 +20,7 @@ from gameparser import *
 from map import get_room, Room, generate_map
 import combat
 
-# system shit innit
+# threading
 import threading
 from threading import Thread, Lock, Event
 import subprocess
@@ -28,6 +28,9 @@ import sys
 import traceback
 import random
 
+#Full Screen
+import keyboard
+keyboard.press('f11') 
 
 
 def install_requirements():
