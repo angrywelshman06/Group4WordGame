@@ -69,7 +69,7 @@ gun = {
     "description" : "DESCRIPTION",
     "mass" : 3500,
     "type": Weapon,
-    "damage" : 10,
+    "damage" : 35,
     "crit_chance" : 0.4,
     "crit_multiplier" : 1.5
 }
@@ -114,7 +114,7 @@ crowbar = {
     "id" : "crowbar",
     "name" : "crowbar",
     "description" : "DESCRIPTION",
-    "mass" : 45000
+    "mass" : 4500
 }
 
 screwdriver = {
@@ -129,7 +129,7 @@ starter_knife = {
     "name" : "knife",
     "description" : "DESCRIPTION",
     "mass" : 240,
-    "damage" : 5,
+    "damage" : 20,
     "crit_chance" : 0.2,
     "crit_multiplier" : 2
 }
@@ -141,7 +141,7 @@ machete = {
     "mass" : 250,
 
     "type" : Weapon,
-    "damage" : 10,
+    "damage" : 25,
     "crit_chance" : 0.4,
     "crit_multiplier" : 2
 }
@@ -150,7 +150,7 @@ grappling_hook = {
     "id": "grappling_hook",
     "name": "grappling hook",
     "description": "DESCRIPTION",
-    "mass": 1600
+    "mass": 5000
 }
 
 ammo = {
@@ -165,7 +165,7 @@ bat = {
     "name" : "baseball bat",
     "description" : "DESCRIPTION",
     "type": Weapon,
-    "damage" : 20,
+    "damage" : 15,
     "crit_chance": 0.1,
     "crit_mult": 2,
     "mass": 1500

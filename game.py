@@ -637,7 +637,7 @@ def main():
 
         # play intro animations
         play_animation(intro_1, True) # hold main thread unntil this animation stops playing
-        play_animation(intro_2)
+        play_animation(intro_2) # play animation on seperate thread
 
     except Exception as e:
         close()
@@ -670,11 +670,13 @@ def main():
 ╚╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╝
 """, curses.color_pair(24) | curses.A_BOLD)
     
+    #move down a line and print the intro text
     write()
     print_intro()
     
     try:
-
+        
+        #print menu
         menu()
 
         #main game loop
@@ -693,7 +695,7 @@ def main():
                     close()
                     return
 
-                case curses.KEY_BACKSPACE | 127:
+                case curses.KEY_BACKSPACE | 127: # delete last letter # "| 127" makes it work on mac
                     ui_lock.acquire()
 
                     y, x = ui.text_pad.getyx()  # get cursor position
@@ -712,23 +714,23 @@ def main():
 
                     ui_lock.release()
 
-                case curses.KEY_ENTER | 10:
+                case curses.KEY_ENTER | 10: # enter command
                     write_seperator() # turn seperator
 
-                    normalised_user_input = normalise_input(user_input)
+                    normalised_user_input = normalise_input(user_input) #  normalise user input
 
-                    if in_combat:
-                        if combatprinter == False: ### EXPERIMENTAL
-                            combatprinter = combat.Combatprinter() ### EXPERIMENTAL
+                    if in_combat: # combat main loop
+                        if combatprinter == False:
+                            combatprinter = combat.Combatprinter()
                         in_combat = execute_combat(normalised_user_input)
                         if combatprinter != False:
-                            combatprinter.general_update() ### EXPERIMENTAL
+                            combatprinter.general_update()
                         if in_combat:
                             set_scene_combat()
                         else:
-                            combatprinter = False ### Assuming this is where combat ends. EXPERIMENTAL.
+                            combatprinter = False
                             menu()
-                    elif in_danger:
+                    elif in_danger: # resolve danger loop
                         resolution = resolve_danger(normalised_user_input)
                         if resolution == 0:  # danger unresolved
                             in_danger = True
@@ -738,8 +740,9 @@ def main():
                             in_danger = False
                             in_combat = True
 
+                    # default loop
                     elif in_combat == False and in_danger == False:
-                        combatprinter = False ### EXPERIMENTAL
+                        combatprinter = False
                         execute_command(normalised_user_input)
                         menu()
 
