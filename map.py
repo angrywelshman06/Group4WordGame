@@ -90,11 +90,20 @@ def generate_map():
             y_coord = random.randint(0, 9)
             if map_matrix[x_coord][y_coord] is None and sr['name'] not in used_rooms:
                 room = Room(sr, (x_coord, y_coord), visual_in=sr["visual"])
-                #TODO add enemies to special rooms ????
                 map_matrix[x_coord][y_coord] = room
-            if map_matrix[y_coord][x_coord] is None and sr['name'] not in used_rooms:
-                room = Room(sr, (x_coord, y_coord), visual_in=sr["visual"])
-                map_matrix[y_coord][x_coord] = room
+
+                if random.random() <= 1:
+                    for num in range(random.randint(1, 3)):
+                        
+                        chance = random.random()
+                        level = 1
+                        if chance < 0.2:
+                            level = 3
+                        elif chance < 0.5:
+                            level = 2
+
+                        room.enemies[num+1] = Creature(random.choice(all_enemies), level=level)
+            
                 used_rooms.add(sr['name'])
                 break
             attempts += 1
@@ -136,7 +145,6 @@ def generate_map():
                             level = 2
 
                         room.enemies[num+1] = Creature(random.choice(all_enemies), level=level)
-
 
                 map_matrix[y][x] = room
 
