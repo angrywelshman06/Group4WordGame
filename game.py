@@ -707,7 +707,6 @@ def main():
 
                 case curses.KEY_ENTER | 10:
                     write_seperator() # turn seperator
-                    ui.text_pad_pos += 10
 
                     normalised_user_input = normalise_input(user_input)
 
