@@ -102,7 +102,7 @@ def execute_go(direction): # executes the go action
         if new_room is None:
             write("CONGRATULATIONS YOU’VE ESCAPED CARDIFF! By going beyond the surrounding wall you have reached the safe haven, a span of gorgeous green land carefully tendered too by the remaining few. Although danger still remains within the city, signs of rebuilding life are slowly developing once again around you\n")
             close()
-            #sys.exit()
+            sys.exit()
 
         # Ensure the new room has an exit back to the current room
         opposite_direction = {"north": "south", "south": "north", "east": "west", "west": "east"}
@@ -155,9 +155,7 @@ def execute_take(item_id, amount=1):
 
     for item_dict_id in player.get_current_room().items.keys():
         if item_dict_id == item_id:
-
             item = items.dict_to_item(get_item_dict_from_list(item_dict_id))
-
             if player.get_current_room().items[item_id] < amount:
                 write(f"There are not {amount} many {item.name}s in the room.")
                 return
@@ -166,12 +164,11 @@ def execute_take(item_id, amount=1):
                 player.get_current_room().items[item_id] -= amount
             else:
                 player.get_current_room().items.pop(item_id)
-                #player.get_current_room().items.
 
             found = False
-            for item in player.inventory.keys():
-                if item.id == item_id:
-                    player.inventory[item] += amount
+            for new_item in player.inventory.keys():
+                if new_item.id == item_id:
+                    player.inventory[new_item] += amount
                     found = True
                     break
 
@@ -265,6 +262,8 @@ def execute_command(command): # parse what needs to be executed based on command
 
     elif command[0] == "escape" and player.get_current_room().can_escape():
         print("Congratulations you have escaped the matrix, you are free from Cardiff and for you the game is over.")
+        close()
+        sys.exit()
 
     elif command[0] == "help":
         write("Commands: go [direction], take [item], drop [item], use [item], quit\n")
@@ -446,7 +445,7 @@ def execute_combat(command): # returns if player is still in combat # executes c
         close()
         close()
         close()
-        pass
+        sys.exit()
 
     write()
     return True
