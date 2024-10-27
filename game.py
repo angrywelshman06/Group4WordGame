@@ -471,7 +471,7 @@ def set_scene_combat(): # gives the player info on how the battle is progressing
 
     weapons = []
     for item in player.inventory:
-        if type(item) is items.Weapon or type(item) is items.Gun:
+        if type(item) is items.Weapon:
             weapons.append(item.name)
 
     weapon_num = len(weapons)
