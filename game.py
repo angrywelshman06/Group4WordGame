@@ -562,7 +562,7 @@ def menu(): # gives the player info on the current room and their character
 
     if len(player.get_current_room().enemies) == 0:
         if player.get_current_room().exits:
-            write(f"You can GO: {", ".join(player.get_current_room().exits)}\n\n")
+            write(f"You can GO: {', '.join(player.get_current_room().exits)}\n\n")
         else:
             write("No exits available seems you might be stuck. What a shame ;)\n\n")
             write()
