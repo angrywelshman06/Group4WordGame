@@ -365,7 +365,7 @@ def execute_combat(command): # returns if player is still in combat # executes c
         else:
             write("You failed to escape.\n", curses.color_pair(25))
 
-    elif command[0] == "attack":
+    elif command[0] in ["attack", "fight", "hit", "shoot", "kill"]:
                 
         # Checking correct number of prompts
         if len(command) < 3:
@@ -380,7 +380,7 @@ def execute_combat(command): # returns if player is still in combat # executes c
             return True
         enemy = player.get_current_room().enemies[int(command[1])]
 
-        attacked = False
+        attacked_bool = False
             
         for item in player.inventory:
             if item.id == command[2] or item.name == command[2]:
@@ -388,12 +388,12 @@ def execute_combat(command): # returns if player is still in combat # executes c
                     if item == items.gun:
                         if items.ammo in player.inventory:
                             player.inventory[items.ammo] -= 1
-                            attacked = True
+                            attacked_bool = True
                             execute_attack(int(command[1]), enemy, item)
                         else:
                             write("You have no ammo!\n")
                     else:
-                        attacked = True
+                        attacked_bool = True
                         execute_attack(int(command[1]), enemy, item)
                 else:
                     write("This item is not a weapon!\n\n", curses.color_pair(25))
@@ -402,8 +402,8 @@ def execute_combat(command): # returns if player is still in combat # executes c
                 combatprinter.general_update(attacker = "You", attacked = command[1])
                 play_animation(combatprinter.animation, True) # Hold main thread until animation finished
 
-    if attacked == False:
-        write("Couldn't attack\n")
+        if attacked_bool == False:
+            write("Couldn't attack\n")
     
     elif command[0] in ["use", "consume"]:
         execute_consume(command[1])
