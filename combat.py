@@ -247,9 +247,9 @@ class Combatprinter():
     
     def general_update(self, attacker = 0, attacked = 0):
         self.update_infosheet()
-        if attacker == "You":
-            self.set_new_sprites(attacker,attacked) # "You", "1"/"2"....
-            return
+        # if attacker == "You":
+            # self.set_new_sprites(attacker,attacked) # "You", "1"/"2"....
+            # return
         if attacker != 0:
             self.set_new_sprites(attacker,attacked) # "1"/"2"...., "You"
             

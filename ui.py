@@ -44,7 +44,7 @@ def init_screen(): # initialise the screen
 def resize_window():
     global y
     global x
-    
+
     y, x = stdscreen.getmaxyx()
     
 

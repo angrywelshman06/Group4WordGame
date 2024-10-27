@@ -33,7 +33,7 @@ def run_animation_curses(win, *args): # Runs the animation, the parameters are t
         print_frame_curses(framelist,win,args)
         win.move(0,0) # Moves printing cursor back to position 0,0
         win.refresh()
-        time.sleep(0.00001) # Frame rate of the animation
+        time.sleep(0.05) # Frame rate of the animation
 
 def run_animation_curses_pad(win, pad_args, ui_lock, resize_event: threading.Event,*args): #First arg should be edge/bg.
     list_framelists = preliminary_adjustments(args) # Duplicates final frames if needed.
@@ -46,7 +46,7 @@ def run_animation_curses_pad(win, pad_args, ui_lock, resize_event: threading.Eve
         win.move(0,0)
         win.refresh(pad_args[0], pad_args[1], pad_args[2], pad_args[3], pad_args[4], pad_args[5])
         ui_lock.release()
-        time.sleep(0.00001)
+        time.sleep(0.05)
         
 def print_stillshot_curses(framenumlist,win,*args):
     list_framelists = preliminary_adjustments(args)
