@@ -44,7 +44,7 @@ paracetamol = {
     "description": "DESCRIPTION",
     "mass": 100,
 
-    "spawn_chance": 0.03,
+    "spawn_chance": 0.23,
     "spawn_quantity" : [1, 5],
 
     "type": Consumable,
@@ -59,7 +59,7 @@ morphine = {
     "name": "morphine",
     "description": "DESCRIPTION",
 
-    "spawn_chance": 0.03,
+    "spawn_chance": 0.23,
     "spawn_quantity" : [1, 2],
 
     "type": Consumable,
@@ -73,7 +73,7 @@ gun = {
     "description" : "DESCRIPTION",
     "mass" : 3500,
 
-    "spawn_chance": 0.03,
+    "spawn_chance": 0.23,
     "spawn_quantity": [1, 1],
 
     "type": Weapon,
@@ -89,7 +89,7 @@ parachute = {
     "description" : "DESCRIPTION",
     "mass" : 9000,
 
-    "spawn_chance": 0.03,
+    "spawn_chance": 0.80,
     "spawn_quantity": [1, 1],
 
 }
@@ -100,7 +100,7 @@ explosives = {
     "description" : "DESCRIPTION",
     "mass" : 45000,
 
-    "spawn_chance": 0.03,
+    "spawn_chance": 0.23,
     "spawn_quantity" : [1, 1],
 
 }
@@ -111,7 +111,7 @@ lighter = {
     "description" : "DESCRIPTION",
     "mass" : 21,
 
-    "spawn_chance": 0.03,
+    "spawn_chance": 0.23,
     "spawn_quantity": [1, 1],
 
 }
@@ -122,7 +122,7 @@ rope = {
     "description" : "DESCRIPTION",
     "mass" : 3900,
 
-    "spawn_chance": 0.03,
+    "spawn_chance": 0.23,
     "spawn_quantity": [1, 1],
 
 }
@@ -133,7 +133,7 @@ duct_tape = {
     "description" : "DESCRIPTION",
     "mass" : 350,
 
-    "spawn_chance": 0.03,
+    "spawn_chance": 0.23,
     "spawn_quantity": [1, 1],
 
 }
@@ -144,7 +144,7 @@ crowbar = {
     "description" : "DESCRIPTION",
 
 
-    "spawn_chance": 0.03,
+    "spawn_chance": 0.23,
     "spawn_quantity": [1, 1],
   
     "mass" : 4500
@@ -156,7 +156,7 @@ screwdriver = {
     "description" : "DESCRIPTION",
     "mass" : 80,
 
-    "spawn_chance": 0.03,
+    "spawn_chance": 0.23,
     "spawn_quantity": [1, 1],
 
 }
@@ -170,7 +170,7 @@ starter_knife = {
     "crit_chance" : 0.2,
     "crit_multiplier" : 2,
 
-    "spawn_chance": 0.03,
+    "spawn_chance": 0.13,
     "spawn_quantity": [1, 1],
 
 }
@@ -186,7 +186,7 @@ machete = {
     "crit_chance" : 0.4,
     "crit_multiplier" : 2,
 
-    "spawn_chance": 0.03,
+    "spawn_chance": 0.13,
     "spawn_quantity": [1, 1],
 
 }
@@ -196,7 +196,7 @@ grappling_hook = {
     "name": "grappling hook",
     "description": "DESCRIPTION",
 
-    "spawn_chance": 0.03,
+    "spawn_chance": 0.5,
     "spawn_quantity": [1, 1],
 
     "mass": 5000

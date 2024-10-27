@@ -262,6 +262,7 @@ def execute_command(command): # parse what needs to be executed based on command
 
     elif command[0] == "escape" and player.get_current_room().can_escape():
         print("Congratulations you have escaped the matrix, you are free from Cardiff and for you the game is over.")
+        play_animation(player.get_current_room().escape_animation, True)
         close()
         sys.exit()
 
@@ -402,6 +403,7 @@ def execute_combat(command): # returns if player is still in combat # executes c
 
         if attacked_bool == False:
             write("Couldn't attack\n")
+            return True
     
     elif command[0] in ["use", "consume"]:
         execute_consume(command[1])
@@ -497,6 +499,25 @@ def set_scene_combat(): # gives the player info on how the battle is progressing
             write(f"{weapons[i]} ")
             if i == weapon_num-2:
                 write(f"and {weapons[i+1]}.\n")
+                break
+            else:
+                write(f", ")
+
+    consumables = []
+    for item in player.inventory:
+        if type(item) is items.Consumable:
+            consumables.append(item.name)
+
+    if len(consumables) == 0:
+        write("You have no consumables\n")
+    elif len(consumables) == 1:
+        write(f"You have a {consumables[0]}.\n")
+    else:
+        write("You have a ")
+        for i in range(0, len(consumables)):
+            write(f"{consumables[i]} ")
+            if i == len(consumables)-2:
+                write(f" and {consumables[i+1]}.\n")
                 break
             else:
                 write(f", ")

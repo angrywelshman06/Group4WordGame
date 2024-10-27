@@ -5,6 +5,7 @@ from items import *
 from npcs import *
 
 import ani_sprites
+from ani_sprites import *
 import player
 
 
@@ -279,7 +280,9 @@ skyscraper = {
 
     "win_requirements" : [
         {"parachute" : 1}
-    ]
+    ],
+
+    "escape_animation" : ending_parachute,
 
 }
 road = {
@@ -337,7 +340,7 @@ river = {
 
     "npcs" : [boat_captain],
 
-    "escape_animation" : None,
+    "escape_animation" : ending_boat,
 
     "visual": ani_sprites.room_river,
 
@@ -349,6 +352,8 @@ petrol_station = {
     "win_requirements" : [
         {"crowbar" : 1, "screwdriver" : 1},
     ],
+
+    "escape_animation" : ending_car,
 
     "visual": ani_sprites.room_petrol,
 }
