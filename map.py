@@ -135,7 +135,7 @@ def generate_map():
                         elif chance < 0.5:
                             level = 2
 
-                        room.enemies[f"enemy{num}"] = Enemy(random.choice(all_enemies), level=level)
+                        room.enemies[f"enemy{num}"] = Creature(random.choice(all_enemies), level=level)
 
                 map_matrix[y][x] = room
 

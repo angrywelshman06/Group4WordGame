@@ -21,7 +21,7 @@ import combat
 
 # system shit innit
 import threading
-from threading import Thread, Lock, Event
+from threading import Thread
 import subprocess
 import sys
 import traceback
@@ -360,8 +360,8 @@ def execute_attack(enemy_id, enemy, weapon): # attaks an enemy
     if enemy.health > 0:
         write(f"The {enemy.name} now has {enemy.health} health.\n")
     else:
-        #player.get_current_room().enemies.pop(enemy_id)
-        player.get_current_room().enemies.remove(enemy_id)
+        player.get_current_room().enemies.pop(enemy_id)
+        # player.get_current_room().enemies.remove(enemy_id)
         write(f"The {enemy.name} has been killed!\n")
 
 def execute_consume(item_id): # consumes an item
@@ -382,11 +382,13 @@ def execute_consume(item_id): # consumes an item
     return
 
 def execute_combat(command): # returns if player is still in combat # executes combat
-
+    global combatprinter #### EXPERIMENTAL
+    
     if len(command) == 0:
         return True
     
     # player turn
+    print("command[0]: ",command[0],"     ","command[1]: ",command[1]) 
     
     if command[0] in ["flee", "escape", "run"]:
         write("Attempting to flee\n")
@@ -434,6 +436,8 @@ def execute_combat(command): # returns if player is still in combat # executes c
                     for e in player.get_current_room().enemies.values():
                         if count == target_index:
                             execute_attack(command[1], e, item)
+                            combatprinter.general_update(attacker = "You", attacked = command[1]) #### EXPERIMENTAL
+                            play_animation(combatprinter.animation, True) # EXPERIMENTAL. Hold main thread until animation finished
                             break
                         else:
                             count += 1
@@ -442,6 +446,8 @@ def execute_combat(command): # returns if player is still in combat # executes c
                     for e in player.get_current_room().enemies.values():
                         if count == target_index:
                             execute_attack(command[1], e, item)
+                            combatprinter.general_update(attacker = "You", attacked = command[1]) #### EXPERIMENTAL
+                            play_animation(combatprinter.animation, True) # EXPERIMENTAL. Hold main thread until animation finished
                             break
                         else:
                             count += 1
@@ -466,8 +472,9 @@ def execute_combat(command): # returns if player is still in combat # executes c
 
     enemy_key = random.choice([*player.get_current_room().enemies.keys()]) # choose random enemy to attack
     enemy = player.get_current_room().enemies[enemy_key]
-
+    
     write(f"The {enemy.name} attacked you!\n", curses.color_pair(25))
+    print("THIS IS THE ENEMY NAME", enemy.name)
     if random.random() < enemy.crit_chance:
         damage = enemy.damage * enemy.crit_multiplier
         write(f"It hit you for critical damage and dealt {damage} damage.\n", curses.color_pair(24))
@@ -484,14 +491,21 @@ def execute_combat(command): # returns if player is still in combat # executes c
         play_animation(cutscene_death_1, True)
         close()
         pass
-
+    
+    ## ENEMY VISUAL TURN SHOULD GO HERE
+    # combatprinter.general_update(attacker = the number of the enemy attacking you, attacked = "You") #### EXPERIMENTAL.
+    # play_animation(combatprinter.animation, True) # EXPERIMENTAL. Hold main thread until animation finished
+    
     write()
     return True
 
 
 def set_scene_combat(): # gives the player info on how the battle is progressing
+    global combatprinter ### EXPERIMENTAL
+    draw_stillshot(combatprinter.stillstate) ### EXPERIMENTAL
+    
     enemies = player.get_current_room().enemies
-
+    
     write(f"There are {len(enemies)} enemies left. You see a ")
     for enemy_id in enemies:
         enemy = enemies[enemy_id]
@@ -561,11 +575,10 @@ def play_animation(animation, hold=False): # this function creates a thread to p
     # animation has to be a valid animation from ani_sprites.py
     art_pad_args = [0,0,0,0, ui.y-1, int(ui.x/2)-1]
     try:
-        anim_thread = Thread(target=run_animation_curses_pad, args=[ui.art_pad, art_pad_args, ui_lock, resize_window_event, *animation])
+        anim_thread = Thread(target=run_animation_curses_pad, args=[ui.art_pad, art_pad_args, ui_lock, *animation])
         anim_thread.start()
         if hold:
-            anim_thread.join() # if hold is true wait for animation to finish
-            curses.flushinp() # flush any input from when animation was held
+            anim_thread.join()
     except Exception as e:
         write(f"Exception occured in play_animation:\n{e}\n")
         write(traceback.format_exc())
@@ -586,7 +599,7 @@ overflow = 0
 ui_lock = threading.Lock()
 in_danger = False
 in_combat = False
-resize_window_event = threading.Event()
+combatprinter = False ### EXPERIMENTAL
 
 # This is the entry point of our program
 def main():
@@ -595,7 +608,7 @@ def main():
     global ui_lock
     global in_combat
     global in_danger
-    global resize_window_event
+    global combatprinter ### EXPERIMENTAL
 
     try:
 
@@ -682,22 +695,20 @@ def main():
 
                 ui_lock.release()
 
-            elif cmd == curses.KEY_RESIZE:
-                ui_lock.acquire()
-                resize_window() # update the x, y variables of ui
-                resize_window_event.set() # set the resize window event so that animation threds know that the window was resized and can update pad args
-                ui_lock.release()
-
             elif cmd == 10 or cmd == curses.KEY_ENTER: # enter key
                 write()
 
                 normalised_user_input = normalise_input(user_input)
 
                 if in_combat == True:
+                    if combatprinter == False: ### EXPERIMENTAL
+                        combatprinter = combat.Combatprinter() ### EXPERIMENTAL
                     in_combat = execute_combat(normalised_user_input)
+                    combatprinter.general_update() ### EXPERIMENTAL
                     if in_combat:
                         set_scene_combat()
                     else:
+                        combatprinter = False ### Assuming this is where combat ends. EXPERIMENTAL.
                         set_scene()
                 elif in_danger == True:
                     resolution = resolve_danger(normalised_user_input)
@@ -710,6 +721,7 @@ def main():
                         in_combat = True
                     
                 elif in_combat == False and in_danger == False:
+                    combatprinter = False ### EXPERIMENTAL
                     execute_command(normalised_user_input)
                     set_scene()
 

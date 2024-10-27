@@ -54,14 +54,16 @@ class spritesheet():
         self.dx = dx # x change
         self.dy = dy # y change
         self.frameslist = self.gather_framelist() # list containing every frame. The standard dimensions for most text files read should be col 100 x ln 33
-        self.infolist = infolist ### Used for combat. Should be a list containing [creature type, number (in battle), level, hp]
+        self.infolist = infolist ### Used for combat. Should be a list containing [creature type, number (in battle), level, hp].
         if infolist != 0:
-            self.frameslist = self.transform_to_details() ### Tansforms every spritesheet to the details of a creature by using the infolist.
+            # if "protag" not in self.path: This should work but it doesn't
+                # self.color = 8
+            self.frameslist = self.transform_to_info(infolist) ### Tansforms every spritesheet to the details of a creature by using the infolist.
             
         ## dy and dx are meant to be used when a spritesheet contains text files of a much smaller dimension than the standard.       
         if (self.dx != 0) or (self.dy != 0):
             self.frameslist = self.extend_frames() ## Adds empty space around every item of the frameslist (according to dx and dy) to fit the standard of 100x33. 
-
+        
     def gather_framelist(self): # Gathers every textfile in the given path and appends it to frameslist.
         frameslist = []
         for frame in range(1,self.frames+1):
@@ -73,11 +75,11 @@ class spritesheet():
         return frameslist
 
     # Responsible for updating the graphical representation of the stats on the screen. [creature type, number (in battle), level, hp]
-    def transform_to_details(self): # Uses infolist
-        name = self.infolist[0]
-        number = self.infolist[1]
-        level = self.infolist[2]
-        hp = self.infolist[3]
+    def transform_to_info(self, infolist): # Uses infolist
+        name = infolist[0]
+        number = infolist[1]
+        level = infolist[2]
+        hp = infolist[3]
         newframeslist = []
         
         for index,value in enumerate(self.frameslist): # Goes through every item in frameslist
@@ -96,7 +98,6 @@ class spritesheet():
             
             newframe = "\n".join(newframe) # joins back the items of newframe into one frame
             newframeslist.append(newframe) # appends the new frame to newframeslist
-        
         return newframeslist # Returns the altered frames list
 
     """ Adds empty space around every item of the frameslist (according to dx and dy) to fit the standard of 100x33. """

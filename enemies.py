@@ -1,6 +1,6 @@
 import random
 
-class Enemy:
+class Creature:
     def __init__(self, enemy : {}, level=1):
         self.name = enemy["name"]
         self.description = enemy["description"]

@@ -98,7 +98,7 @@ def main(stdscr): ### TESTING PURPOSES ## Uncomment whichever path you need in t
     
     
     # print_stillshot_curses([0,0], display_win, holder1, holder2)
-    # print_stillshot_curses([0,0], display_win, fight.creatures_dict["Enemy_1"].spritesheet, fight.creatures_dict["Enemy_2"].spritesheet)
+    # print_stillshot_curses([0,0], display_win, fight.creatures_dict["Creature_1"].spritesheet, fight.creatures_dict["Creature_2"].spritesheet)
     # fight = initiate_combat()
     # run_animation_curses(display_win,*intro_2)    
     # print_stillshot_curses([22,3,10],display_win, dude, backpillars, frontpillars) ## ([frames to print for each arg], curses window, unlimited args..) #b4 commit
