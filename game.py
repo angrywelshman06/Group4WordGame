@@ -326,6 +326,8 @@ def resolve_danger(command):
 
 # Executes a player attack on a given enemy
 def execute_attack(enemy_id, enemy, weapon):
+    global combatprinter
+    
     print("ATTACK EXECUTED")
     if random.random() < weapon.crit_chance:
         damage = weapon.damage * weapon.crit_mult
@@ -339,6 +341,7 @@ def execute_attack(enemy_id, enemy, weapon):
     if enemy.health > 0:
         write(f"The {enemy.name} now has {enemy.health} health.\n")
     else:
+        draw_stillshot(combatprinter.stillstate)
         player.get_current_room().enemies.pop(enemy_id)
         write(f"The {enemy.name} has been killed!\n")
 
@@ -618,6 +621,7 @@ resize_window_event = threading.Event()
 
 # This is the entry point of our program
 def main():
+    
     global user_input
     global overflow
     global ui_lock
@@ -680,6 +684,7 @@ def main():
         #main game loop
         while True:
             cmd = ui.text_pad.getch() # wair for the user to press a key
+            ui.art_pad.addstr(str(cmd))
 
             match cmd:
 
