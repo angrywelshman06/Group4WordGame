@@ -7,7 +7,9 @@ from ani_sprites import *
 from curses import wrapper
 from operator import attrgetter
 import threading
-from threading import Thread, Lock
+from threading import Thread, Lock, Event
+import ui
+from ui import *
 
 clear = lambda: os.system('cls')
 
@@ -33,10 +35,13 @@ def run_animation_curses(win, *args): # Runs the animation, the parameters are t
         win.refresh()
         time.sleep(0.05) # Frame rate of the animation
 
-def run_animation_curses_pad(win, pad_args, ui_lock, *args): #First arg should be edge/bg.
+def run_animation_curses_pad(win, pad_args, ui_lock, resize_event: threading.Event,*args): #First arg should be edge/bg.
     list_framelists = preliminary_adjustments(args) # Duplicates final frames if needed.
     for framelist in zip(*list_framelists): # * unpacks list_framelists into n different lists
         ui_lock.acquire()
+        if resize_event.is_set():
+            pad_args = [0,0,0,0, ui.y-1, int(ui.x/2)-1] # if window was resized update pad_args
+            resize_event.clear()
         print_frame_curses(framelist,win,args)
         win.move(0,0)
         win.refresh(pad_args[0], pad_args[1], pad_args[2], pad_args[3], pad_args[4], pad_args[5])
