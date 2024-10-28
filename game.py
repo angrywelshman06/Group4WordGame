@@ -151,7 +151,7 @@ def execute_consume(item_id): # consumes item in battle and regens health
     write("You cannot consume that.\n")
 
 
-def execute_take(item_id, amount=1):
+def execute_take(item_id, amount=1): # take an item from the current room, possibly take multiple items
 
     for item_dict_id in player.get_current_room().items.keys():
         if item_dict_id == item_id:
@@ -668,7 +668,7 @@ def main():
         curses_setcolors()
 
         # play intro animations
-        play_animation(intro_1, True) # hold main thread unntil this animation stops playing
+        play_animation(intro_1, True) # hold main thread until this animation stops playing
         play_animation(intro_2) # play animation on seperate thread
 
     except Exception as e:
@@ -815,9 +815,9 @@ def main():
             ui_lock.acquire()
             ui.art_pad.refresh(0,0,0,0, ui.y-1, int(ui.x/2)-1)
             try: 
-                ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x)
+                ui.text_pad.refresh(ui.text_pad_pos, 0, 0, int(ui.x/2), ui.y-1, ui.x-1)
             except: #do nothing when trying to scroll past the available screen size
-                pass
+                ui.text_pad.refresh(ui.text_pad_pos-1, 0, 0, int(ui.x/2), ui.y-1, ui.x-1)
             ui_lock.release()
 
     except Exception as e: # if an error occurs return terminal to normal 
