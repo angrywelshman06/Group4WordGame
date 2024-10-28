@@ -515,7 +515,7 @@ def set_scene_combat(): # gives the player info on how the battle is progressing
     weapons = []
     for item in player.inventory:
         if type(item) is items.Weapon:
-            weapons.append(item.name)
+            weapons.append(item.id)
 
     weapon_num = len(weapons)
     if weapon_num == 0:
@@ -535,7 +535,7 @@ def set_scene_combat(): # gives the player info on how the battle is progressing
     consumables = []
     for item in player.inventory:
         if type(item) is items.Consumable:
-            consumables.append(item.name)
+            consumables.append(item.id)
 
     if len(consumables) == 0:
         write("You have no consumables\n")
@@ -551,8 +551,8 @@ def set_scene_combat(): # gives the player info on how the battle is progressing
             else:
                 write(f", ")
 
-    write("ATTACK <which enemy> <weapon>   or   ")
-    write("CONSUME <item>   or   ")
+    write("ATTACK <enemy number> <weapon id>   or   ")
+    write("CONSUME <item id>   or   ")
     write("FLEE\n\n")
 
 def print_intro(): # prints the intro text, makes all the sound effects italic and blinking
@@ -857,6 +857,10 @@ def main():
                             in_danger = False
                             menu()
                         elif resolution == 2:  # combat started
+                            if random.random() < 0.5:
+                                play_animation(fight_cutscene)
+                            else:
+                                play_animation(cutscene_1)
                             in_danger = False
                             in_combat = True
 
