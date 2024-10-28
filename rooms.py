@@ -20,7 +20,7 @@ class Room:
 
         self.enemies = {}
         self.exits = set()
-        # self.exits = {"north", "south", "east", "west"}
+        self.exits = {"north", "south", "east", "west"}
         self.position = position
 
         if self.position[0] == 9:
