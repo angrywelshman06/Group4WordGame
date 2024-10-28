@@ -353,7 +353,6 @@ def resolve_danger(command):
 def execute_attack(enemy_id, enemy, weapon):
     global combatprinter
     
-    print("ATTACK EXECUTED")
     if random.random() < weapon.crit_chance:
         damage = weapon.damage * weapon.crit_mult
         write(f"You hit the {enemy.name} for critical damage and dealt {damage} damage.\n\n", curses.color_pair(24))
