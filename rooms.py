@@ -364,6 +364,8 @@ petrol_station = {
         {"crowbar" : 1, "screwdriver" : 1},
     ],
 
+    "npcs" : [mechanic],
+
     "escape_animation" : ending_car,
 
     "visual": ani_sprites.room_petrol,

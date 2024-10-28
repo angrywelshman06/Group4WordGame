@@ -57,8 +57,7 @@ business_man = {
 # {NPC : Turns in which the npc is randomly placed on)
 randomly_placed_npcs = {
         NPC(business_man) : [2, 4],
-        NPC(mechanic) : [5, 7],
-        NPC(injured_civilian) : [8, 10],
+        NPC(injured_civilian) : [5, 7],
 
      }
 
