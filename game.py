@@ -275,9 +275,13 @@ def execute_command(command): # parse what needs to be executed based on command
 
     elif command[0] == "escape" and check_for_boundary_exit():
         if escape_route == "climbing":
-            pass # Add escape animation for climbing
+            play_animation(ending_rope, True) # escape by rope
+            close()
+            sys.exit()
         elif escape_route == "explosives":
-            pass # Add escape animation for climbing
+            play_animation(ending_explosion, True) # escape by explosion
+            close()
+            sys.exit()
 
         close()
         sys.exit()
