@@ -18,7 +18,7 @@ import random
 from items import Consumable, Weapon, Item, get_item_dict_from_list
 import items
 from gameparser import *
-from map import generate_map
+from map import generate_map, get_room
 import combat
 from rooms import Room
 # threading
@@ -74,6 +74,7 @@ def is_valid_exit(direction):
     return direction in player.get_current_room().exits
 
 def execute_go(direction): # executes the go action
+    from map import get_room
     if is_valid_exit(direction):
         new_pos = player.current_room_position[:]
 
