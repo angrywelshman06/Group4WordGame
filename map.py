@@ -1,12 +1,14 @@
 import random
+import sys
+
 import npcs
 import rooms
 #from enemies import *
 from combat import *
-from rooms import special_rooms, Room, generic_rooms
+from rooms import Room, special_rooms, generic_rooms
 from collections import deque
 import items
-#import sys
+
 
 map_matrix = [[None for x in range(10)] for y in range(10)]
 
@@ -252,3 +254,53 @@ def get_room(x, y) -> Room:
     except Exception as e:
         return None # no such room
     return map_matrix[y][x]
+
+
+
+
+def find_path_to_exit():
+    start_room = get_room(starting_position[0], starting_position[1])
+    queue = deque([(start_room, [])])
+    visited = set()
+
+    directions = ["north", "south", "east", "west"]
+    opposite_direction = {"north": "south", "south": "north", "east": "west", "west": "east"}
+
+    while queue:
+        current_room, path = queue.popleft()
+        if current_room in visited:
+            continue
+        visited.add(current_room)
+
+        for direction in current_room.exits:
+            next_room = get_adjacent_room(current_room, direction)
+            if next_room and next_room not in visited:
+                new_path = path + [direction]
+                if is_exit(next_room):
+                    print("Path to exit:", new_path)
+                    return new_path
+                queue.append((next_room, new_path))
+
+    print("No exit found")
+    return None
+    sys.exit()
+
+def is_exit(room):
+    x, y = room.position
+    return x == 0 or x == len(map_matrix[0]) - 1 or y == 0 or y == len(map_matrix) - 1
+
+def main():
+    generate_map()
+    path = find_path_to_exit()
+    if path:
+        generate_map()
+        path = find_path_to_exit()
+    if path:
+        print("Path to exit found:", path)
+    else:
+        print("No path to exit found.")
+
+        print("Path to exit found:", path)
+
+if __name__ == "__main__":
+    main()
