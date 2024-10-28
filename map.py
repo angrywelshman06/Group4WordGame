@@ -1,5 +1,4 @@
 import random
-import sys
 from collections import deque
 import npcs
 import items
