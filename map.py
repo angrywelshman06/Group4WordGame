@@ -7,14 +7,36 @@ from combat import *
 
 map_matrix = [[None for x in range(10)] for y in range(10)]
 
+'''
+This is the structure of map_matrix, 10 by 10, 0s representing randomly placed
+room objects, and the 1 being the starting point (and tutorial room)
+
+             [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+              [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+              
+'''
+
+#This is the starting position of the player, as shown above
 starting_position = [4, 4]
+
+# Positions of the "tutorial" rooms
 bathroom_position = [4, 3]
 kitchen_position = [4, 5]
 
 def generate_map():
     from rooms import Room, special_rooms, generic_rooms
     import rooms
-
+    
+    
+    # Placing NPCs in a turn based system
     while True:
         used_npc_positions = []
 
@@ -40,23 +62,27 @@ def generate_map():
 
         used_rooms = set()
 
+        # Add in tutorial room
         tutorial_room = Room(rooms.bedroom_tutorial, tuple(starting_position), True, visual_in=rooms.bedroom_tutorial["visual"])
         tutorial_room.exits = {"north"}
         map_matrix[starting_position[1]][starting_position[0]] = tutorial_room
         used_rooms.add(rooms.bedroom_tutorial['name'])
 
+        # Add bathroom room directly north of the starting position
         bathroom_room = Room(rooms.bathroom_tutorial, tuple(bathroom_position), visual_in=rooms.bathroom_tutorial["visual"])
         bathroom_room.exits = {"north", "south", "east", "west"}
         map_matrix[bathroom_position[1]][bathroom_position[0]] = bathroom_room
         used_rooms.add(rooms.bathroom_tutorial['name'])
 
+        # Add kitchen room directly south of the starting position
         kitchen_room = Room(rooms.kitchen_tutorial, tuple(kitchen_position), visual_in=rooms.kitchen_tutorial["visual"])
         kitchen_room.exits = {"north", "south", "east", "west"}
         map_matrix[kitchen_position[1]][kitchen_position[0]] = kitchen_room
         used_rooms.add(rooms.kitchen_tutorial['name'])
 
+        # Add all special rooms
         for sr in special_rooms:
-            max_attempts = 100
+            max_attempts = 100  # Maximum number of attempts to find a unique room
             attempts = 0
 
             while attempts < max_attempts:
@@ -66,10 +92,25 @@ def generate_map():
                     room = Room(sr, (y_coord, x_coord), visual_in=sr["visual"])
                     map_matrix[y_coord][x_coord] = room
                     generate_loot(x_coord, y_coord)
+
+                    if random.random() <= 0.33:
+                        for num in range(random.randint(1, 3)):
+                            chance = random.random()
+                            level = 1
+                            if chance < 0.2:
+                                level = 3
+                            elif chance < 0.5:
+                                level = 2
+
+                            room.enemies[num+1] = Creature(random.choice(all_enemies), level=level)
+
                     used_rooms.add(sr['name'])
                     break
                 attempts += 1
+                
+                
 
+        # Add all generic rooms
         for y in range(len(map_matrix)):
             for x in range(len(map_matrix[y])):
                 if map_matrix[y][x] is None:
@@ -83,8 +124,10 @@ def generate_map():
                         items = []
 
                     generic_room = {'name': room_name, 'description': description, 'items': items}
+
                     room = Room(generic_room, (x, y))
-                    if random.random() <= 0:
+
+                    if random.random() <= 0.33:
                         for num in range(random.randint(1, 3)):
 
                             chance = random.random()
@@ -94,7 +137,7 @@ def generate_map():
                             elif chance < 0.5:
                                 level = 2
 
-                            room.enemies[num + 1] = Creature(random.choice(all_enemies), level=level)
+                            room.enemies[num+1] = Creature(random.choice(all_enemies), level=level)
 
                     map_matrix[y][x] = room
                     generate_loot(x, y)
@@ -105,6 +148,7 @@ def generate_map():
 
     # Randomly remove some doors to create dead ends
     remove_random_doors()
+
 
 
 def remove_random_doors():
@@ -125,6 +169,7 @@ def remove_random_doors():
                                 room.exits.add(direction)
                                 if direction in opposite_direction:
                                     adjacent_room.exits.add(opposite_direction[direction])
+
 
 
 def generate_loot(x_coord, y_coord):

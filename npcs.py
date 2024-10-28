@@ -23,7 +23,7 @@ injured_civilian = {
     "id" : "injured_civilian",
     "description" : "An injured man sits propped against a wall. He is clutching his right arm - or whatever of it that remains. He looks up at you, showing initial fear in his eyes with an assumption of you being a zombie later changing to hope as he sees the humanity behind your eyes. Dread overcomes you knowing he can’t be saved and needs to go.",
     "name" : "Injured Civilian",
-    "lines" : ["Hey man, are you a zombie ? Nice seeing another person, I really thought i would die not seeing any humans at all. It's so cold... everything’s blurry. You know when all this my momma said"]
+    "lines" : ["Hey man, are you a zombie? Nice seeing another person, I really thought i would die not seeing any humans at all. It's so cold... everything’s blurry. You know when all this my momma said"]
 }
 boat_captain = {
     "id" : "boat_captain",
@@ -32,10 +32,11 @@ boat_captain = {
     "lines" : ["Hey Mate! Nice to see another who hasn’t gone rotten… it's been a while. Suppose you’re trying to find a way out of here? I’ve been trying for weeks now but I managed to crack a pretty big hole in my last working boat. I’m sure I could get us out of ‘ere with some tape to fix the hole in the bottom of me boat. Let me know if you find any..."]
 }
 test_npc = {
-    "id" : "test_man",
-    "name" : "Testing Man",
+    "id" : "guide",
+    "name" : "Guide",
     "description" : "Test description",
-    "lines" : ["Hi", "Hello", "Hey there", "Howdy"]
+    "lines" : ["Hey! Maybe try picking up and dropping items before leaving the safety of the house!",
+               ]
 
 }
 mechanic = {
@@ -56,8 +57,7 @@ business_man = {
 # {NPC : Turns in which the npc is randomly placed on)
 randomly_placed_npcs = {
         NPC(business_man) : [2, 4],
-        NPC(mechanic) : [5, 7],
-        NPC(injured_civilian) : [8, 10],
+        NPC(injured_civilian) : [5, 7],
 
      }
 
