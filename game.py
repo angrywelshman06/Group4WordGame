@@ -18,7 +18,7 @@ import random
 from items import Consumable, Weapon, Item, get_item_dict_from_list
 import items
 from gameparser import *
-from map import generate_map, find_path_to_exit
+from map import generate_map
 import combat
 from rooms import Room
 # threading
@@ -730,7 +730,6 @@ def main():
 
         # Startup Logic
         generate_map()
-        find_path_to_exit()
         
         #initialise curses screen
         init_screen()

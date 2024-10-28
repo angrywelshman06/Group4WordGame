@@ -674,13 +674,22 @@ def is_exit(room):
     is_exit_room = x == 0 or x == len(map_matrix[0]) - 1 or y == 0 or y == len(map_matrix) - 1
     return is_exit_room
 
+def print_rooms_with_doors():
+    for y in range(len(map_matrix)):
+        for x in range(len(map_matrix[y])):
+            room = map_matrix[y][x]
+            if room is not None:
+                print(f"Room: {room.name} at position ({x}, {y}) has exits: {room.exits}")
+
+# Call this function in the main function or wherever appropriate
 def main():
     generate_map()
+    print_rooms_with_doors()
     all_paths_to_exit = find_all_paths_to_exit()
     if all_paths_to_exit:
         print("All paths to exit:")
         for path in all_paths_to_exit:
-            print(" -> ".join(path))
+            print(" -> ".join(map(str, path)))
     else:
         print("No exit found")
 
