@@ -2,6 +2,8 @@ import random
 from collections import deque
 import npcs
 import items
+from combat import *
+
 
 map_matrix = [[None for x in range(10)] for y in range(10)]
 
@@ -82,6 +84,18 @@ def generate_map():
 
                     generic_room = {'name': room_name, 'description': description, 'items': items}
                     room = Room(generic_room, (x, y))
+                    if random.random() <= 0:
+                        for num in range(random.randint(1, 3)):
+
+                            chance = random.random()
+                            level = 1
+                            if chance < 0.2:
+                                level = 3
+                            elif chance < 0.5:
+                                level = 2
+
+                            room.enemies[num + 1] = Creature(random.choice(all_enemies), level=level)
+
                     map_matrix[y][x] = room
                     generate_loot(x, y)
 
