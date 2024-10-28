@@ -143,6 +143,7 @@ def generate_map():
                 generate_loot(x, y)
 
     ensure_connected_graph()
+    find_path_to_exit()
 
 
 def generate_loot(x_coord, y_coord):
@@ -181,10 +182,10 @@ def ensure_connected_graph():
         if room not in visited:
             connect_to_nearest_visited_room(room, visited)
 
-    # Print visited rooms for debugging
-    print("Visited rooms:")
-    for room in visited:
-        print(room.name, room.position, room.exits)
+    # # Print visited rooms for debugging
+    # print("Visited rooms:")
+    # for room in visited:
+    #     print(room.name, room.position, room.exits)
 
 
 def get_adjacent_room(room, direction) -> Room:
@@ -283,7 +284,7 @@ def find_path_to_exit():
 
     print("No exit found")
     return None
-    sys.exit()
+
 
 def is_exit(room):
     x, y = room.position
