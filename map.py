@@ -373,6 +373,8 @@ def find_path_to_exit():
             continue
         visited.add(current_room)
 
+        print(f"Visiting room: {current_room.name} at {current_room.position}")
+
         for direction in current_room.exits:
             next_room = get_adjacent_room(current_room, direction)
             if next_room and next_room not in visited:
@@ -388,5 +390,6 @@ def find_path_to_exit():
 
 def is_exit(room):
     x, y = room.position
-    return x == 0 or x == len(map_matrix[0]) - 1 or y == 0 or y == len(map_matrix) - 1
-
+    is_exit_room = x == 0 or x == len(map_matrix[0]) - 1 or y == 0 or y == len(map_matrix) - 1
+    print(f"Room {room.name} at {room.position} is exit: {is_exit_room}")
+    return is_exit_room
