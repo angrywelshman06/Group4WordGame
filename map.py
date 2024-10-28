@@ -34,16 +34,123 @@ starting_position = [4, 4]
 bathroom_position = [4, 3]
 kitchen_position = [4, 5]
 
-def generate_map():
+# def generate_map():
+#
+#     # Used to avoid spawning multiple NPCs in one room
+#     used_npc_positions = []
+#
+#     # Generates the turn of which each randomly placed npc is spawned on
+#     for npc in npcs.randomly_placed_npcs:
+#         bounds = npcs.randomly_placed_npcs[npc]
+#
+#         max_attempts = 7  # Maximum number of attempts to find a unique turn
+#         attempts = 0
+#
+#         while attempts < max_attempts:
+#             unique_turn = random.randint(bounds[0], bounds[1])
+#             if unique_turn not in used_npc_positions:
+#                 used_npc_positions.append(unique_turn)
+#                 npcs.randomly_placed_npcs[npc] = unique_turn
+#                 break
+#
+#         if attempts == max_attempts:
+#             for turn in range(bounds[1], bounds[1] + 10):
+#                 if turn not in used_npc_positions:
+#                     used_npc_positions.append(turn)
+#                     npcs.randomly_placed_npcs[npc] = turn
+#                     break
+#
+#
+#
+#     used_rooms = set()
+#
+#     # Add in tutorial room
+#     tutorial_room = Room(rooms.bedroom_tutorial, tuple(starting_position), True, visual_in=rooms.bedroom_tutorial["visual"])
+#     tutorial_room.exits = {"north"}
+#     map_matrix[starting_position[1]][starting_position[0]] = tutorial_room
+#     used_rooms.add(rooms.bedroom_tutorial['name'])
+#
+#     # Add bathroom room directly north of the starting position
+#     bathroom_room = Room(rooms.bathroom_tutorial, tuple(bathroom_position), visual_in=rooms.bathroom_tutorial["visual"])
+#     bathroom_room.exits = {"north", "south", "east", "west"}
+#     map_matrix[bathroom_position[1]][bathroom_position[0]] = bathroom_room
+#     used_rooms.add(rooms.bathroom_tutorial['name'])
+#
+#     # Add kitchen room directly south of the starting position
+#     kitchen_room = Room(rooms.kitchen_tutorial, tuple(kitchen_position), visual_in=rooms.kitchen_tutorial["visual"])
+#     kitchen_room.exits = {"north", "south", "east", "west"}
+#     map_matrix[kitchen_position[1]][kitchen_position[0]] = kitchen_room
+#     used_rooms.add(rooms.kitchen_tutorial['name'])
+#
+#     # Add all special rooms
+#     for sr in special_rooms:
+#         max_attempts = 100  # Maximum number of attempts to find a unique room
+#         attempts = 0
+#
+#         while attempts < max_attempts:
+#             x_coord = random.randint(0, 9)
+#             y_coord = random.randint(0, 9)
+#             if map_matrix[y_coord][x_coord] is None and sr['name'] not in used_rooms:
+#                 room = Room(sr, (y_coord, x_coord), visual_in=sr["visual"])
+#                 map_matrix[y_coord][x_coord] = room
+#                 generate_loot(x_coord, y_coord)
+#
+#                 if random.random() <= 0:
+#                     for num in range(random.randint(1, 3)):
+#                         chance = random.random()
+#                         level = 1
+#                         if chance < 0.2:
+#                             level = 3
+#                         elif chance < 0.5:
+#                             level = 2
+#
+#                         room.enemies[num+1] = Creature(random.choice(all_enemies), level=level)
+#
+#                 used_rooms.add(sr['name'])
+#                 break
+#             attempts += 1
+#
+#     # Add all generic rooms
+#     for y in range(len(map_matrix)):
+#         for x in range(len(map_matrix[y])):
+#             if map_matrix[y][x] is None:
+#                 if generic_rooms:
+#                     room_name = random.choice(generic_rooms)
+#                     description = f"This is a {room_name}."
+#                     items = []
+#                 else:
+#                     room_name = f"Generic Room {x}{y}"
+#                     description = "This is a generic room."
+#                     items = []
+#
+#                 generic_room = {'name': room_name, 'description': description, 'items': items}
+#
+#                 room = Room(generic_room, (x, y))
+#
+#                 if random.random() <= 0:
+#                     for num in range(random.randint(1, 3)):
+#
+#                         chance = random.random()
+#                         level = 1
+#                         if chance < 0.2:
+#                             level = 3
+#                         elif chance < 0.5:
+#                             level = 2
+#
+#                         room.enemies[num+1] = Creature(random.choice(all_enemies), level=level)
+#
+#                 map_matrix[y][x] = room
+#                 generate_loot(x, y)
+#
+#     ensure_connected_graph()
+#     find_path_to_exit()
 
-    # Used to avoid spawning multiple NPCs in one room
+def generate_map():
     used_npc_positions = []
 
-    # Generates the turn of which each randomly placed npc is spawned on
     for npc in npcs.randomly_placed_npcs:
         bounds = npcs.randomly_placed_npcs[npc]
-
-        max_attempts = 7  # Maximum number of attempts to find a unique turn
+        max_attempts = 7
         attempts = 0
 
         while attempts < max_attempts:
@@ -53,6 +160,8 @@ def generate_map():
                 npcs.randomly_placed_npcs[npc] = unique_turn
                 break
 
+            attempts += 1
+
         if attempts == max_attempts:
             for turn in range(bounds[1], bounds[1] + 10):
                 if turn not in used_npc_positions:
@@ -60,31 +169,25 @@ def generate_map():
                     npcs.randomly_placed_npcs[npc] = turn
                     break
 
-
-
     used_rooms = set()
 
-    # Add in tutorial room
     tutorial_room = Room(rooms.bedroom_tutorial, tuple(starting_position), True, visual_in=rooms.bedroom_tutorial["visual"])
     tutorial_room.exits = {"north"}
     map_matrix[starting_position[1]][starting_position[0]] = tutorial_room
     used_rooms.add(rooms.bedroom_tutorial['name'])
 
-    # Add bathroom room directly north of the starting position
     bathroom_room = Room(rooms.bathroom_tutorial, tuple(bathroom_position), visual_in=rooms.bathroom_tutorial["visual"])
     bathroom_room.exits = {"north", "south", "east", "west"}
     map_matrix[bathroom_position[1]][bathroom_position[0]] = bathroom_room
     used_rooms.add(rooms.bathroom_tutorial['name'])
 
-    # Add kitchen room directly south of the starting position
     kitchen_room = Room(rooms.kitchen_tutorial, tuple(kitchen_position), visual_in=rooms.kitchen_tutorial["visual"])
     kitchen_room.exits = {"north", "south", "east", "west"}
     map_matrix[kitchen_position[1]][kitchen_position[0]] = kitchen_room
     used_rooms.add(rooms.kitchen_tutorial['name'])
 
-    # Add all special rooms
     for sr in special_rooms:
-        max_attempts = 100  # Maximum number of attempts to find a unique room
+        max_attempts = 100
         attempts = 0
 
         while attempts < max_attempts:
@@ -105,12 +208,11 @@ def generate_map():
                             level = 2
 
                         room.enemies[num+1] = Creature(random.choice(all_enemies), level=level)
-            
+
                 used_rooms.add(sr['name'])
                 break
             attempts += 1
 
-    # Add all generic rooms
     for y in range(len(map_matrix)):
         for x in range(len(map_matrix[y])):
             if map_matrix[y][x] is None:
@@ -124,12 +226,10 @@ def generate_map():
                     items = []
 
                 generic_room = {'name': room_name, 'description': description, 'items': items}
-
                 room = Room(generic_room, (x, y))
 
                 if random.random() <= 0:
                     for num in range(random.randint(1, 3)):
-                        
                         chance = random.random()
                         level = 1
                         if chance < 0.2:
@@ -290,18 +390,3 @@ def is_exit(room):
     x, y = room.position
     return x == 0 or x == len(map_matrix[0]) - 1 or y == 0 or y == len(map_matrix) - 1
 
-def main():
-    generate_map()
-    path = find_path_to_exit()
-    if path:
-        generate_map()
-        path = find_path_to_exit()
-    if path:
-        print("Path to exit found:", path)
-    else:
-        print("No path to exit found.")
-
-        print("Path to exit found:", path)
-
-if __name__ == "__main__":
-    main()
