@@ -301,7 +301,7 @@ def execute_command(command): # parse what needs to be executed based on command
         write("up arrow : scroll up, down arrow : scroll down, escape key : quit\n\n")
 
     elif command[0] == "raptor":
-        write("""
+        write(r"""
                 ____      ________    
                ,^.__.>--"~~'_.--~_)~^.  
               _L^~   ~    (~ _.-~ \. |\     
@@ -756,7 +756,7 @@ def main():
         print(traceback.format_exc())
 
     # write title screen
-    write("""
+    write(r"""
 ╔╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╗
 ╠╬╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╬╣
 ╠╣  _______     _______.  ______     ___      .______    _______        ╠╣
