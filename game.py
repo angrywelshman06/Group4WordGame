@@ -457,6 +457,10 @@ def execute_combat(command): # returns if player is still in combat # executes c
     enemy_key = random.choice([*player.get_current_room().enemies.keys()]) # choose random enemy to attack
     enemy = player.get_current_room().enemies[enemy_key]
 
+    ### combat visual update
+    combatprinter.general_update(attacker = enemy_key, attacked = "You")
+    play_animation(combatprinter.animation, True) # Hold main thread until animation finished
+
     write(f"The {enemy.name} attacked you!\n", curses.color_pair(25))
     if random.random() < enemy.crit_chance:
         damage = enemy.damage * enemy.crit_multiplier

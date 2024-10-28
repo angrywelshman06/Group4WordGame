@@ -184,6 +184,7 @@ class Combatprinter():
             for i in self.creatures_dict:
                 if i != "enemy_{0}".format(attacker):
                     self.freeze_all(i)   
+            self.creatures_dict["enemy_{0}".format(attacker)].set_original_spritesheet()
                     
         if attacked == "You":
             attacked = self.creatures_dict["You"]
