@@ -621,7 +621,7 @@ def check_for_boundary_exit():
 def menu(): # gives the player info on the current room and their character
 
     write(player.get_current_room().name.upper())
-    write(f"X: {player.current_room_position[0]} | Y: {player.current_room_position[1]}")
+    write(f"     |     [{player.current_room_position[0]} | {player.current_room_position[1]}]")
     write()
     write(player.get_current_room().description)
     write()
@@ -629,6 +629,7 @@ def menu(): # gives the player info on the current room and their character
 
     if len(player.get_current_room().enemies) == 0:
         if player.get_current_room().exits:
+            write()
             write(f"You can GO: {', '.join(player.get_current_room().exits)}\n\n")
         else:
             write("No exits available seems you might be stuck. What a shame ;)\n\n")
