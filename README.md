@@ -7,8 +7,11 @@ Throughout the journey you will move through a number of unique locations some o
 How to play:
 
 GO <direction>
+
 CONSUME <item_id>
+
 TAKE <item_id> [amount]
+
 DROP <item_id> [amount]
 
 FIGHT (to start a battle)
