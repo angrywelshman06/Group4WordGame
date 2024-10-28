@@ -128,6 +128,7 @@ def execute_go(direction): # executes the go action
                 player.get_current_room().npcs.append(npc)
 
         write(f"You are going to {new_room.name}.\n")
+        write()
 
         try:
             draw_stillshot(new_room.visual) # draw room visual
@@ -183,7 +184,7 @@ def execute_take(item_id, amount=1): # take an item from the current room, possi
             if not found:
                 player.inventory[item] = amount
 
-            write(f"You picked up {item.name}.\n")
+            write(f"You picked up {item.name}.\n\n")
             return
     write("You cannot take that.\n")
 
@@ -206,9 +207,9 @@ def execute_drop(item_id, amount=1):
             else:
                 player.get_current_room().items[item.id] = amount
 
-            write(f"You dropped {item.name}.\n")
+            write(f"You dropped {item.name}.\n\n")
             return
-    write("You cannot drop that.\n")
+    write("You cannot drop that.\n\n")
 
 def execute_talk(npc_id):
     for npc in player.get_current_room().npcs:
@@ -218,7 +219,7 @@ def execute_talk(npc_id):
             write("\n")
             write()
             return
-    write("You cannot talk to this NPC.")
+    write("You cannot talk to this NPC.\n")
 
 
 def execute_command(command): # parse what needs to be executed based on command
@@ -288,8 +289,15 @@ def execute_command(command): # parse what needs to be executed based on command
         sys.exit()
 
     elif command[0] == "help":
-        write("Commands: go [direction], take [item], drop [item], use [item], quit\n")
-        write("up arrow : scroll up, down arrow : scroll down, escape key : quit\n")
+        write("Commands: \n")
+        write("GO [direction]\n")
+        write("TAKE [item_id] <amount> *Replace spaces with underscores!*\n")
+        write("DROP [item_id] <amount\n"               ' ')
+        write("USE/CONSUME [item]\n")
+        write("QUIT\n")
+
+        write("\nExtras: \n")
+        write("up arrow : scroll up, down arrow : scroll down, escape key : quit\n\n")
 
     elif command[0] == "raptor":
         write("""
@@ -311,7 +319,7 @@ def execute_command(command): # parse what needs to be executed based on command
                       (_~~   ~~___)\_/ |  
                       (_~~   ~~___)\_/ |   
                       { ~~   ~~   }/ \ l 
-                         """, curses.A_BOLD)
+                         \n""", curses.A_BOLD)
 
 
     else:
@@ -335,33 +343,32 @@ def resolve_danger(command):
             draw_stillshot(player.get_current_room().visual) # draw room visual
         except:
             draw_stillshot(room_placeholder) # room has no visuals to print, print generic visual
-        write("It's not worth the risk, you head back before you are seen\nPress enter to continue...")
+        write("It's not worth the risk, you head back before you are seen\nPress enter to continue...\n\n")
         return 1
 
     else:
-        write("You have to choose to FIGHT or to FLEE\n")
+        write("You have to choose to FIGHT or to FLEE\n\n")
         return 0
 
 # Executes a player attack on a given enemy
 def execute_attack(enemy_id, enemy, weapon):
     global combatprinter
     
-    print("ATTACK EXECUTED")
     if random.random() < weapon.crit_chance:
         damage = weapon.damage * weapon.crit_mult
-        write(f"You hit the {enemy.name} for critical damage and dealt {damage} damage.\n", curses.color_pair(24))
+        write(f"You hit the {enemy.name} for critical damage and dealt {damage} damage.\n\n", curses.color_pair(24))
         enemy.health -= damage
     else:
         damage = weapon.damage
-        write(f"You hit the {enemy.name} and dealt {damage} damage.\n")
+        write(f"You hit the {enemy.name} and dealt {damage} damage.\n\n")
         enemy.health -= damage
 
     if enemy.health > 0:
-        write(f"The {enemy.name} now has {enemy.health} health.\n")
+        write(f"The {enemy.name} now has {enemy.health} health.\n\n")
     else:
         draw_stillshot(combatprinter.stillstate)
         player.get_current_room().enemies.pop(enemy_id)
-        write(f"The {enemy.name} has been killed!\n")
+        write(f"The {enemy.name} has been killed!\n\n")
 
 def execute_combat(command): # returns if player is still in combat # executes combat
   
@@ -434,7 +441,7 @@ def execute_combat(command): # returns if player is still in combat # executes c
         return True
 
     if len(player.get_current_room().enemies) == 0:
-        write("You won the battle!\n", curses.color_pair(7))
+        write("You won the battle!\n\n", curses.color_pair(7))
         ui.art_pad.clear()
         combatprinter = False
         try:
@@ -622,7 +629,7 @@ def check_for_boundary_exit():
 def menu(): # gives the player info on the current room and their character
 
     write(player.get_current_room().name.upper())
-    write(f"X: {player.current_room_position[0]} | Y: {player.current_room_position[1]}")
+    write(f"     |     [{player.current_room_position[0]} | {player.current_room_position[1]}]")
     write()
     write(player.get_current_room().description)
     write("\n\n")
@@ -630,6 +637,8 @@ def menu(): # gives the player info on the current room and their character
 
     if len(player.get_current_room().enemies) == 0:
         if player.get_current_room().exits:
+            write()
+
             write(f"You can GO: {', '.join(player.get_current_room().exits)}\n\n", curses.color_pair(18))
         else:
             write("No exits available seems you might be stuck. What a shame ;)\n\n")
