@@ -6,6 +6,7 @@ You must navigate through the maze encountering zombies to collect items and esc
 Throughout the journey you will move through a number of unique locations some of which hold items and some of which give you the opportunity to escape without having to venture to the edge of the city.
 How to play:
 
+
 GO <direction>
 
 CONSUME <item_id>
