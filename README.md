@@ -14,11 +14,15 @@ TAKE <item_id> [amount]
 
 DROP <item_id> [amount]
 
+
 FIGHT (to start a battle)
+
 ATTACK <enemy number> <weapon_id>
+
 FLEE
+
 ESCAPE (to escape cardiff!)
 
 
--Scroll by using the Up and Down arrow keys.
--During combat, attack the enemy by using a command such as "attack 1 bat", with 1 being the enemy and bat being the weapon.
+*Scroll by using the Up and Down arrow keys.
+
