@@ -239,6 +239,9 @@ def dist_from_edge(x, y):
 # Gets the room based off its matrix position coordinates
 def get_room(x, y) -> Room:
     distances = dist_from_edge(x, y)
-    for direction in distances:
-        if distances[direction] < 0: return None # No room (escaped)
+    try:
+        for direction in distances:
+            if distances[direction] < 0: return None # No room (escaped)
+    except Exception as e:
+        return None # no such room
     return map_matrix[y][x]

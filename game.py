@@ -98,6 +98,7 @@ def execute_go(direction): # executes the go action
 
         if not (0 <= new_pos[0] <= 9 or 0 <= new_pos[1] <= 9):
             write("That way is blocked by walls! You need to find suitable items to escape this way!")
+            
 
         # Ensure the new room has an exit back to the previous room
         current_room = player.get_current_room()
@@ -631,13 +632,14 @@ def menu(): # gives the player info on the current room and their character
     write(f"     |     [{player.current_room_position[0]} | {player.current_room_position[1]}]")
     write()
     write(player.get_current_room().description)
-    write()
+    write("\n\n")
 
 
     if len(player.get_current_room().enemies) == 0:
         if player.get_current_room().exits:
             write()
-            write(f"You can GO: {', '.join(player.get_current_room().exits)}\n\n")
+
+            write(f"You can GO: {', '.join(player.get_current_room().exits)}\n\n", curses.color_pair(18))
         else:
             write("No exits available seems you might be stuck. What a shame ;)\n\n")
             write()

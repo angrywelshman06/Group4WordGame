@@ -5,7 +5,8 @@ import map
 from items import *
 
 # Starting inventory
-inventory = {Consumable(paracetamol) : 2, Weapon(bat) : 1, Item(explosives) : 2, Item(parachute) : 1} # could be changed to the gun idc
+inventory = {Consumable(paracetamol) : 2, Weapon(bat) : 1} # could be changed to the gun idc
+
 
 # Current maximum capacity of inventory (in grams)
 max_mass = 50000
