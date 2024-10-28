@@ -4,35 +4,10 @@ import player
 
 import copy
 
-## EVERYTHING HERE IS NOW CONTAINED WITHIN CLASS CREATURE.
-# class Enemy:
-    # def __init__(self, enemy : {}, level=1):
-        # self.name = enemy["name"]
-        # self.description = enemy["description"]
-        # self.level = level
-        # self.health = enemy["health"]
-        # self.damage = enemy["base_damage"] * (1 + 0.4 * (self.level - 1))
-        # self.crit_chance = enemy["crit_chance"]
-        # self.crit_multiplier = enemy["crit_multiplier"]
-
-    # def get_damage(self, crit_bool : bool):
-        # if crit_bool:
-            # return self.damage * self.crit_multiplier
-        # return self.damage
-        
-protag = { # placeholder
-    "name" : "You",
-    "description" : "DESCRIPTION",
-    "health" : 50,
-    "base_damage" : 10,
-    "crit_chance" : 0.3,
-    "crit_multiplier" : 2
-}
-
 zombie = {
     "name" : "zombie",
     "description" : "DESCRIPTION",
-    "health" : 50,
+    "health" : 20,
     "base_damage" : 10,
     "crit_chance" : 0.3,
     "crit_multiplier" : 2
@@ -41,7 +16,7 @@ zombie = {
 zombie_child = {
     "name" : "zombie child",
     "description" : "DESCRIPTION",
-    "health" : 15,
+    "health" : 8,
     "base_damage" : 5,
     "crit_chance" : 0.1,
     "crit_multiplier" : 4
@@ -50,7 +25,7 @@ zombie_child = {
 zombie_dog = {
     "name" : "zombie dog",
     "description" : "DESCRIPTION",
-    "health" : 25,
+    "health" : 10,
     "base_damage" : 8,
     "crit_chance" : 0.6,
     "crit_multiplier" : 2
@@ -59,7 +34,7 @@ zombie_dog = {
 zombie_strong = {
     "name" : "strong zombie",
     "description" : "DESCRIPTION",
-    "health" : 65,
+    "health" : 30,
     "base_damage" : 15,
     "crit_chance" : 0.2,
     "crit_multiplier" : 2
@@ -68,13 +43,13 @@ zombie_strong = {
 zombie_soldier = {
     "name" : "zombie soldier",
     "description" : "DESCRIPTION",
-    "health" : 80,
+    "health" : 25,
     "base_damage" : 13,
     "crit_chance" : 0.2,
     "crit_multiplier" : 2
 }
 
-class Creature:  
+class Creature:  ## Holds the info related to the creatures and stores spritesheet objects
     def __init__(self, creature : {}, creature_number = 0, level = 1):
         if creature == "You":
             self.creature_number = creature_number # Used for printing out the scene
@@ -82,9 +57,9 @@ class Creature:
             self.description = "You"
             self.level = level
             self.health = player.health
-            self.damage = "" #NA
-            self.crit_change = "" #NA
-            self.crit_multiplier = "" #NA
+            self.damage = "" 
+            self.crit_change = "" 
+            self.crit_multiplier = "" 
         else:
             self.creature_number = creature_number
             self.name = creature["name"]
@@ -106,24 +81,21 @@ class Creature:
         self.color = 11
         if self.name != "You":
             self.color = 7
-        self.dx_change = dx_change
-        self.dy_change = dy_change
+        self.dx_change = dx_change # moves the spritesheet on the screen
+        self.dy_change = dy_change # moves the spritesheet on the screen
         self.frames = 6
         self.spritesheet = spritesheet(self.path, self.color, zlevel = self.zlevel, frames = self.frames, dx = self.dx_change, dy = self.dy_change)
-        # self.info = spritesheet(self.path,self.color, zlevel = 100, frames = 6, dx = self.dx_change, dy = self.dy_change) # increment dx dy to change position
-        # self.info.transform_to_info(self.grab_infolist())
         self.infosheet = infosheet
         if self.infosheet != False:
             self.color = 16
             if self.name != "You":
                 self.color = 8
             self.spritesheet = spritesheet(self.path, self.color, zlevel = self.zlevel, frames = self.frames, dx = self.dx_change, dy = self.dy_change, infolist = self.grab_infolist())
-        # print(self.info.frameslist[0])
         self.frameslist = self.spritesheet.frameslist
         self.frames_attack = self.spritesheet.frameslist
         self.frames_standstill = self.spritesheet.frameslist[0]
     
-    def grab_path(self):
+    def grab_path(self): # Path to the spritesheets
         return ("combat_sprites", "{0}".format(self.name))
     
     def grab_infolist(self):
@@ -135,7 +107,6 @@ class Creature:
         self.frameslist = self.spritesheet.frameslist
         self.frames_attack = self.spritesheet.frameslist
         self.frames_standstill = self.spritesheet.frameslist[0]
-        # self.spritesheet.frameslist = self.gather_framelist()
 
     def gather_framelist(self): ### WIP here the name of the creature will be appended below every sprite. Currently, it's just a copy of the original gather_framelist. No use yet.
         frameslist = []
@@ -147,18 +118,14 @@ class Creature:
             file.close()
         return frameslist   
 
-##### Data related to the current fight is contained within initiate_combat objects.
+##### Data related to visual printing of the combat
 class Combatprinter():
     def __init__(self):
         self.creatures_dict = {} ### creatures in the current fight stored here. Protagonist is the first key "You"
         self.info_dict = {} # dictionary to store info enemy : info spritesheet pair
         self.enemies = player.get_current_room().enemies ### [(creature type, level), (creature type, level)]. This could be done differently and should be pulled from the back end.
-        # self.curses_window = curses_window
         self.enemies_alive = len(self.creatures_dict.keys())-1 # -1 as one of the creatures is the protagonist 
-        self.escape = False # To be used to break from combat loop
         self.place_creatures() # Creates creature objects and corresponding spritesheets.
-        # self.info_details() # obsolete for now 
-        self.current_weapon = "" # NEEDS WORK: Pull the item of the players from the backend?. This will then be used to set the corresponding spriteshet of the protagonist (WIP)
         self.stillstate = self.set_stillstate() # Returns tuple which is used in print_stillshot_curses
         self.animation = "" # the animation which will take place is stored here as a tuple
 
@@ -190,7 +157,7 @@ class Combatprinter():
             # self.info_dict[i]
         self.stillstate = self.set_stillstate()    
         
-    def blank_out_frames(self, spritesheet_to_modify): # NEW
+    def blank_out_frames(self, spritesheet_to_modify): # Blanks out every other frame of a spritesheet
         for index, value in enumerate(spritesheet_to_modify):
             if index%2 == 1:
                 newframe = ""
@@ -214,9 +181,6 @@ class Combatprinter():
                     self.freeze_all(i) 
         
         if attacker != "You":
-            # firstframe = self.creatures_dict["enemy_{0}".format(attacker)].spritesheet.frameslist[0]
-            # for index, value in enumerate(self.creatures_dict["You"].spritesheet.frameslist):
-                # self.creatures_dict["You"].spritesheet.frameslist[index] = firstframe  
             for i in self.creatures_dict:
                 if i != "enemy_{0}".format(attacker):
                     self.freeze_all(i)   
@@ -227,47 +191,18 @@ class Combatprinter():
             attacked = self.creatures_dict["enemy_{0}".format(attacked)]
             
         self.blank_out_frames(attacked.spritesheet.frameslist)
-
-        # tuple_enemies = tuple([self.creatures_dict[i] for i in self.creatures_dict])                      
+                    
         tuple_enemies = tuple([self.creatures_dict[i].spritesheet for i in self.creatures_dict])
-        # self.curses_window.clear()
         self.animation = (general_bg, outline, *tuple_enemies)
         
     def set_stillstate(self):
         return (general_bg, outline, *self.spritesheets_tuple())
     
     def general_update(self, attacker = 0, attacked = 0):
-        # if attacker == "You":
-            # self.set_new_sprites(attacker,attacked) # "You", "1"/"2"....
-            # return
         if attacker != 0:
             self.set_new_sprites(attacker,attacked) # "1"/"2"...., "You"
         self.update_infosheet()
-            
-        
-    # def user_update(self, user_input): #### this should also 
-        # if user_input == "escape":
-            # self.escape = True
-            # return
-        ### Here, the user input must be in the format "attack_1", "attack_2".. etc
-        # if user_input[:-2] == "attack":
-            # damage = 5 # Placeholder. This can go through a random damage generator that's based on the player's base attack stat
-            # protag = self.creatures_dict["You"]
-            # enemy = self.creatures_dict["Creature_{0}".format(user_input[-1:])]
-            # enemy.hp -= damage
-            # self.set_new_sprites(protag, enemy)
-
-    # def zombie_update(self): ### NEEDS WORK. Should attack character based on enemy's basedmg
-        #### Placeholder
-        # protag = self.creatures_dict["You"]
-        # enemies = [creature for creature in self.creatures_dict.values() if creature.creature_type != "You"]
-        # enemy = random.choice(enemies)
-        # protag.hp -= enemy.basedmg # should be modified so it's random to some degree
-        # print(protag.hp)
-        # self.set_new_sprites(enemy, protag)
-        # self.refresh_sprites()
-        #### FUNCTION TO UPDATE ANIMATION TUPLE HERE
-     # (self,creature_number, backend_dict, creature_zlevel = 1, dx_change = 0, dy_change = 0)   
+             
      
     def place_creatures(self):
         dx_change = 20
@@ -293,14 +228,11 @@ class Combatprinter():
             dy_change += 8
             counter += 1
             i.creature_number = creature_number
-            # (self, creature : {}, creature_number = 0, level = 1, creature_zlevel = 1, dx_change = 1, dy_change = 1, infosheet = False)
-            i_copy = copy.deepcopy(i) # to be turned into the info spritesheet
+            i_copy = copy.deepcopy(i) # deep copy to be turned into the info spritesheet
             i.create_sprites(creature_zlevel = z, dx_change = dx_change, dy_change = dy_change)
             i_copy.create_sprites(creature_zlevel = z+0.1, dx_change = dx_change+2, dy_change = dy_change+7, infosheet = True)
             self.creatures_dict["enemy_{0}".format(creature_number)] = i
             self.info_dict["enemy_{0}".format(creature_number)] = i_copy
-            # print(self.info_dict["enemy_1"].spritesheet.frameslist)
-            # self.creatures_dict["enemy_{0}".format(creature_number)] = Creature(i,creature_number, creature_zlevel = z, dx_change = dx_change, dy_change = dy_change)
             if counter == 4:
                 counter = 1
                 dx_change -= 10
@@ -308,8 +240,7 @@ class Combatprinter():
             z += 1
             creature_number += 1
             
-    def spritesheets_tuple(self):
-        # need everything as a tuple so I can unpack it
+    def spritesheets_tuple(self): # Sends back a tuple of spritesheets ot unpack in run_animation_curses_pad
         spritesheets_to_add = [general_bg]
         for i in self.creatures_dict:
             spritesheets_to_add.append(self.creatures_dict[i].spritesheet)

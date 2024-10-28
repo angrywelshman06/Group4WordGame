@@ -579,6 +579,7 @@ def print_intro(): # prints the intro text, makes all the sound effects italic a
     write("Attempt to escape the city at you’re own risk…", curses.color_pair(25))
     write(" ZZZZZZZZ ", curses.color_pair(25)  | curses.A_BLINK)
     write("\n – Transmission cuts.\n",curses.color_pair(25))
+    write("\n (Use arrow keys (Up and Down) to scroll the text pad)\n\n",curses.color_pair(25))
 
 
 border_win_requirements =  [

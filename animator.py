@@ -13,7 +13,7 @@ from ui import *
 
 clear = lambda: os.system('cls')
 
-os.system("") # I need to remember why I put this here, I believe it was escape code related (which may be obsolete soon)
+
 
 def adjust_to_max(list_framelists, max_frame): # adjusts to max frame
     for list in list_framelists:
