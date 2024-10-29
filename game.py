@@ -301,7 +301,7 @@ def execute_command(command): # parse what needs to be executed based on command
         write("up arrow : scroll up, down arrow : scroll down, escape key : quit\n\n")
 
     elif command[0] == "raptor":
-        write("""
+        write(r"""
                 ____      ________    
                ,^.__.>--"~~'_.--~_)~^.  
               _L^~   ~    (~ _.-~ \. |\     
@@ -457,6 +457,10 @@ def execute_combat(command): # returns if player is still in combat # executes c
     enemy_key = random.choice([*player.get_current_room().enemies.keys()]) # choose random enemy to attack
     enemy = player.get_current_room().enemies[enemy_key]
 
+    ### combat visual update
+    combatprinter.general_update(attacker = enemy_key, attacked = "You")
+    play_animation(combatprinter.animation, True) # Hold main thread until animation finished
+
     write(f"The {enemy.name} attacked you!\n", curses.color_pair(25))
     if random.random() < enemy.crit_chance:
         damage = enemy.damage * enemy.crit_multiplier
@@ -515,7 +519,7 @@ def set_scene_combat(): # gives the player info on how the battle is progressing
     weapons = []
     for item in player.inventory:
         if type(item) is items.Weapon:
-            weapons.append(item.name)
+            weapons.append(item.id)
 
     weapon_num = len(weapons)
     if weapon_num == 0:
@@ -535,7 +539,7 @@ def set_scene_combat(): # gives the player info on how the battle is progressing
     consumables = []
     for item in player.inventory:
         if type(item) is items.Consumable:
-            consumables.append(item.name)
+            consumables.append(item.id)
 
     if len(consumables) == 0:
         write("You have no consumables\n")
@@ -551,8 +555,8 @@ def set_scene_combat(): # gives the player info on how the battle is progressing
             else:
                 write(f", ")
 
-    write("ATTACK <which enemy> <weapon>   or   ")
-    write("CONSUME <item>   or   ")
+    write("ATTACK <enemy number> <weapon id>   or   ")
+    write("CONSUME <item id>   or   ")
     write("FLEE\n\n")
 
 def print_intro(): # prints the intro text, makes all the sound effects italic and blinking
@@ -756,7 +760,7 @@ def main():
         print(traceback.format_exc())
 
     # write title screen
-    write("""
+    write(r"""
 ╔╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╦╗
 ╠╬╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╩╬╣
 ╠╣  _______     _______.  ______     ___      .______    _______        ╠╣
@@ -857,6 +861,10 @@ def main():
                             in_danger = False
                             menu()
                         elif resolution == 2:  # combat started
+                            if random.random() < 0.5:
+                                play_animation(fight_cutscene)
+                            else:
+                                play_animation(cutscene_1)
                             in_danger = False
                             in_combat = True
 

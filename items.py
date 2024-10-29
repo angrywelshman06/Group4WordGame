@@ -100,7 +100,7 @@ explosives = {
     "description" : "DESCRIPTION",
     "mass" : 45000,
 
-    "spawn_chance": 0.08,
+    "spawn_chance": 0.20,
     "spawn_quantity" : [1, 1],
 
 }
