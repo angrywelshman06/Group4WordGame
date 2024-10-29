@@ -22,7 +22,7 @@ class Weapon(Item):
         super().__init__(item)
         self.damage = item["damage"] # Amount of damage the weapon inflicts
         self.crit_chance = item["crit_chance"] # critical hit chance
-        self.crit_mult = item["crit_mult"] # critical hit multiplier
+        self.crit_mult = item["crit_multiplier"] # critical hit multiplier
 
 """ 
 ITEM INFORMATION
@@ -221,7 +221,7 @@ bat = {
     "type": Weapon,
     "damage" : 15,
     "crit_chance": 0.1,
-    "crit_mult": 2,
+    "crit_multiplier": 2,
     "mass": 1500,
 
     "spawn_chance": 0.08,
