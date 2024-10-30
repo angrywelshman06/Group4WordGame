@@ -631,6 +631,8 @@ def check_for_boundary_exit():
 def menu(): # gives the player info on the current room and their character
 
     write(player.get_current_room().name.upper())
+    #writes player health
+    write(f"     |     Health: {player.health}")
     write(f"     |     [{player.current_room_position[0]} | {player.current_room_position[1]}]")
     write()
     write(player.get_current_room().description)
