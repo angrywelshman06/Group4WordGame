@@ -650,14 +650,14 @@ def menu(): # gives the player info on the current room and their character
             write()
 
         if len(player.inventory) >= 1:
-            write("You can DROP any of the items in your inventory.\n")
+            write("You can DROP any of the items in your inventory. drop <item_name> <amount>\n")
             write(player.get_inventory_items())
             write(f"\nCurrent Inventory Mass: {player.inventory_mass()}g")
             write()
 
         if len(player.get_current_room().npcs) >= 1:
             for npc in player.get_current_room().npcs:
-                write(f"\nYou can TALK to {npc.id}.")
+                write(f"\nYou can TALK to {npc.id}. The command is: talk {npc.id}\n")
             write()
 
         if player.get_current_room().can_escape() or check_for_boundary_exit():
