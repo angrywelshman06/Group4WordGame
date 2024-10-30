@@ -161,13 +161,14 @@ def execute_consume(item_id): # consumes item in battle and regens health
     write("You cannot consume that.\n")
 
 
-def execute_take(item_id, amount=1): # take an item from the current room, possibly take multiple items
-
+def execute_take(item_id, amount=1): # takes item from room and puts it in inventory
     for item_dict_id in player.get_current_room().items.keys():
         if item_dict_id == item_id:
             item = items.dict_to_item(get_item_dict_from_list(item_dict_id))
             if player.get_current_room().items[item_id] < amount:
+
                 write(f"There are not {amount} many {item.name}s in the room.\n\n")
+
                 return
 
             if player.get_current_room().items[item_id] > amount:
@@ -185,10 +186,9 @@ def execute_take(item_id, amount=1): # take an item from the current room, possi
             if not found:
                 player.inventory[item] = amount
 
-            write(f"You picked up {item.name}.\n\n")
+            write(f"You picked up {amount} {item.name}(s).\n\n")
             return
     write("You cannot take that.\n")
-
 
 def execute_drop(item_id, amount=1):
     for item in player.inventory.keys():
@@ -567,7 +567,7 @@ def set_scene_combat(): # gives the player info on how the battle is progressing
                 write(f", ")
 
     write("ATTACK <enemy number> <weapon id>   or   ")
-    write("CONSUME <item id>   or   ")
+    write("CONSUME <item id> <amount>  or   ")
     write("FLEE\n\n")
 
 def print_intro(): # prints the intro text, makes all the sound effects italic and blinking
@@ -649,6 +649,8 @@ def menu(): # gives the player info on the current room and their character
     #writes player health
     write(f"     |     Health: {player.health}")
     write(f"     |     [{player.current_room_position[0]} | {player.current_room_position[1]}]")
+    #add player health
+    write(f"     |     HEALTH: {player.health}")
     write()
     write(player.get_current_room().description)
     write("\n\n")
@@ -664,19 +666,19 @@ def menu(): # gives the player info on the current room and their character
             write()
 
         if len(player.get_current_room().items) >= 1:
-            write("You can TAKE any items in this room.")
+            write("You can TAKE any items in this room. take <item_id> <amount>\n")
             print_room_items(player.get_current_room())  # Displays items in room
             write()
 
         if len(player.inventory) >= 1:
-            write("You can DROP any of the items in your inventory.\n")
+            write("You can DROP any of the items in your inventory. drop <item_name> <amount>\n")
             write(player.get_inventory_items())
             write(f"\nCurrent Inventory Mass: {player.inventory_mass()}g")
             write()
 
         if len(player.get_current_room().npcs) >= 1:
             for npc in player.get_current_room().npcs:
-                write(f"\nYou can TALK to {npc.id}.")
+                write(f"\nYou can TALK to {npc.id}. The command is: talk {npc.id}\n")
             write()
 
         if player.get_current_room().can_escape() or check_for_boundary_exit():
