@@ -161,13 +161,12 @@ def execute_consume(item_id): # consumes item in battle and regens health
     write("You cannot consume that.\n")
 
 
-def execute_take(item_id, amount=1): # take an item from the current room, possibly take multiple items
-
+def execute_take(item_id, amount=1): # takes item from room and puts it in inventory
     for item_dict_id in player.get_current_room().items.keys():
         if item_dict_id == item_id:
             item = items.dict_to_item(get_item_dict_from_list(item_dict_id))
             if player.get_current_room().items[item_id] < amount:
-                write(f"There are not {amount} many {item.name}s in the room.")
+                write(f"There are not {amount} {item.name}s in the room.\n")
                 return
 
             if player.get_current_room().items[item_id] > amount:
@@ -185,10 +184,9 @@ def execute_take(item_id, amount=1): # take an item from the current room, possi
             if not found:
                 player.inventory[item] = amount
 
-            write(f"You picked up {item.name}.\n\n")
+            write(f"You picked up {amount} {item.name}(s).\n\n")
             return
     write("You cannot take that.\n")
-
 
 def execute_drop(item_id, amount=1):
     for item in player.inventory.keys():
@@ -647,7 +645,7 @@ def menu(): # gives the player info on the current room and their character
             write()
 
         if len(player.get_current_room().items) >= 1:
-            write("You can TAKE any items in this room.")
+            write("You can TAKE any items in this room. take <item_id> <amount>\n")
             print_room_items(player.get_current_room())  # Displays items in room
             write()
 
