@@ -403,6 +403,9 @@ def execute_combat(command): # returns if player is still in combat # executes c
             return True
 
         # Checks target validity
+        if not command[1].isdigit():
+            write("\nInvalid command. The second argument should be the enemy number.\n")
+
         if int(command[1]) not in player.get_current_room().enemies:
             write("\n Invalid target. Choose the enemy number of the enemy you wish to attack.\n\n")
             return True
@@ -430,7 +433,7 @@ def execute_combat(command): # returns if player is still in combat # executes c
                 combatprinter.general_update(attacker = "You", attacked = command[1])
                 play_animation(combatprinter.animation, True) # Hold main thread until animation finished
 
-        if attacked_bool == False:
+        if not attacked_bool:
             write("Couldn't attack\n")
             return True
     
