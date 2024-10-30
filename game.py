@@ -550,7 +550,7 @@ def set_scene_combat(): # gives the player info on how the battle is progressing
                 write(f", ")
 
     write("ATTACK <enemy number> <weapon id>   or   ")
-    write("CONSUME <item id>   or   ")
+    write("CONSUME <item id> <amount>  or   ")
     write("FLEE\n\n")
 
 def print_intro(): # prints the intro text, makes all the sound effects italic and blinking
