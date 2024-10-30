@@ -167,7 +167,7 @@ def execute_take(item_id, amount=1): # take an item from the current room, possi
         if item_dict_id == item_id:
             item = items.dict_to_item(get_item_dict_from_list(item_dict_id))
             if player.get_current_room().items[item_id] < amount:
-                write(f"There are not {amount} many {item.name}s in the room.")
+                write(f"There are not {amount} many {item.name}s in the room.\n\n")
                 return
 
             if player.get_current_room().items[item_id] > amount:
@@ -195,7 +195,7 @@ def execute_drop(item_id, amount=1):
         if item.id == item_id:
 
             if player.inventory[item] < amount:
-                write(f"You do not have {amount} {item.name}s.\n")
+                write(f"You do not have {amount} {item.name}s.\n\n")
                 return
 
             if player.inventory[item] > amount:
@@ -403,6 +403,10 @@ def execute_combat(command): # returns if player is still in combat # executes c
             return True
 
         # Checks target validity
+        if not command[1].isdigit():
+            write("\nInvalid command. The second argument should be the enemy number.\n")
+            return True
+
         if int(command[1]) not in player.get_current_room().enemies:
             write("\n Invalid target. Choose the enemy number of the enemy you wish to attack.\n\n")
             return True
@@ -413,13 +417,20 @@ def execute_combat(command): # returns if player is still in combat # executes c
         for item in player.inventory:
             if item.id == command[2] or item.name == command[2]:
                 if type(item) == items.Weapon:
-                    if item == items.gun:
-                        if items.ammo in player.inventory:
-                            player.inventory[items.ammo] -= 1
-                            attacked_bool = True
-                            execute_attack(int(command[1]), enemy, item)
-                        else:
+                    if item.id == items.gun["id"]:
+
+                        found = False
+                        for new_item in player.inventory:
+                            if new_item.id == "ammo":
+                                player.inventory[new_item] -= 1
+                                attacked_bool = True
+                                execute_attack(int(command[1]), enemy, item)
+                                found = True
+                                break
+
+                        if not found:
                             write("You have no ammo!\n")
+
                     else:
                         attacked_bool = True
                         execute_attack(int(command[1]), enemy, item)
@@ -430,7 +441,7 @@ def execute_combat(command): # returns if player is still in combat # executes c
                 combatprinter.general_update(attacker = "You", attacked = command[1])
                 play_animation(combatprinter.animation, True) # Hold main thread until animation finished
 
-        if attacked_bool == False:
+        if not attacked_bool:
             write("Couldn't attack\n")
             return True
     
@@ -456,6 +467,10 @@ def execute_combat(command): # returns if player is still in combat # executes c
 
     enemy_key = random.choice([*player.get_current_room().enemies.keys()]) # choose random enemy to attack
     enemy = player.get_current_room().enemies[enemy_key]
+
+    ### combat visual update
+    combatprinter.general_update(attacker = enemy_key, attacked = "You")
+    play_animation(combatprinter.animation, True) # Hold main thread until animation finished
 
     write(f"The {enemy.name} attacked you!\n", curses.color_pair(25))
     if random.random() < enemy.crit_chance:
