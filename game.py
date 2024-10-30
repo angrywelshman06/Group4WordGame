@@ -630,6 +630,8 @@ def menu(): # gives the player info on the current room and their character
 
     write(player.get_current_room().name.upper())
     write(f"     |     [{player.current_room_position[0]} | {player.current_room_position[1]}]")
+    #add player health
+    write(f"     |     HEALTH: {player.health}")
     write()
     write(player.get_current_room().description)
     write("\n\n")
