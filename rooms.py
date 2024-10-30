@@ -74,6 +74,8 @@ class Room:
             match item_dict["type"]:
                 case items.Consumable:
                     item = Consumable(item_dict)
+                case items.Weapon:
+                    item = Weapon(item_dict)
                 case _:
                     item = Item(item_dict)
                     
