@@ -248,6 +248,8 @@ def dict_to_item(item_dict : {}):
     match item_dict["type"].__name__:
         case Consumable.__name__:
             item = Consumable(item_dict)
+        case Weapon.__name__:
+            item = Weapon(item_dict)
         case _:
             item = Item(item_dict)
     return item

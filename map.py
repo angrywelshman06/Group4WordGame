@@ -89,7 +89,7 @@ def generate_map():
                 x_coord = random.randint(0, 9)
                 y_coord = random.randint(0, 9)
                 if map_matrix[y_coord][x_coord] is None and sr['name'] not in used_rooms:
-                    room = Room(sr, (y_coord, x_coord), visual_in=sr["visual"])
+                    room = Room(sr, (x_coord, y_coord), visual_in=sr["visual"])
                     map_matrix[y_coord][x_coord] = room
                     generate_loot(x_coord, y_coord)
 
