@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import copy
 import curses
+import platform
 
 import items
 import npcs
@@ -753,6 +754,12 @@ def main():
     global in_danger
     global combatprinter
     global resize_window_event
+    
+    backspace = {
+    "Windows": ord('\b'),
+    "Linux": curses.KEY_BACKSPACE,
+    "Darwin": 127
+    }[platform.system()]
 
     try:
 
@@ -815,7 +822,7 @@ def main():
             if cmd == ord('-'):
                 ui.text_pad_pos += 1
             elif cmd == ord('='):
-                ui.text_pad_pos -= 1
+                ui.text_pad_pos -= 1         
 
             match cmd:
 
@@ -829,7 +836,8 @@ def main():
                     close()
                     return
 
-                case curses.KEY_BACKSPACE | 127: # delete last letter # "| 127" makes it work on mac
+                case _ if cmd == backspace: # Not the cleanest way to go on about this, but case ord('\b') wouldn't work.
+                    
                     ui_lock.acquire()
 
                     y, x = ui.text_pad.getyx()  # get cursor position
